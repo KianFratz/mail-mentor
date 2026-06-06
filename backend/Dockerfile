@@ -1,0 +1,26 @@
+# Base image
+FROM node:lts-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Creates a "dist" folder with the compiled code
+RUN npm run build
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the server using the production build
+CMD [ "npm", "run", "start:prod" ]
