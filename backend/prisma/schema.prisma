@@ -14,17 +14,29 @@ datasource db {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
+  id              String      @id @default(uuid()) @db.Uuid
+  email           String      @unique @db.VarChar(255)
+  password_hash   String      @db.Text
+  full_name       String      @db.VarChar(255)
+  role            user_role   @default(student)
+  current_level   skill_level @default(beginner)
+  xp_total        Int         @default(0)
+  practice_streak Int         @default(0)
+  last_active_at  DateTime?   @db.Timestamptz
+  created_at      DateTime    @default(now()) @db.Timestamptz
+  updated_at      DateTime    @default(now()) @updatedAt @db.Timestamptz
+
+  @@map("users")
 }
 
-model Post {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+enum user_role {
+  student
+  professional
+  admin
+}
+
+enum skill_level {
+  beginner
+  intermediate
+  advanced
 }
