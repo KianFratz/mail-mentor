@@ -2,11 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import AppShell from "./layouts/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import { Login } from "./pages/Login";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
