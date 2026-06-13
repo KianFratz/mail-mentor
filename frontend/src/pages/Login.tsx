@@ -1,25 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { TextInput } from '../components/TextInput';
 import { Button } from '../components/ui/button';
 import { SocialButton } from '../components/SocialButton';
+import api from '../lib/axios';
 
 export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulation of login action
-    setTimeout(() => {
-      setLoading(false);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      localStorage.setItem('access_token', response.data.access_token);
+
       setSuccess(true);
       setTimeout(() => {
-        alert('Simulation: Logged in successfully!');
-        setSuccess(false);
+        navigate('/dashboard');
       }, 1000);
-    }, 1500);
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
