@@ -50,7 +50,7 @@ export const Login: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary mb-6 shadow-lg">
             <span className="material-symbols-outlined text-primary-foreground text-[32px]">edit_note</span>
           </div>
-          <h1 className="font-headline-lg text-headline-lg text-primary mb-2">Cognitive Correspondence</h1>
+          <h1 className="font-headline-lg text-headline-lg text-primary mb-2">Mail Mentor</h1>
           <p className="font-body-md text-body-md text-muted-foreground">Elevate your communication with AI insights.</p>
         </div>
 
@@ -112,7 +112,7 @@ export const Login: React.FC = () => {
 
         {/* Footer Call to Action */}
         <p className="mt-8 font-body-sm text-body-sm text-muted-foreground text-center animate-in fade-in slide-in-from-top-2 duration-700 delay-300">
-          New to Cognitive Correspondence? 
+          New to Mail Mentor? 
           <a href="#" className="text-primary font-label-md hover:underline decoration-2 underline-offset-4 ml-1">Create an account</a>
         </p>
 
