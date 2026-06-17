@@ -1,11 +1,14 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
-
 
 @Injectable()
 export class AuthService {
@@ -18,7 +21,7 @@ export class AuthService {
   async loginWithGoolge(googleUser: any) {
     // Find or create user in PostgreSQL via Prisma
     let user = await this.prisma.user.findUnique({
-      where: {email: googleUser.email},
+      where: { email: googleUser.email },
     });
 
     if (!user) {
@@ -26,7 +29,7 @@ export class AuthService {
         data: {
           email: googleUser.email,
           name: googleUser.name,
-          googleId: googleUser.goolgeId,
+          googleId: googleUser.googleId,
         },
       });
     }
@@ -35,12 +38,11 @@ export class AuthService {
       sub: user.id,
       email: user.email,
     });
-
   }
 
   async register(registerDto: RegisterDto) {
     const { email, password, fullName } = registerDto;
-    
+
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
       throw new ConflictException('Email already exists');

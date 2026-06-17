@@ -18,7 +18,6 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async goolgeAuthRedirect(@Req() req, @Res() res) {
-
     // Validate or create user in database via Prisma, the generate local token
     const token = await this.authService.loginWithGoolge(req.user);
 
