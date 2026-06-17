@@ -34,6 +34,10 @@ export const Login: React.FC = () => {
     }
   };
 
+  const handleGoolgeLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop overflow-hidden bg-background relative z-0">
       {/* Decorative Background Elements */}
@@ -103,10 +107,9 @@ export const Login: React.FC = () => {
 
           {/* Social Buttons */}
           <div className="grid grid-cols gap-4">
-            <SocialButton 
-              label="Google"
-              iconSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuBXoTG6MqzoVXrGORavzpjew7Sr7i-_j_z9xceKNKqrGyHVW5o0h8-qxvopwT1grXT01qCKFhLdyyZDesEcYN-pRKqy6CKuLgtXxXXHXuJAzIeErLZyjCqqKl9MIX8OYys053Og1fgD80kdALfOv2VOgPJFd0C4YVua3UIbMl2-chw5lGJ0SUHGtbdocH3INecmkcDbbu65cZXkCmgEfEWvN8PqsXj3FPYRYID-TaPgNU1wqiTUfrjfA6KPuoOu8he7VH7QZo1JoSBr"
-            />
+            <Button onClick={handleGoolgeLogin}>
+              Continue with Google
+            </Button>
           </div>
         </div>
 
