@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { AuthProvider } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import AppShell from "./layouts/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
@@ -8,18 +10,25 @@ import { Landing } from "./pages/Landing";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/oauth-success" element={<OAuthSuccess />} />
-        <Route element={<AppShell />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
+
+          {/* Protected routes — redirect to /login if not authenticated */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppShell />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<Navigate to="/dashboard" />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
