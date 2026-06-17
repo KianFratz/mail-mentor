@@ -4,11 +4,13 @@ import { TextInput } from '../components/TextInput';
 import { Button } from '../components/ui/button';
 import { SocialButton } from '../components/SocialButton';
 import api from '../lib/axios';
+import { useAuth } from '@/context/AuthContext';
 
 export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const { saveToken } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ export const Login: React.FC = () => {
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      localStorage.setItem('access_token', response.data.access_token);
+      saveToken(response.data.access_token);
 
       setSuccess(true);
       setTimeout(() => {
