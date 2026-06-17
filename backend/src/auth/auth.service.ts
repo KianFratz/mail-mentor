@@ -26,7 +26,7 @@ export class AuthService {
         data: {
           email: googleUser.email,
           name: googleUser.name,
-          googleId: googleUser.goolgeId,
+          googleId: googleUser.googleId,
         },
       });
     }

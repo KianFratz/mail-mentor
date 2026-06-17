@@ -3,7 +3,7 @@ import AppShell from "./layouts/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import { Login } from "./pages/Login";
-
+import OAuthSuccess from "./pages/OAuthSuccess";
 import { Landing } from "./pages/Landing";
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
