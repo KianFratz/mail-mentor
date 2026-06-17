@@ -4,13 +4,39 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
+import { PrismaService } from 'prisma/prisma.service';
+
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private prisma: PrismaService,
   ) {}
+
+  async loginWithGoolge(googleUser: any) {
+    // Find or create user in PostgreSQL via Prisma
+    let user = await this.prisma.user.findUnique({
+      where: {email: googleUser.email},
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email: googleUser.email,
+          name: googleUser.name,
+          googleId: googleUser.goolgeId,
+        },
+      });
+    }
+
+    return this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
+
+  }
 
   async register(registerDto: RegisterDto) {
     const { email, password, fullName } = registerDto;
@@ -25,8 +51,8 @@ export class AuthService {
 
     const user = await this.usersService.createUser({
       email,
-      password_hash,
-      full_name: fullName,
+      password: password_hash,
+      name: fullName,
     });
 
     return this.generateToken(user);
@@ -36,11 +62,11 @@ export class AuthService {
     const { email, password } = loginDto;
     const user = await this.usersService.findByEmail(email);
 
-    if (!user) {
+    if (!user || !user.password) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

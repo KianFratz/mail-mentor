@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import { Button } from "./ui/button";
 
 const nav = [
   { label: "Dashboard", to: "/dashboard", icon: "🏠" },
@@ -34,7 +35,9 @@ export default function Sidebar() {
       </nav>
 
       <div className="px-4 py-4 border-t border-gray-200 text-sm text-gray-500">
-        Kian
+        <Button onClick={}>
+          Logout
+        </Button>
       </div>
     </aside>
   );
