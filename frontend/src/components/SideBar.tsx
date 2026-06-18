@@ -1,46 +1,59 @@
-import { NavLink } from "react-router";
-import { Button } from "./ui/button";
 import { useAuth } from "@/context/AuthContext";
+import type { SideNavBarProps } from "@/types/side-bar";
 
-const nav = [
-  { label: "Dashboard", to: "/dashboard", icon: "🏠" },
-  { label: "Reports", to: "/reports", icon: "📊" },
-  { label: "Settings", to: "/settings", icon: "⚙️" },
-];
-
-export default function Sidebar() {
+export default function SideNavbar({
+  title,
+  subtitle,
+  navItems,
+  activeHref,
+  ctaLabel,
+  onCtaClick,
+}: SideNavBarProps) {
   const { logout } = useAuth();
 
   return (
-    <aside className="w-56 min-w-56 h-screen flex flex-col border-r border-gray-200 bg-white">
-      <div className="px-6 py-5 text-lg font-semibold border-b border-gray-200">
-        My app
+    <aside className="hidden lg:flex flex-col h-screen w-64 bg-white border-r border-border py-6 px-3 gap-6 shrink-0">
+      {/* Workspace header */}
+      <div className="px-3">
+        <h2 className="text-sm font-bold text-foreground leading-tight">{title}</h2>
+        <p className="text-xs text-primary font-medium mt-0.5">{subtitle}</p>
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1 px-3 py-4">
-        {nav.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors
-               ${
-                 isActive
-                   ? "bg-blue-50 text-blue-600 font-medium"
-                   : "text-gray-600 hover:bg-gray-100"
-               }`
-            }
-          >
-            <span>{item.icon}</span>
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
+      {/* Nav items */}
+      <nav className="flex flex-col gap-0.5 flex-1">
+        {navItems.map((item) => {
+          const isActive = item.href === activeHref;
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              className={
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 " +
+                (isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground")
+              }
+            >
+              <span
+                className="material-symbols-outlined text-[18px] leading-none shrink-0"
+                style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                {item.icon}
+              </span>
+              {item.label}
+            </a>
+          );
+        })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-200 text-sm text-gray-500">
-        <Button onClick={logout}>
-          Logout
-        </Button>
+      {/* CTA button */}
+      <div className="px-1">
+        <button
+          onClick={onCtaClick}
+          className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all duration-150 shadow-sm"
+        >
+          {ctaLabel}
+        </button>
       </div>
     </aside>
   );
