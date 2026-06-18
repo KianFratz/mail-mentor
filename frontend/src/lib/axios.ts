@@ -9,7 +9,7 @@ const api = axios.create({
   },
 });
 
-// ── Attach token to every outgoing request ────────────────────────────────────
+// Attach token to every outgoing request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -21,7 +21,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// ── Auto-logout on 401 Unauthorized ──────────────────────────────────────────
+// Auto-logout on 401 Unauthorized
 api.interceptors.response.use(
   (response) => response,
   (error) => {
