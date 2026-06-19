@@ -14,7 +14,6 @@ export default function RecentScoresCard({
 }: RecentScoresCardProps) {
   return (
     <div className="md:col-span-6 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-base font-semibold text-foreground">{title}</h3>
         <button
@@ -25,7 +24,6 @@ export default function RecentScoresCard({
         </button>
       </div>
 
-      {/* Score list */}
       <div className="flex flex-col gap-1">
         {scores.map((score) => (
           <ScoreItem key={score.id} {...score} />

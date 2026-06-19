@@ -42,6 +42,7 @@ export type UserMinAggregateOutputType = {
   password: string | null
   name: string | null
   googleId: string | null
+  googleRefreshToken: string | null
   role: $Enums.user_role | null
   current_level: $Enums.skill_level | null
   xp_total: number | null
@@ -57,6 +58,7 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   name: string | null
   googleId: string | null
+  googleRefreshToken: string | null
   role: $Enums.user_role | null
   current_level: $Enums.skill_level | null
   xp_total: number | null
@@ -72,6 +74,7 @@ export type UserCountAggregateOutputType = {
   password: number
   name: number
   googleId: number
+  googleRefreshToken: number
   role: number
   current_level: number
   xp_total: number
@@ -99,6 +102,7 @@ export type UserMinAggregateInputType = {
   password?: true
   name?: true
   googleId?: true
+  googleRefreshToken?: true
   role?: true
   current_level?: true
   xp_total?: true
@@ -114,6 +118,7 @@ export type UserMaxAggregateInputType = {
   password?: true
   name?: true
   googleId?: true
+  googleRefreshToken?: true
   role?: true
   current_level?: true
   xp_total?: true
@@ -129,6 +134,7 @@ export type UserCountAggregateInputType = {
   password?: true
   name?: true
   googleId?: true
+  googleRefreshToken?: true
   role?: true
   current_level?: true
   xp_total?: true
@@ -231,6 +237,7 @@ export type UserGroupByOutputType = {
   password: string | null
   name: string | null
   googleId: string | null
+  googleRefreshToken: string | null
   role: $Enums.user_role
   current_level: $Enums.skill_level
   xp_total: number
@@ -269,6 +276,7 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   googleId?: Prisma.StringNullableFilter<"User"> | string | null
+  googleRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.Enumuser_roleFilter<"User"> | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFilter<"User"> | $Enums.skill_level
   xp_total?: Prisma.IntFilter<"User"> | number
@@ -284,6 +292,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   current_level?: Prisma.SortOrder
   xp_total?: Prisma.SortOrder
@@ -302,6 +311,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  googleRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.Enumuser_roleFilter<"User"> | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFilter<"User"> | $Enums.skill_level
   xp_total?: Prisma.IntFilter<"User"> | number
@@ -317,6 +327,7 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   current_level?: Prisma.SortOrder
   xp_total?: Prisma.SortOrder
@@ -340,6 +351,7 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  googleRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.Enumuser_roleWithAggregatesFilter<"User"> | $Enums.user_role
   current_level?: Prisma.Enumskill_levelWithAggregatesFilter<"User"> | $Enums.skill_level
   xp_total?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -355,6 +367,7 @@ export type UserCreateInput = {
   password?: string | null
   name?: string | null
   googleId?: string | null
+  googleRefreshToken?: string | null
   role?: $Enums.user_role
   current_level?: $Enums.skill_level
   xp_total?: number
@@ -370,6 +383,7 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   name?: string | null
   googleId?: string | null
+  googleRefreshToken?: string | null
   role?: $Enums.user_role
   current_level?: $Enums.skill_level
   xp_total?: number
@@ -385,6 +399,7 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFieldUpdateOperationsInput | $Enums.skill_level
   xp_total?: Prisma.IntFieldUpdateOperationsInput | number
@@ -400,6 +415,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFieldUpdateOperationsInput | $Enums.skill_level
   xp_total?: Prisma.IntFieldUpdateOperationsInput | number
@@ -415,6 +431,7 @@ export type UserCreateManyInput = {
   password?: string | null
   name?: string | null
   googleId?: string | null
+  googleRefreshToken?: string | null
   role?: $Enums.user_role
   current_level?: $Enums.skill_level
   xp_total?: number
@@ -430,6 +447,7 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFieldUpdateOperationsInput | $Enums.skill_level
   xp_total?: Prisma.IntFieldUpdateOperationsInput | number
@@ -445,6 +463,7 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
   current_level?: Prisma.Enumskill_levelFieldUpdateOperationsInput | $Enums.skill_level
   xp_total?: Prisma.IntFieldUpdateOperationsInput | number
@@ -460,6 +479,7 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
   current_level?: Prisma.SortOrder
   xp_total?: Prisma.SortOrder
@@ -480,6 +500,7 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
   current_level?: Prisma.SortOrder
   xp_total?: Prisma.SortOrder
@@ -495,6 +516,7 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
+  googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
   current_level?: Prisma.SortOrder
   xp_total?: Prisma.SortOrder
@@ -549,6 +571,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   name?: boolean
   googleId?: boolean
+  googleRefreshToken?: boolean
   role?: boolean
   current_level?: boolean
   xp_total?: boolean
@@ -564,6 +587,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   name?: boolean
   googleId?: boolean
+  googleRefreshToken?: boolean
   role?: boolean
   current_level?: boolean
   xp_total?: boolean
@@ -579,6 +603,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   name?: boolean
   googleId?: boolean
+  googleRefreshToken?: boolean
   role?: boolean
   current_level?: boolean
   xp_total?: boolean
@@ -594,6 +619,7 @@ export type UserSelectScalar = {
   password?: boolean
   name?: boolean
   googleId?: boolean
+  googleRefreshToken?: boolean
   role?: boolean
   current_level?: boolean
   xp_total?: boolean
@@ -603,7 +629,7 @@ export type UserSelectScalar = {
   updated_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "googleId" | "role" | "current_level" | "xp_total" | "practice_streak" | "last_active_at" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "googleId" | "googleRefreshToken" | "role" | "current_level" | "xp_total" | "practice_streak" | "last_active_at" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -614,6 +640,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     name: string | null
     googleId: string | null
+    googleRefreshToken: string | null
     role: $Enums.user_role
     current_level: $Enums.skill_level
     xp_total: number
@@ -1049,6 +1076,7 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly googleId: Prisma.FieldRef<"User", 'String'>
+  readonly googleRefreshToken: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'user_role'>
   readonly current_level: Prisma.FieldRef<"User", 'skill_level'>
   readonly xp_total: Prisma.FieldRef<"User", 'Int'>

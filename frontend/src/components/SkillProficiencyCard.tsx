@@ -14,7 +14,6 @@ export default function SkillProficiencyCard({
 }: SkillProficiencyCardProps) {
   return (
     <div className="md:col-span-8 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col gap-5">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <h3 className="text-base font-semibold text-foreground">{title}</h3>
         <span className="text-xs font-semibold px-3 py-1 rounded-full bg-success/10 text-success border border-success/20">
@@ -22,7 +21,6 @@ export default function SkillProficiencyCard({
         </span>
       </div>
 
-      {/* Skills grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
         {skills.map((skill) => (
           <SkillBar key={skill.name} name={skill.name} percentage={skill.percentage} />

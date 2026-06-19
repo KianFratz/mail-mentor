@@ -76,6 +76,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   name: 'name',
   googleId: 'googleId',
+  googleRefreshToken: 'googleRefreshToken',
   role: 'role',
   current_level: 'current_level',
   xp_total: 'xp_total',

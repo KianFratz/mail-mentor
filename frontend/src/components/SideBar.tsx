@@ -13,13 +13,11 @@ export default function SideNavbar({
 
   return (
     <aside className="hidden lg:flex flex-col h-screen w-64 bg-white border-r border-border py-6 px-3 gap-6 shrink-0">
-      {/* Workspace header */}
       <div className="px-3">
         <h2 className="text-sm font-bold text-foreground leading-tight">{title}</h2>
         <p className="text-xs text-primary font-medium mt-0.5">{subtitle}</p>
       </div>
 
-      {/* Nav items */}
       <nav className="flex flex-col gap-0.5 flex-1">
         {navItems.map((item) => {
           const isActive = item.href === activeHref;
@@ -46,7 +44,6 @@ export default function SideNavbar({
         })}
       </nav>
 
-      {/* CTA button */}
       <div className="px-1">
         <button
           onClick={onCtaClick}

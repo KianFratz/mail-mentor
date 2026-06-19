@@ -14,7 +14,6 @@ export default function TopBar({
   return (
     <header className="sticky top-0 z-50 flex justify-between items-center px-6 h-14 bg-white border-b border-border shadow-xs">
       <div className="flex items-center gap-8">
-        {/* Nav tabs */}
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = item.href === activeHref;
@@ -39,7 +38,6 @@ export default function TopBar({
         </nav>
       </div>
 
-      {/* Profile */}
       <button
         onClick={onProfileCheck}
         aria-label="Profile"

@@ -15,11 +15,8 @@ export default function PracticeStreakCard({
 }: PracticeStreakCardProps) {
   return (
     <div className="md:col-span-4 relative overflow-hidden rounded-2xl p-6 flex flex-col justify-between gap-4 bg-primary text-primary-foreground shadow-md">
-      {/* Decorative blobs */}
       <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10 blur-2xl pointer-events-none" />
       <div className="absolute bottom-0 left-4 w-20 h-20 rounded-full bg-white/5 blur-xl pointer-events-none" />
-
-      {/* Content */}
       <div className="relative z-10">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/70 mb-2">
           {title}
@@ -32,7 +29,6 @@ export default function PracticeStreakCard({
         </p>
       </div>
 
-      {/* Week day dots */}
       <div className="relative z-10 flex gap-2">
         {weekDays.map((day, idx) =>
           day.completed ? (
