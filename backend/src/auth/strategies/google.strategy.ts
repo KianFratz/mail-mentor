@@ -26,6 +26,7 @@ export class GoogleStrategy extends PassportStrategy(
       googleId: profile.id,
       email: profile.emails?.[0].value,
       name: profile.displayName,
+      refreshToken,
     };
   }
 }

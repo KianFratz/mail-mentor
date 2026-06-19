@@ -7,24 +7,17 @@ import React, {
   useState,
 } from "react";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 interface AuthContextValue {
   token: string | null;
   isAuthenticated: boolean;
-  /** Call after a successful login to persist the token. */
+  // Call after a successful login to persist the token
   saveToken: (token: string) => void;
-  /** Clears auth state and redirects to /login. */
+  // Clears auth state and redirects to /login
   logout: () => void;
 }
 
-// ─── Context ─────────────────────────────────────────────────────────────────
-
 const AuthContext = createContext<AuthContextValue | null>(null);
-
 const TOKEN_KEY = "access_token";
-
-// ─── Provider ────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
@@ -62,8 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-// ─── Hook ────────────────────────────────────────────────────────────────────
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);

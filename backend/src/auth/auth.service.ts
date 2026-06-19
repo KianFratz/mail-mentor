@@ -34,10 +34,31 @@ export class AuthService {
       });
     }
 
-    return this.jwtService.sign({
-      sub: user.id,
-      email: user.email,
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { googleRefreshToken: googleUser.refreshToken ?? undefined },
     });
+
+    return this.generateTokenPair(user);
+  }
+
+  private generateTokenPair(user: any) {
+    const payload = { sub: user.id, email: user.email, role: user.role };
+
+    const access_token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '15m',
+    });
+
+    const refresh_token = this.jwtService.sign(
+      { sub: user.id },
+      {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+      },
+    );
+
+    return { access_token, refresh_token };
   }
 
   async register(registerDto: RegisterDto) {
@@ -57,7 +78,7 @@ export class AuthService {
       name: fullName,
     });
 
-    return this.generateToken(user);
+    return this.generateTokenPair(user);
   }
 
   async login(loginDto: LoginDto) {
@@ -73,13 +94,36 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.generateToken(user);
+    return this.generateTokenPair(user);
   }
 
-  private generateToken(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async refreshAccessToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    let payload: any;
+    try {
+      payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const access_token = this.jwtService.sign(
+      { sub: user.id, email: user.email, role: user.role },
+      { expiresIn: '15m' },
+    );
+
+    return { access_token };
   }
 }
