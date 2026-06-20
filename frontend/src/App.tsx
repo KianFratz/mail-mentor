@@ -5,6 +5,7 @@ import AppShell from "./layouts/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import { Landing } from "./pages/Landing";
 
@@ -16,6 +17,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
 
           {/* Protected routes — redirect to /login if not authenticated */}

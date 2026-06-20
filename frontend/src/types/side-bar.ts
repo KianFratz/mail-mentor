@@ -4,7 +4,6 @@ export interface SideNavBarProps {
   navItems: NavItem[];
   activeHref: string;
   ctaLabel: string;
-  onCtaClick?: () => void;
 }
 
 export interface NavItem {

@@ -146,7 +146,7 @@ export const Login: React.FC = () => {
         <p className="mt-8 font-body-sm text-body-sm text-muted-foreground text-center animate-in fade-in slide-in-from-top-2 duration-700 delay-300">
           New to Mail Mentor?
           <Link
-            to="/login"
+            to="/register"
             className="text-primary font-label-md hover:underline decoration-2 underline-offset-4 ml-1"
           >
             Create an account
