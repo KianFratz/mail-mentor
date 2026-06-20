@@ -21,7 +21,7 @@ export const sampleDashboardData: DashboardData = {
     { label: "Tone Check", icon: "speed", href: "/tone-check" },
   ],
   activeSideNavHref: "/drafting",
-  sideNavCtaLabel: "Get Feedback",
+  sideNavCtaLabel: "Logout",
   onSideNavCtaClick: () => console.log("Get Feedback clicked"),
 
   overallScore: 79,

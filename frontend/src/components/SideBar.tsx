@@ -1,5 +1,6 @@
-import { useAuth } from "@/context/AuthContext";
+import api from "@/lib/axios";
 import type { SideNavBarProps } from "@/types/side-bar";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SideNavbar({
   title,
@@ -7,9 +8,23 @@ export default function SideNavbar({
   navItems,
   activeHref,
   ctaLabel,
-  onCtaClick,
 }: SideNavBarProps) {
   const { logout } = useAuth();
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try { 
+      await api.post("/auth/logout", {}, { withCredentials: true });
+      
+      localStorage.removeItem("refresh_token"); 
+      localStorage.removeItem("user");
+
+      logout();
+    } catch (error) {
+      console.error("Logout failed:" , error);
+    }
+  }
 
   return (
     <aside className="hidden lg:flex flex-col h-screen w-64 bg-white border-r border-border py-6 px-3 gap-6 shrink-0">
@@ -46,7 +61,7 @@ export default function SideNavbar({
 
       <div className="px-1">
         <button
-          onClick={onCtaClick}
+          onClick={handleLogout}
           className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all duration-150 shadow-sm"
         >
           {ctaLabel}

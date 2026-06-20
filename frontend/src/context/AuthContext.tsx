@@ -39,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     setToken(null);
+    localStorage.removeItem(TOKEN_KEY);
     // Hard-navigate so all in-memory state is wiped.
     window.location.replace("/login");
   }, []);
