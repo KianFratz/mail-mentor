@@ -9,6 +9,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -20,6 +21,7 @@ import { SetPasswordDto } from './dto/set-password.dto';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly usersService: UsersService,
   ) {}
 
   private setRefreshTokenCookie(res: Response, refreshToken: string): void {
@@ -93,8 +95,12 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getProfile(@Req() req: Request) {
-    return req.user;
+  async getProfile(@Req() req: any) {
+    const user = await this.usersService.findById(req.user.userId);
+    return {
+      ...req.user,
+      hasPassword: !!user?.password,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
