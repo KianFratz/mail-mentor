@@ -9,19 +9,27 @@
 * 🟢 You can import this file directly.
 */
 
-export const user_role = {
+export const UserRole = {
   student: 'student',
   professional: 'professional',
   admin: 'admin'
 } as const
 
-export type user_role = (typeof user_role)[keyof typeof user_role]
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-export const skill_level = {
+export const SkillLevel = {
   beginner: 'beginner',
   intermediate: 'intermediate',
   advanced: 'advanced'
 } as const
 
-export type skill_level = (typeof skill_level)[keyof typeof skill_level]
+export type SkillLevel = (typeof SkillLevel)[keyof typeof SkillLevel]
+
+
+export const AuthProvider = {
+  LOCAL: 'LOCAL',
+  GOOGLE: 'GOOGLE'
+} as const
+
+export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]

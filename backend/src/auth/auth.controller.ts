@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   Res,
+  ConflictException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -13,12 +14,15 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
+import { SetPasswordDto } from './dto/set-password.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+  ) {}
 
-  private setRefreshTokenCookie(res: Response, refreshToken: string) : void {
+  private setRefreshTokenCookie(res: Response, refreshToken: string): void {
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -83,13 +87,20 @@ export class AuthController {
       sameSite: 'none',
     });
     return res.json({
-      message: 'Logged out successfully'
-    }) 
+      message: 'Logged out successfully',
+    });
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getProfile(@Req() req: Request) {
     return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('set-password')
+  async setPassword(@Req() req: any, @Body() dto: SetPasswordDto) {
+    await this.authService.setPassword(req.user.userId, dto);
+    return { message: 'Password set successfully' };
   }
 }

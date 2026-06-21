@@ -56,18 +56,18 @@ export type StringNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
 }
 
-export type Enumuser_roleFilter<$PrismaModel = never> = {
-  equals?: $Enums.user_role | Prisma.Enumuser_roleFieldRefInput<$PrismaModel>
-  in?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  notIn?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumuser_roleFilter<$PrismaModel> | $Enums.user_role
+export type EnumUserRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
 }
 
-export type Enumskill_levelFilter<$PrismaModel = never> = {
-  equals?: $Enums.skill_level | Prisma.Enumskill_levelFieldRefInput<$PrismaModel>
-  in?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  notIn?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumskill_levelFilter<$PrismaModel> | $Enums.skill_level
+export type EnumSkillLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillLevel | Prisma.EnumSkillLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel> | $Enums.SkillLevel
 }
 
 export type IntFilter<$PrismaModel = never> = {
@@ -159,24 +159,24 @@ export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
 }
 
-export type Enumuser_roleWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.user_role | Prisma.Enumuser_roleFieldRefInput<$PrismaModel>
-  in?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  notIn?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumuser_roleWithAggregatesFilter<$PrismaModel> | $Enums.user_role
+export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumuser_roleFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumuser_roleFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
 }
 
-export type Enumskill_levelWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.skill_level | Prisma.Enumskill_levelFieldRefInput<$PrismaModel>
-  in?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  notIn?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumskill_levelWithAggregatesFilter<$PrismaModel> | $Enums.skill_level
+export type EnumSkillLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillLevel | Prisma.EnumSkillLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillLevelWithAggregatesFilter<$PrismaModel> | $Enums.SkillLevel
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumskill_levelFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumskill_levelFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel>
 }
 
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -262,18 +262,18 @@ export type NestedStringNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
 }
 
-export type NestedEnumuser_roleFilter<$PrismaModel = never> = {
-  equals?: $Enums.user_role | Prisma.Enumuser_roleFieldRefInput<$PrismaModel>
-  in?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  notIn?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumuser_roleFilter<$PrismaModel> | $Enums.user_role
+export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
 }
 
-export type NestedEnumskill_levelFilter<$PrismaModel = never> = {
-  equals?: $Enums.skill_level | Prisma.Enumskill_levelFieldRefInput<$PrismaModel>
-  in?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  notIn?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumskill_levelFilter<$PrismaModel> | $Enums.skill_level
+export type NestedEnumSkillLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillLevel | Prisma.EnumSkillLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel> | $Enums.SkillLevel
 }
 
 export type NestedIntFilter<$PrismaModel = never> = {
@@ -368,24 +368,24 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
-export type NestedEnumuser_roleWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.user_role | Prisma.Enumuser_roleFieldRefInput<$PrismaModel>
-  in?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  notIn?: $Enums.user_role[] | Prisma.ListEnumuser_roleFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumuser_roleWithAggregatesFilter<$PrismaModel> | $Enums.user_role
+export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UserRole | Prisma.EnumUserRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UserRole[] | Prisma.ListEnumUserRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumuser_roleFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumuser_roleFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUserRoleFilter<$PrismaModel>
 }
 
-export type NestedEnumskill_levelWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.skill_level | Prisma.Enumskill_levelFieldRefInput<$PrismaModel>
-  in?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  notIn?: $Enums.skill_level[] | Prisma.ListEnumskill_levelFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumskill_levelWithAggregatesFilter<$PrismaModel> | $Enums.skill_level
+export type NestedEnumSkillLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillLevel | Prisma.EnumSkillLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillLevel[] | Prisma.ListEnumSkillLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillLevelWithAggregatesFilter<$PrismaModel> | $Enums.SkillLevel
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumskill_levelFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumskill_levelFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSkillLevelFilter<$PrismaModel>
 }
 
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {

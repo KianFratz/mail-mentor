@@ -9,6 +9,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
+import { SetPasswordDto } from './dto/set-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -85,8 +86,14 @@ export class AuthService {
     const { email, password } = loginDto;
     const user = await this.usersService.findByEmail(email);
 
-    if (!user || !user.password) {
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.password) {
+      throw new ConflictException(
+        'This account was created with Google. Sign in with Google, or set a password from your account settings.',
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -125,5 +132,32 @@ export class AuthService {
     );
 
     return { access_token };
+  }
+
+  async setPassword(userId: string, dto: SetPasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (user.password) {
+      throw new ConflictException(
+        'Password already set. Use change-password instead.',
+      );
+    }
+
+    const salt = await bcrypt.genSalt();
+    const password_hash = await bcrypt.hash(dto.password, salt);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: password_hash,
+        authProviders: { push: 'LOCAL' },
+      },
+    });
   }
 }

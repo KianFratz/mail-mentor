@@ -522,6 +522,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
+  authProviders: 'authProviders',
   googleId: 'googleId',
   googleRefreshToken: 'googleRefreshToken',
   role: 'role',
@@ -581,30 +582,44 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'user_role'
+ * Reference to a field of type 'AuthProvider[]'
  */
-export type Enumuser_roleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'user_role'>
+export type ListEnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider[]'>
     
 
 
 /**
- * Reference to a field of type 'user_role[]'
+ * Reference to a field of type 'AuthProvider'
  */
-export type ListEnumuser_roleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'user_role[]'>
+export type EnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider'>
     
 
 
 /**
- * Reference to a field of type 'skill_level'
+ * Reference to a field of type 'UserRole'
  */
-export type Enumskill_levelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'skill_level'>
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
     
 
 
 /**
- * Reference to a field of type 'skill_level[]'
+ * Reference to a field of type 'UserRole[]'
  */
-export type ListEnumskill_levelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'skill_level[]'>
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SkillLevel'
+ */
+export type EnumSkillLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'SkillLevel[]'
+ */
+export type ListEnumSkillLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillLevel[]'>
     
 
 
