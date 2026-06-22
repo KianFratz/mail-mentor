@@ -11,6 +11,7 @@ import { Landing } from "./pages/Landing";
 import Scenarios from "./pages/Scenarios";
 import Progress from "./pages/Progress";
 import Conversation from "./pages/Conversation";
+import Draft from "./pages/Draft";
 
 function App() {
   return (
@@ -28,8 +29,9 @@ function App() {
             <Route element={<AppShell />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/scenarios" element={<Scenarios />} />
-              <Route path="/progress" element={<Progress />} />
               <Route path="/conversation" element={<Conversation />} />
+              <Route path="/draft" element={<Draft />} />
+              <Route path="/progress" element={<Progress />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>

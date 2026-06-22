@@ -1,9 +1,11 @@
-import React from "react";
+import CompositionArea from "@/components/conversation/CompositionArea";
+import ReviewPanel from "@/components/conversation/ReviewPanel";
 
 function Conversation() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Conversation</h1>
+    <div className="flex h-full -mx-6 -my-2 overflow-hidden">
+      <CompositionArea />
+      <ReviewPanel />
     </div>
   );
 }
