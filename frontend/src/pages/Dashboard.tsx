@@ -11,7 +11,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-5xl mx-auto py-8 px-2">
       <div className="mb-7">
-        <h1 className="text-2xl font-bold text-foreground leading-tight">
+        <h1 className="text-2xl font-bold text-foreground leading-tight text-primary">
           Welcome back, {props.userName}.
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{props.subtitle}</p>

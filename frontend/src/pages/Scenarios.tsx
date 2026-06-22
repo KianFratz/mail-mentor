@@ -17,12 +17,12 @@ function Scenarios() {
 
   return (
     <main className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
-      <div className="max-w-container-max mx-auto">
-        <section className="mb-12">
-          <h1 className="text-4xl font-bold text-primary mb-2">
+      <div className="max-w-5xl mx-auto py-8 px-2">
+        <section className="mb-6">
+          <h1 className="text-2xl font-bold text-primary mb-2 leading-tight">
             Scenario Library
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-sm text-muted-foreground max-w-2xl">
             Master professional communication by practicing with real-world
             scenarios designed to sharpen your cognitive drafting skills.
           </p>
