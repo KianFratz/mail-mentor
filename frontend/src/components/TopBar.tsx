@@ -1,4 +1,4 @@
-import type { NavItem } from "@/types/side-bar";
+import type { NavItem } from "@/types/side-bar.type";
 
 interface TopNavBarProps {
   navItems: NavItem[];
@@ -43,7 +43,9 @@ export default function TopBar({
         aria-label="Profile"
         className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 transition-colors"
       >
-        <span className="material-symbols-outlined text-xl leading-none">account_circle</span>
+        <span className="material-symbols-outlined text-xl leading-none">
+          account_circle
+        </span>
       </button>
     </header>
   );

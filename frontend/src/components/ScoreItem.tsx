@@ -1,4 +1,4 @@
-import type { RecentScore } from "@/types/dashboard-type";
+import type { RecentScore } from "@/types/dashboard.type";
 
 export default function ScoreItem({ icon, title, date, score }: RecentScore) {
   const scoreColor =

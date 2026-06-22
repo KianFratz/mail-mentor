@@ -1,4 +1,4 @@
-import type { RecentScore } from "@/types/dashboard-type";
+import type { RecentScore } from "@/types/dashboard.type";
 import ScoreItem from "./ScoreItem";
 
 interface RecentScoresCardProps {

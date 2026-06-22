@@ -1,5 +1,5 @@
 import React from "react";
-import type { EarnedBadge, LockedBadgeProgress } from "./types/dashboard-type";
+import type { EarnedBadge, LockedBadgeProgress } from "./types/dashboard.type";
 import BadgeItem from "./components/BadgeItem";
 
 interface BadgesCardProps {

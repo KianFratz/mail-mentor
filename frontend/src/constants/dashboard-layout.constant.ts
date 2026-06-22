@@ -1,15 +1,10 @@
-import type { DashboardData } from "@/types/dashboard-type";
+import type { DashboardData } from "@/types/dashboard.type";
 
 export const sampleDashboardData: DashboardData = {
   userName: "Alex",
   subtitle:
     "Your communication mastery is evolving. Here is your current performance snapshot.",
 
-  navItems: [
-    { label: "Dashboard", icon: "dashboard", href: "/dashboard" },
-    { label: "Scenarios", icon: "explore", href: "/scenarios" },
-    { label: "Progress", icon: "trending_up", href: "/progress" },
-  ],
   activeNavHref: "/dashboard",
   onProfileClick: () => console.log("Profile clicked"),
 

@@ -3,7 +3,7 @@ import AIAdviceCard from "@/components/AIAdviceCard";
 import PracticeStreakCard from "@/components/PracticeStreakCard";
 import RecentScoresCard from "@/components/RecentScoreCard";
 import SkillProficiencyCard from "@/components/SkillProficiencyCard";
-import { sampleDashboardData } from "@/constants/dashboard-layout";
+import { sampleDashboardData } from "@/constants/dashboard-layout.constant";
 
 export default function Dashboard() {
   const props = sampleDashboardData;

@@ -1,6 +1,6 @@
 import Sidebar from "@/components/SideBar";
 import TopBar from "@/components/TopBar";
-import { sampleDashboardData } from "@/constants/dashboard-layout";
+import { sampleDashboardData } from "@/constants/dashboard-layout.constant";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 export default function AppShell() {

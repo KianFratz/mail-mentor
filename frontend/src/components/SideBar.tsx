@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { SideNavBarProps } from "@/types/side-bar";
+import type { SideNavBarProps } from "@/types/side-bar.type";
 import { useAuth } from "@/context/AuthContext";
 
 export default function SideNavbar({
@@ -14,22 +14,24 @@ export default function SideNavbar({
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    try { 
+    try {
       await api.post("/auth/logout", {}, { withCredentials: true });
-      
-      localStorage.removeItem("refresh_token"); 
+
+      localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
 
       logout();
     } catch (error) {
-      console.error("Logout failed:" , error);
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   return (
     <aside className="hidden lg:flex flex-col h-screen w-64 bg-white border-r border-border py-6 px-3 gap-6 shrink-0">
       <div className="px-3">
-        <h2 className="text-sm font-bold text-foreground leading-tight">{title}</h2>
+        <h2 className="text-sm font-bold text-foreground leading-tight">
+          {title}
+        </h2>
         <p className="text-xs text-primary font-medium mt-0.5">{subtitle}</p>
       </div>
 
@@ -49,7 +51,9 @@ export default function SideNavbar({
             >
               <span
                 className="material-symbols-outlined text-[18px] leading-none shrink-0"
-                style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                style={{
+                  fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0",
+                }}
               >
                 {item.icon}
               </span>

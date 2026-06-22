@@ -1,4 +1,4 @@
-import type { EarnedBadge } from "@/types/dashboard-type";
+import type { EarnedBadge } from "@/types/dashboard.type";
 
 const VARIANT_STYLES: Record<
   EarnedBadge["variant"],

@@ -1,4 +1,4 @@
-import type { AISuggestion } from "@/types/dashboard-type";
+import type { AISuggestion } from "@/types/dashboard.type";
 
 export default function AIAdviceCard({
   eyebrow = "AI Suggestion",

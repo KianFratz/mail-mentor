@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { Mail } from "lucide-react";
-import type { NavItem } from "@/types/side-bar";
+import type { NavItem } from "@/types/side-bar.type";
 
 interface TopNavBarProps {
   brandName: string;

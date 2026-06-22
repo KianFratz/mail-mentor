@@ -1,4 +1,4 @@
-import type { SkillProficiency } from "@/types/dashboard-type";
+import type { SkillProficiency } from "@/types/dashboard.type";
 import SkillBar from "./SkillBar";
 
 interface SkillProficiencyCardProps {

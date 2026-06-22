@@ -1,4 +1,4 @@
-import type { WeekDay } from "@/types/dashboard-type";
+import type { WeekDay } from "@/types/dashboard.type";
 
 interface PracticeStreakCardProps {
   title?: string;

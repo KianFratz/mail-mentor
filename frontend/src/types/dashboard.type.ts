@@ -1,10 +1,10 @@
-import type { NavItem } from "./side-bar";
+import type { NavItem } from "./side-bar.type";
 
 export interface SkillProficiency {
   name: string;
   percentage: number; // 0-100
 }
- 
+
 export interface RecentScore {
   id: string;
   icon: string;
@@ -12,9 +12,9 @@ export interface RecentScore {
   date: string;
   score: number;
 }
- 
+
 export type BadgeVariant = "tertiary" | "secondary";
- 
+
 export interface EarnedBadge {
   id: string;
   icon: string;
@@ -22,12 +22,12 @@ export interface EarnedBadge {
   subtitle: string;
   variant: BadgeVariant;
 }
- 
+
 export interface LockedBadgeProgress {
   title: string;
   progressPercentage: number; // 0-100
 }
- 
+
 export interface WeekDay {
   label: string; // e.g. "M", "T", or a checkmark day
   completed: boolean;
@@ -39,11 +39,10 @@ export interface AISuggestion {
   ctaLabel: string;
   onCtaClick?: () => void;
 }
- 
+
 export interface DashboardData {
   userName: string;
   subtitle: string;
-  navItems: NavItem[];
   activeNavHref: string;
   sideNavTitle: string;
   sideNavSubtitle: string;
