@@ -1,4 +1,4 @@
-import type { SkillProficiency } from "@/types/mock-dashboard-data";
+import type { SkillProficiency } from "@/types/dashboard-type";
 import SkillBar from "./SkillBar";
 
 interface SkillProficiencyCardProps {
@@ -23,7 +23,11 @@ export default function SkillProficiencyCard({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
         {skills.map((skill) => (
-          <SkillBar key={skill.name} name={skill.name} percentage={skill.percentage} />
+          <SkillBar
+            key={skill.name}
+            name={skill.name}
+            percentage={skill.percentage}
+          />
         ))}
       </div>
     </div>

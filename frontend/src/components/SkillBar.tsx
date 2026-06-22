@@ -1,4 +1,4 @@
-import type { SkillProficiency } from "@/types/mock-dashboard-data";
+import type { SkillProficiency } from "@/types/dashboard-type";
 import { useEffect, useState } from "react";
 
 export default function SkillBar({ name, percentage }: SkillProficiency) {

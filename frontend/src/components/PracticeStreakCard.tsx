@@ -1,4 +1,4 @@
-import type { WeekDay } from "@/types/mock-dashboard-data";
+import type { WeekDay } from "@/types/dashboard-type";
 
 interface PracticeStreakCardProps {
   title?: string;
@@ -36,7 +36,9 @@ export default function PracticeStreakCard({
               key={idx}
               className="w-8 h-8 rounded-full bg-success flex items-center justify-center shadow-sm"
             >
-              <span className="material-symbols-outlined text-white text-sm leading-none">check</span>
+              <span className="material-symbols-outlined text-white text-sm leading-none">
+                check
+              </span>
             </div>
           ) : (
             <div
@@ -45,7 +47,7 @@ export default function PracticeStreakCard({
             >
               {day.label}
             </div>
-          )
+          ),
         )}
       </div>
     </div>

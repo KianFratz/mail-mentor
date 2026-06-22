@@ -3,14 +3,13 @@ import AIAdviceCard from "@/components/AIAdviceCard";
 import PracticeStreakCard from "@/components/PracticeStreakCard";
 import RecentScoresCard from "@/components/RecentScoreCard";
 import SkillProficiencyCard from "@/components/SkillProficiencyCard";
-import { sampleDashboardData } from "@/constants/dashboard-mock-data";
+import { sampleDashboardData } from "@/constants/dashboard-layout";
 
 export default function Dashboard() {
   const props = sampleDashboardData;
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2">
-      {/* Welcome header */}
       <div className="mb-7">
         <h1 className="text-2xl font-bold text-foreground leading-tight">
           Welcome back, {props.userName}.
@@ -18,7 +17,6 @@ export default function Dashboard() {
         <p className="text-sm text-muted-foreground mt-1">{props.subtitle}</p>
       </div>
 
-      {/* Top row: skill proficiency (wide) + streak (narrow) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <SkillProficiencyCard
           overallScore={props.overallScore}
@@ -31,7 +29,6 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Bottom row: recent scores + badges */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
         <RecentScoresCard
           scores={props.recentScores}
@@ -43,7 +40,6 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* AI advice banner */}
       <AIAdviceCard {...props.aiSuggestion} />
     </div>
   );

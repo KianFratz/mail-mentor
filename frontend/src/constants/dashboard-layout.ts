@@ -1,8 +1,9 @@
-import type { DashboardData } from "@/types/mock-dashboard-data";
+import type { DashboardData } from "@/types/dashboard-type";
 
 export const sampleDashboardData: DashboardData = {
   userName: "Alex",
-  subtitle: "Your communication mastery is evolving. Here is your current performance snapshot.",
+  subtitle:
+    "Your communication mastery is evolving. Here is your current performance snapshot.",
 
   navItems: [
     { label: "Dashboard", icon: "dashboard", href: "/dashboard" },
@@ -15,14 +16,14 @@ export const sampleDashboardData: DashboardData = {
   sideNavTitle: "Mail Mentor",
   sideNavSubtitle: "AI-Powered Coaching",
   sideNavItems: [
-    { label: "Drafting", icon: "edit_note", href: "/drafting" },
-    { label: "AI Insights", icon: "psychology", href: "/ai-insights" },
-    { label: "Grammar", icon: "spellcheck", href: "/grammar" },
-    { label: "Tone Check", icon: "speed", href: "/tone-check" },
+    { label: "Dashboard", icon: "home", href: "/dashboard" },
+    { label: "Scenarios", icon: "library_books", href: "/scenarios" },
+    { label: "Progress", icon: "area_chart", href: "/progress" },
+    { label: "Conversation", icon: "chat", href: "/conversation" },
+    { label: "Settings", icon: "settings", href: "/settings" },
   ],
   activeSideNavHref: "/drafting",
   sideNavCtaLabel: "Logout",
-  onSideNavCtaClick: () => console.log("Get Feedback clicked"),
 
   overallScore: 79,
   skills: [
@@ -44,9 +45,27 @@ export const sampleDashboardData: DashboardData = {
   ],
 
   recentScores: [
-    { id: "1", icon: "mail", title: "Negotiation Email", date: "Oct 24, 2023", score: 92 },
-    { id: "2", icon: "campaign", title: "Crisis Response", date: "Oct 22, 2023", score: 88 },
-    { id: "3", icon: "groups", title: "Meeting Follow-up", date: "Oct 20, 2023", score: 76 },
+    {
+      id: "1",
+      icon: "mail",
+      title: "Negotiation Email",
+      date: "Oct 24, 2023",
+      score: 92,
+    },
+    {
+      id: "2",
+      icon: "campaign",
+      title: "Crisis Response",
+      date: "Oct 22, 2023",
+      score: 88,
+    },
+    {
+      id: "3",
+      icon: "groups",
+      title: "Meeting Follow-up",
+      date: "Oct 20, 2023",
+      score: 76,
+    },
   ],
   onViewAllScores: () => console.log("View All clicked"),
 

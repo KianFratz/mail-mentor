@@ -1,4 +1,4 @@
-import type { EarnedBadge } from "@/types/mock-dashboard-data";
+import type { EarnedBadge } from "@/types/dashboard-type";
 
 const VARIANT_STYLES: Record<
   EarnedBadge["variant"],
@@ -16,7 +16,12 @@ const VARIANT_STYLES: Record<
   },
 };
 
-export default function BadgeItem({ icon, title, subtitle, variant }: EarnedBadge) {
+export default function BadgeItem({
+  icon,
+  title,
+  subtitle,
+  variant,
+}: EarnedBadge) {
   const styles = VARIANT_STYLES[variant];
 
   return (
@@ -33,7 +38,9 @@ export default function BadgeItem({ icon, title, subtitle, variant }: EarnedBadg
           {icon}
         </span>
       </div>
-      <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>
+      <p className="text-sm font-semibold text-foreground leading-tight">
+        {title}
+      </p>
       <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
     </div>
   );

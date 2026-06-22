@@ -1,4 +1,4 @@
-import type { AISuggestion } from "@/types/mock-dashboard-data";
+import type { AISuggestion } from "@/types/dashboard-type";
 
 export default function AIAdviceCard({
   eyebrow = "AI Suggestion",
@@ -20,7 +20,9 @@ export default function AIAdviceCard({
         <p className="text-[10px] font-bold uppercase tracking-widest text-primary-foreground/70 mb-0.5">
           {eyebrow}
         </p>
-        <p className="text-sm text-primary-foreground leading-snug">{message}</p>
+        <p className="text-sm text-primary-foreground leading-snug">
+          {message}
+        </p>
       </div>
 
       <button
