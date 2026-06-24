@@ -25,11 +25,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config?.url?.includes("auth/login");
+
+    // Only redirect if it's a 401 error AND NOT the login request itself
+    if (error.response?.status === 401 && !isLoginRequest) {
       localStorage.removeItem(TOKEN_KEY);
       // Hard redirect — wipes all in-memory React state cleanly
       window.location.replace("/login");
     }
+    
     return Promise.reject(error);
   },
 );

@@ -5,12 +5,14 @@ import { Button } from "../components/ui/button";
 import api from "../lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import googleIcon from "../assets/google.png"
+import { toastManager } from "@/components/ui/toast";
+import axios from "axios";
 
 export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const { saveToken } = useAuth();
+  const [ success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,15 +24,36 @@ export const Login: React.FC = () => {
 
     try {
       const response = await api.post("/auth/login", { email, password });
+
+      toastManager.add({
+        title: "Successfully login!",
+        description: "You account successfully login",
+        type: "success",
+      });
+
       saveToken(response.data.access_token);
 
-      setSuccess(true);
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Login failed. Please check your credentials.");
+      let message = "Something went wrong. Please try again later."
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.response?.data || message;
+
+        if (Array.isArray(message)) {
+          message = message.join(", ");
+        }
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
+      toastManager.add({
+        title: "Login failed",
+        description: message,
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
