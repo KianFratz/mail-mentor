@@ -13,12 +13,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
-# Creates a "dist" folder with the compiled code
-RUN npm run build
-
 # Expose the port the app runs on
 EXPOSE 3000
 
