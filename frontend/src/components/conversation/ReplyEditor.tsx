@@ -1,0 +1,139 @@
+import React, { useState } from "react";
+import {
+  EditorProvider,
+  EditorBubbleMenu,
+  EditorFloatingMenu,
+  EditorNodeHeading1,
+  EditorNodeTaskList,
+  EditorNodeBulletList,
+  EditorNodeOrderedList,
+  EditorNodeCode,
+  EditorNodeTable,
+  EditorNodeText,
+  EditorSelector,
+  EditorFormatBold,
+  EditorFormatItalic,
+  EditorFormatStrike,
+  EditorFormatUnderline,
+  EditorFormatCode,
+  EditorFormatSubscript,
+  EditorFormatSuperscript,
+  EditorLinkSelector,
+  EditorClearFormatting,
+} from "@/components/kibo-ui/editor";
+
+interface ReplyEditorProps {
+  onWordCountChange: (count: number) => void;
+  editorRef: React.RefObject<HTMLDivElement>;
+  onSubmitReply: () => void;
+}
+
+export default function ReplyEditor({
+  onWordCountChange,
+  editorRef,
+  onSubmitReply,
+}: ReplyEditorProps) {
+  const [textSelectorOpen, setTextSelectorOpen] = useState(false);
+  const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
+  const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmitReply();
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 border-t border-border bg-card rounded-b-2xl"
+    >
+      <div className="flex flex-col gap-3">
+        <div ref={editorRef} className="rounded-xl transition-colors duration-500">
+          <EditorProvider
+            className="writing-canvas w-full min-h-[120px] p-2 text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full"
+            placeholder="Write your reply here..."
+            onUpdate={({ editor }) => {
+              onWordCountChange(editor.storage.characterCount.words());
+            }}
+          >
+            {/* Floating menu — appears on empty lines (image 1) */}
+            <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
+              <EditorNodeHeading1 hideName />
+              <EditorNodeTaskList hideName />
+              <EditorNodeBulletList hideName />
+              <EditorNodeOrderedList hideName />
+              <EditorNodeCode hideName />
+              <EditorNodeTable hideName />
+            </EditorFloatingMenu>
+
+            {/* Bubble menu — appears on text selection (image 2) */}
+            <EditorBubbleMenu>
+              {/* Text node selector */}
+              <EditorSelector
+                open={textSelectorOpen}
+                onOpenChange={(open) => {
+                  setTextSelectorOpen(open);
+                  if (open) setFormatSelectorOpen(false);
+                }}
+                title="Text"
+              >
+                <EditorNodeText />
+                <EditorNodeHeading1 />
+                <EditorNodeBulletList />
+                <EditorNodeOrderedList />
+                <EditorNodeTaskList />
+                <EditorNodeCode />
+                <EditorNodeTable />
+              </EditorSelector>
+
+              {/* Format selector */}
+              <EditorSelector
+                open={formatSelectorOpen}
+                onOpenChange={(open) => {
+                  setFormatSelectorOpen(open);
+                  if (open) setTextSelectorOpen(false);
+                }}
+                title="Format"
+              >
+                <EditorFormatBold />
+                <EditorFormatItalic />
+                <EditorFormatUnderline />
+                <EditorFormatStrike />
+                <EditorFormatCode />
+                <EditorFormatSubscript />
+                <EditorFormatSuperscript />
+              </EditorSelector>
+
+              {/* Link selector */}
+              <EditorLinkSelector
+                open={linkSelectorOpen}
+                onOpenChange={(open) => {
+                  setLinkSelectorOpen(open);
+                  if (open) {
+                    setTextSelectorOpen(false);
+                    setFormatSelectorOpen(false);
+                  }
+                }}
+              />
+
+              {/* Clear formatting */}
+              <EditorClearFormatting hideName />
+            </EditorBubbleMenu>
+          </EditorProvider>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-all shadow-sm"
+          >
+            Reply
+            <span className="material-symbols-outlined text-[18px]">
+              send
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}

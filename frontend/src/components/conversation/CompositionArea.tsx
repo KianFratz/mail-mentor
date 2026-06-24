@@ -1,30 +1,10 @@
 import React, { useState, useRef } from "react";
+import ReplyEditor from "./ReplyEditor";
 
 export default function CompositionArea() {
   const [wordCount, setWordCount] = useState(0);
   const [isPolishing, setIsPolishing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
-
-  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    const text = e.currentTarget.innerText.trim();
-    const words =
-      text === "Write your reply here..." || text === ""
-        ? 0
-        : text.split(/\s+/).length;
-    setWordCount(words);
-  };
-
-  const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
-    if (e.currentTarget.innerText.trim() === "Write your reply here...") {
-      e.currentTarget.innerText = "";
-    }
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    if (e.currentTarget.innerText.trim() === "") {
-      e.currentTarget.innerText = "Write your reply here...";
-    }
-  };
 
   const handleMagicClick = () => {
     setIsPolishing(true);
@@ -41,6 +21,11 @@ export default function CompositionArea() {
       }
     }, 1500);
   };
+
+  const handleSubmitReply = () => {
+    console.log("Reply submitted:");
+  }
+
 
   return (
     <section className="flex-1 bg-background overflow-y-auto relative px-4 md:px-8 py-8">
@@ -179,61 +164,7 @@ export default function CompositionArea() {
             </div>
           </div>
 
-          <div className="p-4 border-t border-border bg-card rounded-b-2xl">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 px-2 py-1 border-b border-border">
-                <button className="p-1.5 hover:bg-muted rounded transition-colors">
-                  <span className="material-symbols-outlined text-[20px] text-foreground">
-                    format_bold
-                  </span>
-                </button>
-                <button className="p-1.5 hover:bg-muted rounded transition-colors">
-                  <span className="material-symbols-outlined text-[20px] text-foreground">
-                    format_italic
-                  </span>
-                </button>
-                <button className="p-1.5 hover:bg-muted rounded transition-colors">
-                  <span className="material-symbols-outlined text-[20px] text-foreground">
-                    format_list_bulleted
-                  </span>
-                </button>
-                <button className="p-1.5 hover:bg-muted rounded transition-colors">
-                  <span className="material-symbols-outlined text-[20px] text-foreground">
-                    link
-                  </span>
-                </button>
-                <div className="w-px h-4 bg-border mx-1"></div>
-                <button className="p-1.5 hover:bg-muted rounded transition-colors">
-                  <span className="material-symbols-outlined text-[20px] text-foreground">
-                    attach_file
-                  </span>
-                </button>
-              </div>
-              <div
-                ref={editorRef}
-                className="writing-canvas w-full min-h-[120px] p-2 text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full"
-                contentEditable={true}
-                role="textbox"
-                aria-multiline={true}
-                onInput={handleInput}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                suppressContentEditableWarning={true}
-              >
-                <span className="text-muted-foreground">
-                  Write your reply here...
-                </span>
-              </div>
-              <div className="flex justify-end">
-                <button className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-all shadow-sm">
-                  Reply
-                  <span className="material-symbols-outlined text-[18px]">
-                    send
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
+          <ReplyEditor onWordCountChange={setWordCount} editorRef={editorRef} onSubmitReply={handleSubmitReply}/>
         </div>
 
         <div className="flex items-center justify-between py-4">
