@@ -1,5 +1,7 @@
+import { toastManager } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/axios";
+import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -12,7 +14,7 @@ export const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { saveToken } = useAuth();
-  const [success, setSuccess] = useState(false);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -36,13 +38,30 @@ export const Register: React.FC = () => {
         email,
         password,
       });
-      saveToken(response.data.access_token);
 
-      setSuccess(true);
+      toastManager.add({
+        title: "Account created!",
+        description: "Your account has been registered successfully.",
+        type: "success",
+      });
+
+      saveToken(response.data.access_token);
+      navigate("/dashboard");
       
     } catch (error) {
-      console.error("Registration error", error);
-      alert("Register failed");
+      let message = "Something went wrong. Please try again."
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.response?.data || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
+      toastManager.add({
+        title: "Registration failed",
+        description: message,
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -56,9 +75,7 @@ export const Register: React.FC = () => {
         <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-[#340081]/5 blur-[120px]"></div>
       </div>
 
-      {/* Main Registration Shell */}
       <main className="w-full max-w-[1100px] grid lg:grid-cols-2 bg-[#faf8ff] rounded-2xl overflow-hidden shadow-xl min-h-[700px]">
-        {/* Instructional & Brand Panel (Left) */}
         <section className="hidden lg:flex flex-col justify-between p-12 bg-[#1e3a8a] text-[#90a8ff] relative">
           <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
             <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#e9ddff] via-transparent to-transparent"></div>
@@ -142,7 +159,6 @@ export const Register: React.FC = () => {
           </div>
         </section>
 
-        {/* Registration Form Panel (Right) */}
         <section className="flex flex-col justify-center p-8 lg:p-16 bg-[#ffffff]">
           <div className="w-full max-w-sm mx-auto">
             <div className="lg:hidden flex items-center gap-2 mb-8 text-[#00236f]">
@@ -167,7 +183,6 @@ export const Register: React.FC = () => {
             </header>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Full Name Field */}
               <div>
                 <label
                   className="block font-semibold text-[14px] leading-[16px] tracking-[0.01em] text-[#1a1b21] mb-2"
@@ -192,7 +207,6 @@ export const Register: React.FC = () => {
                 </div>
               </div>
 
-              {/* Email Field */}
               <div>
                 <label
                   className="block font-semibold text-[14px] leading-[16px] tracking-[0.01em] text-[#1a1b21] mb-2"
@@ -217,7 +231,6 @@ export const Register: React.FC = () => {
                 </div>
               </div>
 
-              {/* Password Field */}
               <div>
                 <label
                   className="block font-semibold text-[14px] leading-[16px] tracking-[0.01em] text-[#1a1b21] mb-2"

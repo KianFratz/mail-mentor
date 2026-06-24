@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { ToastProvider } from "@/components/ui/toast";
 import AppShell from "./layouts/AppShell";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
@@ -15,16 +16,15 @@ import Draft from "./pages/Draft";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ToastProvider position="top-right">
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-          {/* Protected routes — redirect to /login if not authenticated */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppShell />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -37,8 +37,9 @@ function App() {
             </Route>
           </Route>
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 
