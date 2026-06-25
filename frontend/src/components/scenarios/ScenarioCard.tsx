@@ -7,6 +7,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   title,
   description,
   level,
+  onSelect,
 }) => {
   const dotsMap = {
     Beginner: 1,
@@ -44,7 +45,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
         <span className="text-xs font-medium text-muted-foreground uppercase">
           {level}
         </span>
-        <button className="p-3 pb-2 rounded-xl bg-primary text-primary-foreground group-hover:scale-110 transition-transform">
+        <button onClick={() => onSelect({title, description})} className="p-3 pb-2 rounded-xl bg-primary text-primary-foreground group-hover:scale-110 transition-transform">
           <span className="material-symbols-outlined">arrow_forward</span>
         </button>
       </div>

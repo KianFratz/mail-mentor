@@ -56,7 +56,6 @@ export default function ReplyEditor({
               onWordCountChange(editor.storage.characterCount.words());
             }}
           >
-            {/* Floating menu — appears on empty lines (image 1) */}
             <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
               <EditorNodeHeading1 hideName />
               <EditorNodeTaskList hideName />
@@ -66,9 +65,7 @@ export default function ReplyEditor({
               <EditorNodeTable hideName />
             </EditorFloatingMenu>
 
-            {/* Bubble menu — appears on text selection (image 2) */}
             <EditorBubbleMenu>
-              {/* Text node selector */}
               <EditorSelector
                 open={textSelectorOpen}
                 onOpenChange={(open) => {
@@ -86,7 +83,6 @@ export default function ReplyEditor({
                 <EditorNodeTable />
               </EditorSelector>
 
-              {/* Format selector */}
               <EditorSelector
                 open={formatSelectorOpen}
                 onOpenChange={(open) => {
@@ -104,7 +100,6 @@ export default function ReplyEditor({
                 <EditorFormatSuperscript />
               </EditorSelector>
 
-              {/* Link selector */}
               <EditorLinkSelector
                 open={linkSelectorOpen}
                 onOpenChange={(open) => {
@@ -116,7 +111,6 @@ export default function ReplyEditor({
                 }}
               />
 
-              {/* Clear formatting */}
               <EditorClearFormatting hideName />
             </EditorBubbleMenu>
           </EditorProvider>

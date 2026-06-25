@@ -4,4 +4,5 @@ export interface ScenarioCardProps {
   title: string;
   description: string;
   level: "Beginner" | "Intermediate" | "Advanced";
+  onSelect: (data: { title: string; description: string }) => void;
 }
