@@ -1,4 +1,12 @@
-export default function ReviewPanel() {
+import type { Scenario } from "@/constants/conversion.constant";
+
+interface ReviewPanelProps {
+  scenario: Scenario;
+}
+
+export default function ReviewPanel({ scenario }: ReviewPanelProps) {
+  if (!scenario) return null;
+
   return (
     <aside className="hidden lg:flex flex-col h-full w-80 bg-card border-l border-border p-6 gap-6 overflow-y-auto shrink-0">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -68,9 +76,9 @@ export default function ReviewPanel() {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuATzUKM1t1LOJrjWmtC32_8orAq1lcVQVgwhHxBO7csVT-AgwJ8CTBOYqfRfLa8m8ou13xyFU71EWe3jEvquqwhMQh6FgkgB0Rn_OJVse5FMLnscGzIDPIEhO1-EDA2FAHqqaRag6ateTvr4XN5XBU-QTz7JcbgOXVeUfnhdpf-gdn9zrVVbJ0CY41mxXY8hmQmxkPnSAIS9yCdpqqPY65Oo79Re1GxilCWeUEje8NeIC_Rn_mUTYrCJKiwfO6MyyJ2EXnrZXT7_YAK"
           />
           <div>
-            <p className="text-sm font-semibold text-foreground">Alex Rivera</p>
+            <p className="text-sm font-semibold text-foreground">{scenario.hr.name}</p>
             <p className="text-sm text-muted-foreground">
-              Aspiring UX Researcher
+              {scenario.hr.profession}
             </p>
           </div>
         </div>
