@@ -1,4 +1,4 @@
-export const SCENARIOS = [
+export const SCENARIOS_DATA = [
   {
     id: 1,
     category: "Workplace",
@@ -7,6 +7,10 @@ export const SCENARIOS = [
     description:
       "Craft a professional request to your project manager for more time on a deliverable without sounding unprepared.",
     level: "Beginner",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
   {
     id: 2,
@@ -16,6 +20,10 @@ export const SCENARIOS = [
     description:
       "Summarize key points from a high-stakes networking call and propose clear next steps for collaboration.",
     level: "Intermediate",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
   {
     id: 3,
@@ -25,6 +33,10 @@ export const SCENARIOS = [
     description:
       "Provide evidence-based reasoning to a professor to discuss a discrepancy in an exam evaluation.",
     level: "Advanced",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
   {
     id: 4,
@@ -34,6 +46,10 @@ export const SCENARIOS = [
     description:
       "Acknowledge service failures and rebuild trust through empathy and actionable recovery steps.",
     level: "Beginner",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
   {
     id: 5,
@@ -43,6 +59,10 @@ export const SCENARIOS = [
     description:
       "Politely decline a calendar invite while offering alternative ways to contribute or suggesting a delegate.",
     level: "Intermediate",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
   {
     id: 6,
@@ -52,13 +72,17 @@ export const SCENARIOS = [
     description:
       "Gracefully manage a client requesting extra features outside the original project agreement without sounding negative.",
     level: "Advanced",
+    hr: {
+      name: "Alex Rivera",
+      profession: "Aspiring UX Researcher"
+    },
   },
 ] as const;
 
-export type Scenario = (typeof SCENARIOS)[number];
+export type Scenario = (typeof SCENARIOS_DATA)[number];
 
 const SCENARIO_CATEGORIES = [
-  ...new Set(SCENARIOS.map((s) => s.category)),
+  ...new Set(SCENARIOS_DATA.map((s) => s.category)),
 ] as const;
 
 export const CATEGORIES = ["All Scenarios", ...SCENARIO_CATEGORIES] as const;

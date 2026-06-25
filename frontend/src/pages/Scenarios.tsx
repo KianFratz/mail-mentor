@@ -4,13 +4,13 @@ import { CategoryFilter } from "@/components/scenarios/CategoryFilter";
 import { FeaturedScenario } from "@/components/scenarios/FeaturedScenario";
 import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
 import CreateCompose from "@/components/conversation/CreateCompose";
-import { SCENARIOS, CATEGORIES } from "@/constants/conversion.constant";
+import { SCENARIOS_DATA, CATEGORIES, type Scenario } from "@/constants/conversion.constant";
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<(typeof CATEGORIES)[number]>("All Scenarios");
-  const [selectedScenario, setSelectedScenario] = useState<{ title: string; description: string } | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
 
-  const visibleScenarios = SCENARIOS.filter(
+  const visibleScenarios = SCENARIOS_DATA.filter(
     (s) => activeCategory === "All Scenarios" || s.category === activeCategory
   );
 
@@ -50,11 +50,7 @@ function Scenarios() {
               {visibleScenarios.map((scenario) => (
                 <ScenarioCard
                   key={scenario.id}
-                  category={scenario.category}
-                  categoryColor={scenario.color}
-                  title={scenario.title}
-                  description={scenario.description}
-                  level={scenario.level}
+                  scenario={scenario}
                   onSelect={setSelectedScenario}
                 />
               ))}
@@ -63,8 +59,7 @@ function Scenarios() {
           </>
         ) : (
           <CreateCompose
-            title={selectedScenario.title}
-            description={selectedScenario.description}
+            scenario={selectedScenario}
           />
         )}
       </div>

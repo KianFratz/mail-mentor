@@ -1,8 +1,6 @@
+import type { Scenario } from "@/constants/conversion.constant";
+
 export interface ScenarioCardProps {
-  category: string;
-  categoryColor: "blue" | "purple" | "green" | "orange";
-  title: string;
-  description: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  onSelect: (data: { title: string; description: string }) => void;
+  scenario: Scenario;
+  onSelect: (scenario: Scenario) => void;
 }
