@@ -33,3 +33,13 @@ export const AuthProvider = {
 } as const
 
 export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]
+
+
+export const SessionStatus = {
+  draft: 'draft',
+  submitted: 'submitted',
+  graded: 'graded',
+  abandoned: 'abandoned'
+} as const
+
+export type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus]

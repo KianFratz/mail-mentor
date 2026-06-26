@@ -27,12 +27,12 @@ export type AggregateUser = {
 }
 
 export type UserAvgAggregateOutputType = {
-  xp_total: number | null
+  xpTotal: number | null
   practice_streak: number | null
 }
 
 export type UserSumAggregateOutputType = {
-  xp_total: number | null
+  xpTotal: number | null
   practice_streak: number | null
 }
 
@@ -44,12 +44,12 @@ export type UserMinAggregateOutputType = {
   googleId: string | null
   googleRefreshToken: string | null
   role: $Enums.UserRole | null
-  current_level: $Enums.SkillLevel | null
-  xp_total: number | null
+  currentLevel: $Enums.SkillLevel | null
+  xpTotal: number | null
   practice_streak: number | null
-  last_active_at: Date | null
-  created_at: Date | null
-  updated_at: Date | null
+  lastActiveAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -60,12 +60,12 @@ export type UserMaxAggregateOutputType = {
   googleId: string | null
   googleRefreshToken: string | null
   role: $Enums.UserRole | null
-  current_level: $Enums.SkillLevel | null
-  xp_total: number | null
+  currentLevel: $Enums.SkillLevel | null
+  xpTotal: number | null
   practice_streak: number | null
-  last_active_at: Date | null
-  created_at: Date | null
-  updated_at: Date | null
+  lastActiveAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -73,27 +73,27 @@ export type UserCountAggregateOutputType = {
   email: number
   password: number
   name: number
-  authProviders: number
   googleId: number
   googleRefreshToken: number
   role: number
-  current_level: number
-  xp_total: number
+  currentLevel: number
+  xpTotal: number
   practice_streak: number
-  last_active_at: number
-  created_at: number
-  updated_at: number
+  lastActiveAt: number
+  createdAt: number
+  updatedAt: number
+  authProviders: number
   _all: number
 }
 
 
 export type UserAvgAggregateInputType = {
-  xp_total?: true
+  xpTotal?: true
   practice_streak?: true
 }
 
 export type UserSumAggregateInputType = {
-  xp_total?: true
+  xpTotal?: true
   practice_streak?: true
 }
 
@@ -105,12 +105,12 @@ export type UserMinAggregateInputType = {
   googleId?: true
   googleRefreshToken?: true
   role?: true
-  current_level?: true
-  xp_total?: true
+  currentLevel?: true
+  xpTotal?: true
   practice_streak?: true
-  last_active_at?: true
-  created_at?: true
-  updated_at?: true
+  lastActiveAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -121,12 +121,12 @@ export type UserMaxAggregateInputType = {
   googleId?: true
   googleRefreshToken?: true
   role?: true
-  current_level?: true
-  xp_total?: true
+  currentLevel?: true
+  xpTotal?: true
   practice_streak?: true
-  last_active_at?: true
-  created_at?: true
-  updated_at?: true
+  lastActiveAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -134,16 +134,16 @@ export type UserCountAggregateInputType = {
   email?: true
   password?: true
   name?: true
-  authProviders?: true
   googleId?: true
   googleRefreshToken?: true
   role?: true
-  current_level?: true
-  xp_total?: true
+  currentLevel?: true
+  xpTotal?: true
   practice_streak?: true
-  last_active_at?: true
-  created_at?: true
-  updated_at?: true
+  lastActiveAt?: true
+  createdAt?: true
+  updatedAt?: true
+  authProviders?: true
   _all?: true
 }
 
@@ -238,16 +238,16 @@ export type UserGroupByOutputType = {
   email: string
   password: string | null
   name: string | null
-  authProviders: $Enums.AuthProvider[]
   googleId: string | null
   googleRefreshToken: string | null
   role: $Enums.UserRole
-  current_level: $Enums.SkillLevel
-  xp_total: number
+  currentLevel: $Enums.SkillLevel
+  xpTotal: number
   practice_streak: number
-  last_active_at: Date | null
-  created_at: Date
-  updated_at: Date
+  lastActiveAt: Date | null
+  createdAt: Date
+  updatedAt: Date
+  authProviders: $Enums.AuthProvider[]
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -278,16 +278,17 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
-  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
   googleId?: Prisma.StringNullableFilter<"User"> | string | null
   googleRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFilter<"User"> | $Enums.SkillLevel
-  xp_total?: Prisma.IntFilter<"User"> | number
+  currentLevel?: Prisma.EnumSkillLevelFilter<"User"> | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFilter<"User"> | number
   practice_streak?: Prisma.IntFilter<"User"> | number
-  last_active_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  created_at?: Prisma.DateTimeFilter<"User"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
+  writingSession?: Prisma.WritingSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -295,16 +296,17 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
-  authProviders?: Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
-  current_level?: Prisma.SortOrder
-  xp_total?: Prisma.SortOrder
+  currentLevel?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
-  last_active_at?: Prisma.SortOrderInput | Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  authProviders?: Prisma.SortOrder
+  writingSession?: Prisma.WritingSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -316,15 +318,16 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
-  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
   googleRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFilter<"User"> | $Enums.SkillLevel
-  xp_total?: Prisma.IntFilter<"User"> | number
+  currentLevel?: Prisma.EnumSkillLevelFilter<"User"> | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFilter<"User"> | number
   practice_streak?: Prisma.IntFilter<"User"> | number
-  last_active_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  created_at?: Prisma.DateTimeFilter<"User"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
+  writingSession?: Prisma.WritingSessionListRelationFilter
 }, "id" | "email" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -332,16 +335,16 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
-  authProviders?: Prisma.SortOrder
   googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
-  current_level?: Prisma.SortOrder
-  xp_total?: Prisma.SortOrder
+  currentLevel?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
-  last_active_at?: Prisma.SortOrderInput | Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  authProviders?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -357,16 +360,16 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
   googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   googleRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelWithAggregatesFilter<"User"> | $Enums.SkillLevel
-  xp_total?: Prisma.IntWithAggregatesFilter<"User"> | number
+  currentLevel?: Prisma.EnumSkillLevelWithAggregatesFilter<"User"> | $Enums.SkillLevel
+  xpTotal?: Prisma.IntWithAggregatesFilter<"User"> | number
   practice_streak?: Prisma.IntWithAggregatesFilter<"User"> | number
-  last_active_at?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  created_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  updated_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  lastActiveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  authProviders?: Prisma.EnumAuthProviderNullableListFilter<"User">
 }
 
 export type UserCreateInput = {
@@ -374,16 +377,17 @@ export type UserCreateInput = {
   email: string
   password?: string | null
   name?: string | null
-  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: string | null
   googleRefreshToken?: string | null
   role?: $Enums.UserRole
-  current_level?: $Enums.SkillLevel
-  xp_total?: number
+  currentLevel?: $Enums.SkillLevel
+  xpTotal?: number
   practice_streak?: number
-  last_active_at?: Date | string | null
-  created_at?: Date | string
-  updated_at?: Date | string
+  lastActiveAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
+  writingSession?: Prisma.WritingSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -391,16 +395,17 @@ export type UserUncheckedCreateInput = {
   email: string
   password?: string | null
   name?: string | null
-  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: string | null
   googleRefreshToken?: string | null
   role?: $Enums.UserRole
-  current_level?: $Enums.SkillLevel
-  xp_total?: number
+  currentLevel?: $Enums.SkillLevel
+  xpTotal?: number
   practice_streak?: number
-  last_active_at?: Date | string | null
-  created_at?: Date | string
-  updated_at?: Date | string
+  lastActiveAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
+  writingSession?: Prisma.WritingSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -408,16 +413,17 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  xp_total?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
   practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
-  last_active_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
+  writingSession?: Prisma.WritingSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -425,16 +431,17 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  xp_total?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
   practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
-  last_active_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
+  writingSession?: Prisma.WritingSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -442,16 +449,16 @@ export type UserCreateManyInput = {
   email: string
   password?: string | null
   name?: string | null
-  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: string | null
   googleRefreshToken?: string | null
   role?: $Enums.UserRole
-  current_level?: $Enums.SkillLevel
-  xp_total?: number
+  currentLevel?: $Enums.SkillLevel
+  xpTotal?: number
   practice_streak?: number
-  last_active_at?: Date | string | null
-  created_at?: Date | string
-  updated_at?: Date | string
+  lastActiveAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
 }
 
 export type UserUpdateManyMutationInput = {
@@ -459,16 +466,16 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  xp_total?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
   practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
-  last_active_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -476,16 +483,16 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
   googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  current_level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
-  xp_total?: Prisma.IntFieldUpdateOperationsInput | number
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
   practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
-  last_active_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
 }
 
 export type EnumAuthProviderNullableListFilter<$PrismaModel = never> = {
@@ -501,20 +508,20 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  authProviders?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  current_level?: Prisma.SortOrder
-  xp_total?: Prisma.SortOrder
+  currentLevel?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
-  last_active_at?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  authProviders?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
-  xp_total?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
 }
 
@@ -526,12 +533,12 @@ export type UserMaxOrderByAggregateInput = {
   googleId?: Prisma.SortOrder
   googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  current_level?: Prisma.SortOrder
-  xp_total?: Prisma.SortOrder
+  currentLevel?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
-  last_active_at?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -542,17 +549,22 @@ export type UserMinOrderByAggregateInput = {
   googleId?: Prisma.SortOrder
   googleRefreshToken?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  current_level?: Prisma.SortOrder
-  xp_total?: Prisma.SortOrder
+  currentLevel?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
-  last_active_at?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
-  xp_total?: Prisma.SortOrder
+  xpTotal?: Prisma.SortOrder
   practice_streak?: Prisma.SortOrder
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserCreateauthProvidersInput = {
@@ -565,11 +577,6 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type UserUpdateauthProvidersInput = {
-  set?: $Enums.AuthProvider[]
-  push?: $Enums.AuthProvider | $Enums.AuthProvider[]
 }
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -596,6 +603,138 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type UserUpdateauthProvidersInput = {
+  set?: $Enums.AuthProvider[]
+  push?: $Enums.AuthProvider | $Enums.AuthProvider[]
+}
+
+export type UserCreateNestedOneWithoutWritingSessionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWritingSessionInput, Prisma.UserUncheckedCreateWithoutWritingSessionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWritingSessionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWritingSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWritingSessionInput, Prisma.UserUncheckedCreateWithoutWritingSessionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWritingSessionInput
+  upsert?: Prisma.UserUpsertWithoutWritingSessionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWritingSessionInput, Prisma.UserUpdateWithoutWritingSessionInput>, Prisma.UserUncheckedUpdateWithoutWritingSessionInput>
+}
+
+export type UserCreateWithoutWritingSessionInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  googleId?: string | null
+  googleRefreshToken?: string | null
+  role?: $Enums.UserRole
+  currentLevel?: $Enums.SkillLevel
+  xpTotal?: number
+  practice_streak?: number
+  lastActiveAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
+}
+
+export type UserUncheckedCreateWithoutWritingSessionInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  googleId?: string | null
+  googleRefreshToken?: string | null
+  role?: $Enums.UserRole
+  currentLevel?: $Enums.SkillLevel
+  xpTotal?: number
+  practice_streak?: number
+  lastActiveAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  authProviders?: Prisma.UserCreateauthProvidersInput | $Enums.AuthProvider[]
+}
+
+export type UserCreateOrConnectWithoutWritingSessionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWritingSessionInput, Prisma.UserUncheckedCreateWithoutWritingSessionInput>
+}
+
+export type UserUpsertWithoutWritingSessionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWritingSessionInput, Prisma.UserUncheckedUpdateWithoutWritingSessionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWritingSessionInput, Prisma.UserUncheckedCreateWithoutWritingSessionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWritingSessionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWritingSessionInput, Prisma.UserUncheckedUpdateWithoutWritingSessionInput>
+}
+
+export type UserUpdateWithoutWritingSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
+}
+
+export type UserUncheckedUpdateWithoutWritingSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  currentLevel?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
+  xpTotal?: Prisma.IntFieldUpdateOperationsInput | number
+  practice_streak?: Prisma.IntFieldUpdateOperationsInput | number
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authProviders?: Prisma.UserUpdateauthProvidersInput | $Enums.AuthProvider[]
+}
+
+
+/**
+ * Count Type UserCountOutputType
+ */
+
+export type UserCountOutputType = {
+  writingSession: number
+}
+
+export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  writingSession?: boolean | UserCountOutputTypeCountWritingSessionArgs
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserCountOutputType
+   */
+  select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWritingSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WritingSessionWhereInput
+}
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -603,16 +742,18 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   password?: boolean
   name?: boolean
-  authProviders?: boolean
   googleId?: boolean
   googleRefreshToken?: boolean
   role?: boolean
-  current_level?: boolean
-  xp_total?: boolean
+  currentLevel?: boolean
+  xpTotal?: boolean
   practice_streak?: boolean
-  last_active_at?: boolean
-  created_at?: boolean
-  updated_at?: boolean
+  lastActiveAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  authProviders?: boolean
+  writingSession?: boolean | Prisma.User$writingSessionArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -620,16 +761,16 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   name?: boolean
-  authProviders?: boolean
   googleId?: boolean
   googleRefreshToken?: boolean
   role?: boolean
-  current_level?: boolean
-  xp_total?: boolean
+  currentLevel?: boolean
+  xpTotal?: boolean
   practice_streak?: boolean
-  last_active_at?: boolean
-  created_at?: boolean
-  updated_at?: boolean
+  lastActiveAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  authProviders?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -637,16 +778,16 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   name?: boolean
-  authProviders?: boolean
   googleId?: boolean
   googleRefreshToken?: boolean
   role?: boolean
-  current_level?: boolean
-  xp_total?: boolean
+  currentLevel?: boolean
+  xpTotal?: boolean
   practice_streak?: boolean
-  last_active_at?: boolean
-  created_at?: boolean
-  updated_at?: boolean
+  lastActiveAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  authProviders?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -654,38 +795,46 @@ export type UserSelectScalar = {
   email?: boolean
   password?: boolean
   name?: boolean
-  authProviders?: boolean
   googleId?: boolean
   googleRefreshToken?: boolean
   role?: boolean
-  current_level?: boolean
-  xp_total?: boolean
+  currentLevel?: boolean
+  xpTotal?: boolean
   practice_streak?: boolean
-  last_active_at?: boolean
-  created_at?: boolean
-  updated_at?: boolean
+  lastActiveAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  authProviders?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "authProviders" | "googleId" | "googleRefreshToken" | "role" | "current_level" | "xp_total" | "practice_streak" | "last_active_at" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "googleId" | "googleRefreshToken" | "role" | "currentLevel" | "xpTotal" | "practice_streak" | "lastActiveAt" | "createdAt" | "updatedAt" | "authProviders", ExtArgs["result"]["user"]>
+export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  writingSession?: boolean | Prisma.User$writingSessionArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
-  objects: {}
+  objects: {
+    writingSession: Prisma.$WritingSessionPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
     password: string | null
     name: string | null
-    authProviders: $Enums.AuthProvider[]
     googleId: string | null
     googleRefreshToken: string | null
     role: $Enums.UserRole
-    current_level: $Enums.SkillLevel
-    xp_total: number
+    currentLevel: $Enums.SkillLevel
+    xpTotal: number
     practice_streak: number
-    last_active_at: Date | null
-    created_at: Date
-    updated_at: Date
+    lastActiveAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    authProviders: $Enums.AuthProvider[]
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1080,6 +1229,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  writingSession<T extends Prisma.User$writingSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$writingSessionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WritingSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1113,16 +1263,16 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
-  readonly authProviders: Prisma.FieldRef<"User", 'AuthProvider[]'>
   readonly googleId: Prisma.FieldRef<"User", 'String'>
   readonly googleRefreshToken: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
-  readonly current_level: Prisma.FieldRef<"User", 'SkillLevel'>
-  readonly xp_total: Prisma.FieldRef<"User", 'Int'>
+  readonly currentLevel: Prisma.FieldRef<"User", 'SkillLevel'>
+  readonly xpTotal: Prisma.FieldRef<"User", 'Int'>
   readonly practice_streak: Prisma.FieldRef<"User", 'Int'>
-  readonly last_active_at: Prisma.FieldRef<"User", 'DateTime'>
-  readonly created_at: Prisma.FieldRef<"User", 'DateTime'>
-  readonly updated_at: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastActiveAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly authProviders: Prisma.FieldRef<"User", 'AuthProvider[]'>
 }
     
 
@@ -1139,6 +1289,10 @@ export type UserFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which User to fetch.
    */
@@ -1158,6 +1312,10 @@ export type UserFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1175,6 +1333,10 @@ export type UserFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which User to fetch.
    */
@@ -1224,6 +1386,10 @@ export type UserFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1271,6 +1437,10 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which Users to fetch.
    */
@@ -1320,6 +1490,10 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * The data needed to create a User.
    */
   data: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
@@ -1367,6 +1541,10 @@ export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to update a User.
    */
@@ -1434,6 +1612,10 @@ export type UserUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * The filter to search for the User to update in case it exists.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1460,6 +1642,10 @@ export type UserDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter which User to delete.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1480,6 +1666,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.writingSession
+ */
+export type User$writingSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WritingSession
+   */
+  select?: Prisma.WritingSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WritingSession
+   */
+  omit?: Prisma.WritingSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WritingSessionInclude<ExtArgs> | null
+  where?: Prisma.WritingSessionWhereInput
+  orderBy?: Prisma.WritingSessionOrderByWithRelationInput | Prisma.WritingSessionOrderByWithRelationInput[]
+  cursor?: Prisma.WritingSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WritingSessionScalarFieldEnum | Prisma.WritingSessionScalarFieldEnum[]
+}
+
+/**
  * User without action
  */
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1491,4 +1701,8 @@ export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
 }

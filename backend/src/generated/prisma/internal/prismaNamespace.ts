@@ -384,7 +384,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  WritingSession: 'WritingSession',
+  Scenario: 'Scenario'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -400,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user"
+    modelProps: "user" | "writingSession" | "scenario"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -478,6 +480,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WritingSession: {
+      payload: Prisma.$WritingSessionPayload<ExtArgs>
+      fields: Prisma.WritingSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WritingSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WritingSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.WritingSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WritingSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        findMany: {
+          args: Prisma.WritingSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>[]
+        }
+        create: {
+          args: Prisma.WritingSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        createMany: {
+          args: Prisma.WritingSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WritingSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.WritingSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        update: {
+          args: Prisma.WritingSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WritingSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WritingSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WritingSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WritingSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WritingSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.WritingSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWritingSession>
+        }
+        groupBy: {
+          args: Prisma.WritingSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WritingSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WritingSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WritingSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Scenario: {
+      payload: Prisma.$ScenarioPayload<ExtArgs>
+      fields: Prisma.ScenarioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScenarioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScenarioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        findFirst: {
+          args: Prisma.ScenarioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScenarioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        findMany: {
+          args: Prisma.ScenarioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>[]
+        }
+        create: {
+          args: Prisma.ScenarioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        createMany: {
+          args: Prisma.ScenarioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScenarioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>[]
+        }
+        delete: {
+          args: Prisma.ScenarioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        update: {
+          args: Prisma.ScenarioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScenarioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScenarioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScenarioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScenarioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScenarioPayload>
+        }
+        aggregate: {
+          args: Prisma.ScenarioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScenario>
+        }
+        groupBy: {
+          args: Prisma.ScenarioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScenarioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScenarioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScenarioCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -522,19 +672,45 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  authProviders: 'authProviders',
   googleId: 'googleId',
   googleRefreshToken: 'googleRefreshToken',
   role: 'role',
-  current_level: 'current_level',
-  xp_total: 'xp_total',
+  currentLevel: 'currentLevel',
+  xpTotal: 'xpTotal',
   practice_streak: 'practice_streak',
-  last_active_at: 'last_active_at',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  lastActiveAt: 'lastActiveAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  authProviders: 'authProviders'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const WritingSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  subjectLine: 'subjectLine',
+  textBody: 'textBody',
+  wordCount: 'wordCount',
+  scenarioId: 'scenarioId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WritingSessionScalarFieldEnum = (typeof WritingSessionScalarFieldEnum)[keyof typeof WritingSessionScalarFieldEnum]
+
+
+export const ScenarioScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  category: 'category',
+  level: 'level',
+  aiPersona: 'aiPersona'
+} as const
+
+export type ScenarioScalarFieldEnum = (typeof ScenarioScalarFieldEnum)[keyof typeof ScenarioScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -578,20 +754,6 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-/**
- * Reference to a field of type 'AuthProvider[]'
- */
-export type ListEnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider[]'>
-    
-
-
-/**
- * Reference to a field of type 'AuthProvider'
- */
-export type EnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider'>
     
 
 
@@ -648,6 +810,34 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthProvider[]'
+ */
+export type ListEnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthProvider'
+ */
+export type EnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'SessionStatus'
+ */
+export type EnumSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SessionStatus[]'
+ */
+export type ListEnumSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SessionStatus[]'>
     
 
 
@@ -775,6 +965,8 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  writingSession?: Prisma.WritingSessionOmit
+  scenario?: Prisma.ScenarioOmit
 }
 
 /* Types for Logging */

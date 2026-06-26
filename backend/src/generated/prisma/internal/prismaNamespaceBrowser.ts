@@ -51,7 +51,9 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  WritingSession: 'WritingSession',
+  Scenario: 'Scenario'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,19 +77,45 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  authProviders: 'authProviders',
   googleId: 'googleId',
   googleRefreshToken: 'googleRefreshToken',
   role: 'role',
-  current_level: 'current_level',
-  xp_total: 'xp_total',
+  currentLevel: 'currentLevel',
+  xpTotal: 'xpTotal',
   practice_streak: 'practice_streak',
-  last_active_at: 'last_active_at',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  lastActiveAt: 'lastActiveAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  authProviders: 'authProviders'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const WritingSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  subjectLine: 'subjectLine',
+  textBody: 'textBody',
+  wordCount: 'wordCount',
+  scenarioId: 'scenarioId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WritingSessionScalarFieldEnum = (typeof WritingSessionScalarFieldEnum)[keyof typeof WritingSessionScalarFieldEnum]
+
+
+export const ScenarioScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  category: 'category',
+  level: 'level',
+  aiPersona: 'aiPersona'
+} as const
+
+export type ScenarioScalarFieldEnum = (typeof ScenarioScalarFieldEnum)[keyof typeof ScenarioScalarFieldEnum]
 
 
 export const SortOrder = {

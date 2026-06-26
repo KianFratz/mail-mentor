@@ -14,20 +14,22 @@ datasource db {
 }
 
 model User {
-  id                 String         @id @default(uuid()) @db.Uuid
-  email              String         @unique @db.VarChar(255)
+  id                 String           @id @default(uuid()) @db.Uuid
+  email              String           @unique @db.VarChar(255)
   password           String?
   name               String?
-  authProviders      AuthProvider[]
-  googleId           String?        @unique
+  googleId           String?          @unique
   googleRefreshToken String?
-  role               UserRole      @default(student)
-  current_level      SkillLevel    @default(beginner)
-  xp_total           Int            @default(0)
-  practice_streak    Int            @default(0)
-  last_active_at     DateTime?      @db.Timestamptz
-  created_at         DateTime       @default(now()) @db.Timestamptz
-  updated_at         DateTime       @default(now()) @updatedAt @db.Timestamptz
+  role               UserRole         @default(student)
+  currentLevel       SkillLevel       @default(beginner)
+  xpTotal            Int              @default(0)
+  practice_streak    Int              @default(0)
+  lastActiveAt       DateTime?        @db.Timestamptz
+  createdAt          DateTime         @default(now()) @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @updatedAt @db.Timestamptz
+
+  writingSession     WritingSession[]
+  authProviders      AuthProvider[]
 
   @@map("users")
 }
@@ -47,4 +49,39 @@ enum SkillLevel {
 enum AuthProvider {
   LOCAL
   GOOGLE
+}
+
+model WritingSession {
+  id          String        @id @default(uuid()) @db.Uuid
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String        @db.Uuid
+  status      SessionStatus @default(draft)
+  subjectLine String
+  textBody    String
+  wordCount   Int
+  scenario    Scenario      @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  scenarioId  String        @db.Uuid
+  createdAt   DateTime      @default(now()) @db.Timestamptz()
+  updatedAt   DateTime      @default(now()) @db.Timestamptz()
+
+  @@map("writing_sessions")
+}
+
+model Scenario {
+  id             String           @id @default(uuid()) @db.Uuid
+  title          String
+  category       String
+  level          SkillLevel       @default(beginner)
+  aiPersona      String
+  
+  writingSession WritingSession[]
+
+  @@map("scenarios")
+}
+
+enum SessionStatus {
+  draft
+  submitted
+  graded
+  abandoned
 }

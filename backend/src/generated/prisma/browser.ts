@@ -22,3 +22,13 @@ export * from './enums.js';
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model WritingSession
+ * 
+ */
+export type WritingSession = Prisma.WritingSessionModel
+/**
+ * Model Scenario
+ * 
+ */
+export type Scenario = Prisma.ScenarioModel
