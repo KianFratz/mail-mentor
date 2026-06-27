@@ -14,22 +14,22 @@ datasource db {
 }
 
 model User {
-  id                 String           @id @default(uuid()) @db.Uuid
-  email              String           @unique @db.VarChar(255)
+  id                 String     @id @default(uuid()) @db.Uuid
+  email              String     @unique @db.VarChar(255)
   password           String?
   name               String?
-  googleId           String?          @unique
+  googleId           String?    @unique
   googleRefreshToken String?
-  role               UserRole         @default(student)
-  currentLevel       SkillLevel       @default(beginner)
-  xpTotal            Int              @default(0)
-  practice_streak    Int              @default(0)
-  lastActiveAt       DateTime?        @db.Timestamptz
-  createdAt          DateTime         @default(now()) @db.Timestamptz
-  updatedAt          DateTime         @default(now()) @updatedAt @db.Timestamptz
+  role               UserRole   @default(student)
+  currentLevel       SkillLevel @default(beginner)
+  xpTotal            Int        @default(0)
+  practice_streak    Int        @default(0)
+  lastActiveAt       DateTime?  @db.Timestamptz
+  createdAt          DateTime   @default(now()) @db.Timestamptz
+  updatedAt          DateTime   @default(now()) @updatedAt @db.Timestamptz
 
-  writingSession     WritingSession[]
-  authProviders      AuthProvider[]
+  writingSession WritingSession[]
+  authProviders  AuthProvider[]
 
   @@map("users")
 }
@@ -68,12 +68,18 @@ model WritingSession {
 }
 
 model Scenario {
-  id             String           @id @default(uuid()) @db.Uuid
-  title          String
-  category       String
-  level          SkillLevel       @default(beginner)
-  aiPersona      String
-  
+  id           String     @id @default(uuid()) @db.Uuid
+  title        String
+  category     String
+  level        SkillLevel @default(beginner)
+  aiPersona    String
+  description  String
+  color        String
+  hrName       String
+  hrProfession String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
   writingSession WritingSession[]
 
   @@map("scenarios")

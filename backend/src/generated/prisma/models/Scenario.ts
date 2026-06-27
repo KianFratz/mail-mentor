@@ -30,6 +30,12 @@ export type ScenarioMinAggregateOutputType = {
   category: string | null
   level: $Enums.SkillLevel | null
   aiPersona: string | null
+  description: string | null
+  color: string | null
+  hrName: string | null
+  hrProfession: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ScenarioMaxAggregateOutputType = {
@@ -38,6 +44,12 @@ export type ScenarioMaxAggregateOutputType = {
   category: string | null
   level: $Enums.SkillLevel | null
   aiPersona: string | null
+  description: string | null
+  color: string | null
+  hrName: string | null
+  hrProfession: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ScenarioCountAggregateOutputType = {
@@ -46,6 +58,12 @@ export type ScenarioCountAggregateOutputType = {
   category: number
   level: number
   aiPersona: number
+  description: number
+  color: number
+  hrName: number
+  hrProfession: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -56,6 +74,12 @@ export type ScenarioMinAggregateInputType = {
   category?: true
   level?: true
   aiPersona?: true
+  description?: true
+  color?: true
+  hrName?: true
+  hrProfession?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ScenarioMaxAggregateInputType = {
@@ -64,6 +88,12 @@ export type ScenarioMaxAggregateInputType = {
   category?: true
   level?: true
   aiPersona?: true
+  description?: true
+  color?: true
+  hrName?: true
+  hrProfession?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ScenarioCountAggregateInputType = {
@@ -72,6 +102,12 @@ export type ScenarioCountAggregateInputType = {
   category?: true
   level?: true
   aiPersona?: true
+  description?: true
+  color?: true
+  hrName?: true
+  hrProfession?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -153,6 +189,12 @@ export type ScenarioGroupByOutputType = {
   category: string
   level: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt: Date
+  updatedAt: Date
   _count: ScenarioCountAggregateOutputType | null
   _min: ScenarioMinAggregateOutputType | null
   _max: ScenarioMaxAggregateOutputType | null
@@ -182,6 +224,12 @@ export type ScenarioWhereInput = {
   category?: Prisma.StringFilter<"Scenario"> | string
   level?: Prisma.EnumSkillLevelFilter<"Scenario"> | $Enums.SkillLevel
   aiPersona?: Prisma.StringFilter<"Scenario"> | string
+  description?: Prisma.StringFilter<"Scenario"> | string
+  color?: Prisma.StringFilter<"Scenario"> | string
+  hrName?: Prisma.StringFilter<"Scenario"> | string
+  hrProfession?: Prisma.StringFilter<"Scenario"> | string
+  createdAt?: Prisma.DateTimeFilter<"Scenario"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Scenario"> | Date | string
   writingSession?: Prisma.WritingSessionListRelationFilter
 }
 
@@ -191,6 +239,12 @@ export type ScenarioOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   aiPersona?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  hrName?: Prisma.SortOrder
+  hrProfession?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   writingSession?: Prisma.WritingSessionOrderByRelationAggregateInput
 }
 
@@ -203,6 +257,12 @@ export type ScenarioWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringFilter<"Scenario"> | string
   level?: Prisma.EnumSkillLevelFilter<"Scenario"> | $Enums.SkillLevel
   aiPersona?: Prisma.StringFilter<"Scenario"> | string
+  description?: Prisma.StringFilter<"Scenario"> | string
+  color?: Prisma.StringFilter<"Scenario"> | string
+  hrName?: Prisma.StringFilter<"Scenario"> | string
+  hrProfession?: Prisma.StringFilter<"Scenario"> | string
+  createdAt?: Prisma.DateTimeFilter<"Scenario"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Scenario"> | Date | string
   writingSession?: Prisma.WritingSessionListRelationFilter
 }, "id">
 
@@ -212,6 +272,12 @@ export type ScenarioOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   aiPersona?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  hrName?: Prisma.SortOrder
+  hrProfession?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ScenarioCountOrderByAggregateInput
   _max?: Prisma.ScenarioMaxOrderByAggregateInput
   _min?: Prisma.ScenarioMinOrderByAggregateInput
@@ -226,6 +292,12 @@ export type ScenarioScalarWhereWithAggregatesInput = {
   category?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
   level?: Prisma.EnumSkillLevelWithAggregatesFilter<"Scenario"> | $Enums.SkillLevel
   aiPersona?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
+  color?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
+  hrName?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
+  hrProfession?: Prisma.StringWithAggregatesFilter<"Scenario"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Scenario"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Scenario"> | Date | string
 }
 
 export type ScenarioCreateInput = {
@@ -234,6 +306,12 @@ export type ScenarioCreateInput = {
   category: string
   level?: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   writingSession?: Prisma.WritingSessionCreateNestedManyWithoutScenarioInput
 }
 
@@ -243,6 +321,12 @@ export type ScenarioUncheckedCreateInput = {
   category: string
   level?: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   writingSession?: Prisma.WritingSessionUncheckedCreateNestedManyWithoutScenarioInput
 }
 
@@ -252,6 +336,12 @@ export type ScenarioUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   writingSession?: Prisma.WritingSessionUpdateManyWithoutScenarioNestedInput
 }
 
@@ -261,6 +351,12 @@ export type ScenarioUncheckedUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   writingSession?: Prisma.WritingSessionUncheckedUpdateManyWithoutScenarioNestedInput
 }
 
@@ -270,6 +366,12 @@ export type ScenarioCreateManyInput = {
   category: string
   level?: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ScenarioUpdateManyMutationInput = {
@@ -278,6 +380,12 @@ export type ScenarioUpdateManyMutationInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ScenarioUncheckedUpdateManyInput = {
@@ -286,6 +394,12 @@ export type ScenarioUncheckedUpdateManyInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ScenarioScalarRelationFilter = {
@@ -299,6 +413,12 @@ export type ScenarioCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   aiPersona?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  hrName?: Prisma.SortOrder
+  hrProfession?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ScenarioMaxOrderByAggregateInput = {
@@ -307,6 +427,12 @@ export type ScenarioMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   aiPersona?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  hrName?: Prisma.SortOrder
+  hrProfession?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ScenarioMinOrderByAggregateInput = {
@@ -315,6 +441,12 @@ export type ScenarioMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   aiPersona?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  hrName?: Prisma.SortOrder
+  hrProfession?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ScenarioCreateNestedOneWithoutWritingSessionInput = {
@@ -337,6 +469,12 @@ export type ScenarioCreateWithoutWritingSessionInput = {
   category: string
   level?: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ScenarioUncheckedCreateWithoutWritingSessionInput = {
@@ -345,6 +483,12 @@ export type ScenarioUncheckedCreateWithoutWritingSessionInput = {
   category: string
   level?: $Enums.SkillLevel
   aiPersona: string
+  description: string
+  color: string
+  hrName: string
+  hrProfession: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ScenarioCreateOrConnectWithoutWritingSessionInput = {
@@ -369,6 +513,12 @@ export type ScenarioUpdateWithoutWritingSessionInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ScenarioUncheckedUpdateWithoutWritingSessionInput = {
@@ -377,6 +527,12 @@ export type ScenarioUncheckedUpdateWithoutWritingSessionInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumSkillLevelFieldUpdateOperationsInput | $Enums.SkillLevel
   aiPersona?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  hrName?: Prisma.StringFieldUpdateOperationsInput | string
+  hrProfession?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -416,6 +572,12 @@ export type ScenarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   category?: boolean
   level?: boolean
   aiPersona?: boolean
+  description?: boolean
+  color?: boolean
+  hrName?: boolean
+  hrProfession?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   writingSession?: boolean | Prisma.Scenario$writingSessionArgs<ExtArgs>
   _count?: boolean | Prisma.ScenarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["scenario"]>
@@ -426,6 +588,12 @@ export type ScenarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   category?: boolean
   level?: boolean
   aiPersona?: boolean
+  description?: boolean
+  color?: boolean
+  hrName?: boolean
+  hrProfession?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["scenario"]>
 
 export type ScenarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -434,6 +602,12 @@ export type ScenarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   category?: boolean
   level?: boolean
   aiPersona?: boolean
+  description?: boolean
+  color?: boolean
+  hrName?: boolean
+  hrProfession?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["scenario"]>
 
 export type ScenarioSelectScalar = {
@@ -442,9 +616,15 @@ export type ScenarioSelectScalar = {
   category?: boolean
   level?: boolean
   aiPersona?: boolean
+  description?: boolean
+  color?: boolean
+  hrName?: boolean
+  hrProfession?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ScenarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "level" | "aiPersona", ExtArgs["result"]["scenario"]>
+export type ScenarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "level" | "aiPersona" | "description" | "color" | "hrName" | "hrProfession" | "createdAt" | "updatedAt", ExtArgs["result"]["scenario"]>
 export type ScenarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   writingSession?: boolean | Prisma.Scenario$writingSessionArgs<ExtArgs>
   _count?: boolean | Prisma.ScenarioCountOutputTypeDefaultArgs<ExtArgs>
@@ -463,6 +643,12 @@ export type $ScenarioPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     category: string
     level: $Enums.SkillLevel
     aiPersona: string
+    description: string
+    color: string
+    hrName: string
+    hrProfession: string
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["scenario"]>
   composites: {}
 }
@@ -892,6 +1078,12 @@ export interface ScenarioFieldRefs {
   readonly category: Prisma.FieldRef<"Scenario", 'String'>
   readonly level: Prisma.FieldRef<"Scenario", 'SkillLevel'>
   readonly aiPersona: Prisma.FieldRef<"Scenario", 'String'>
+  readonly description: Prisma.FieldRef<"Scenario", 'String'>
+  readonly color: Prisma.FieldRef<"Scenario", 'String'>
+  readonly hrName: Prisma.FieldRef<"Scenario", 'String'>
+  readonly hrProfession: Prisma.FieldRef<"Scenario", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Scenario", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Scenario", 'DateTime'>
 }
     
 

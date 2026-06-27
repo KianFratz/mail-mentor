@@ -707,7 +707,13 @@ export const ScenarioScalarFieldEnum = {
   title: 'title',
   category: 'category',
   level: 'level',
-  aiPersona: 'aiPersona'
+  aiPersona: 'aiPersona',
+  description: 'description',
+  color: 'color',
+  hrName: 'hrName',
+  hrProfession: 'hrProfession',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ScenarioScalarFieldEnum = (typeof ScenarioScalarFieldEnum)[keyof typeof ScenarioScalarFieldEnum]
