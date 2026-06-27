@@ -10,6 +10,9 @@ function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<(typeof CATEGORIES)[number]>("All Scenarios");
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
 
+
+  const fectchScenario 
+
   const visibleScenarios = SCENARIOS_DATA.filter(
     (s) => activeCategory === "All Scenarios" || s.category === activeCategory
   );
