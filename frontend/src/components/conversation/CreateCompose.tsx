@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
-import type { Scenario } from "@/constants/conversion.constant";
+import type { Scenario } from "@/types/scenario.type";
 
 interface CreateComposeProps {
   scenario: Scenario;
@@ -67,7 +67,7 @@ const CreateCompose = ({ scenario }: CreateComposeProps) => {
               </span>
               <div className="flex-1 flex items-center gap-2 text-sm text-muted-foreground">
                 <span className="px-2.5 py-1 rounded-md font-medium">
-                  {scenario.hr.name}
+                  {scenario.hrName}
                 </span>
               </div>
             </div>

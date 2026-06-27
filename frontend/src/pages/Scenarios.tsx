@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AIPopover } from "@/components/scenarios/AiPopover";
 import { CategoryFilter } from "@/components/scenarios/CategoryFilter";
 import { FeaturedScenario } from "@/components/scenarios/FeaturedScenario";
 import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
 import CreateCompose from "@/components/conversation/CreateCompose";
-import { SCENARIOS_DATA, CATEGORIES, type Scenario } from "@/constants/conversion.constant";
+import api from "@/lib/axios";
+import type { Scenario } from "@/types/scenario.type";
 
 function Scenarios() {
-  const [activeCategory, setActiveCategory] = useState<(typeof CATEGORIES)[number]>("All Scenarios");
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [activeCategory, setActiveCategory] = useState<
+    Scenario["category"] | "All Scenarios"
+  >("All Scenarios");
+  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(
+    null,
+  );
+  const [scenarios, setScenarios] = useState([]);
+  const categoriesList = [
+    "All Scenarios",
+    ...new Set(scenarios.map((s) => s.category)),
+  ];
 
+  useEffect(() => {
+    getScenarios().then(setScenarios);
+  }, []);
 
-  const fectchScenario 
+  const getScenarios = async () => {
+    try {
+      const { data } = await api.get("/scenarios");
 
-  const visibleScenarios = SCENARIOS_DATA.filter(
-    (s) => activeCategory === "All Scenarios" || s.category === activeCategory
+      return data;
+    } catch (error) {
+      console.error("Failed fetching data Scenarios");
+    }
+  };
+
+  const visibleScenarios = scenarios.filter(
+    (s) => activeCategory === "All Scenarios" || s.category === activeCategory,
   );
 
   return (
@@ -33,8 +54,7 @@ function Scenarios() {
             </section>
 
             <div className="flex flex-wrap gap-3 mb-8">
-              
-              {CATEGORIES.map((cat) => (
+              {categoriesList.map((cat) => (
                 <CategoryFilter
                   key={cat}
                   label={cat}
@@ -61,9 +81,7 @@ function Scenarios() {
             </div>
           </>
         ) : (
-          <CreateCompose
-            scenario={selectedScenario}
-          />
+          <CreateCompose scenario={selectedScenario} />
         )}
       </div>
       <AIPopover />
