@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AIPopover } from "@/components/scenarios/AiPopover";
 import { CategoryFilter } from "@/components/scenarios/CategoryFilter";
 import { FeaturedScenario } from "@/components/scenarios/FeaturedScenario";
@@ -14,23 +14,36 @@ function Scenarios() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(
     null,
   );
-  const [scenarios, setScenarios] = useState([]);
-  const categoriesList = [
-    "All Scenarios",
-    ...new Set(scenarios.map((s) => s.category)),
-  ];
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [loading, setLoading] = useState(true);
+  const categoriesList = useMemo(
+    () => ["All Scenarios", ...new Set(scenarios.map((s) => s.category))],
+    [scenarios],
+  );
 
   useEffect(() => {
-    getScenarios().then(setScenarios);
+    const loadScenarios = async () => {
+      try {
+        setLoading(true);
+        setScenarios(await fetchScenarios()); 
+      } catch (error) { 
+        console.error("Failed to fetch scenarios:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadScenarios();
   }, []);
 
-  const getScenarios = async () => {
+  const fetchScenarios = async (): Promise<Scenario[]> => {
     try {
-      const { data } = await api.get("/scenarios");
+      const { data } = await api.get<Scenario[]>("/scenarios");
 
       return data;
     } catch (error) {
-      console.error("Failed fetching data Scenarios");
+      console.error("Failed fetching scenarios:", error);
+      return [];
     }
   };
 
