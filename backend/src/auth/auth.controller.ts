@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { SetPasswordDto } from './dto/set-password.dto';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -95,18 +96,21 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Req() req: any) {
-    const user = await this.usersService.findById(req.user.userId);
+  async getProfile(@CurrentUser('userId') userId: string) {
+    const user = await this.usersService.findById(userId);
     return {
-      ...req.user,
+      ...user,
       hasPassword: !!user?.password,
     };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('set-password')
-  async setPassword(@Req() req: any, @Body() dto: SetPasswordDto) {
-    await this.authService.setPassword(req.user.userId, dto);
+  async setPassword(
+    @CurrentUser('userId') userId: string,
+    @Body() dto: SetPasswordDto,
+  ) {
+    await this.authService.setPassword(userId, dto);
     return { message: 'Password set successfully' };
   }
 }
