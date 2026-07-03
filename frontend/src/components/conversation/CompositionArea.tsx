@@ -22,10 +22,6 @@ export default function CompositionArea() {
     }, 1500);
   };
 
-  const handleSubmitReply = () => {
-    console.log("Reply submitted:");
-  }
-  
   return (
     <section className="flex-1 bg-background overflow-y-auto relative px-4 md:px-8 py-8">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -163,7 +159,11 @@ export default function CompositionArea() {
             </div>
           </div>
 
-          <ReplyEditor onWordCountChange={setWordCount} editorRef={editorRef} onSubmitReply={handleSubmitReply}/>
+          {/* <ReplyEditor
+            onWordCountChange={setWordCount}
+            editorRef={editorRef}
+            onSubmitReply={handleSubmitReply}
+          /> */}
         </div>
 
         <div className="flex items-center justify-between py-4">

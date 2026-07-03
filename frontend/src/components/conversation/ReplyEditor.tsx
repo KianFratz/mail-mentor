@@ -24,36 +24,31 @@ import {
 
 interface ReplyEditorProps {
   onWordCountChange: (count: number) => void;
-  editorRef: React.RefObject<HTMLDivElement>;
-  onSubmitReply: () => void;
+  onBodyChange: (body: string) => void;
+  editorRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ReplyEditor({
   onWordCountChange,
+  onBodyChange,
   editorRef,
-  onSubmitReply,
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
   const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmitReply();
-  };
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 border-t border-border bg-card rounded-b-2xl"
-    >
       <div className="flex flex-col gap-3">
-        <div ref={editorRef} className="rounded-xl transition-colors duration-500">
+        <div
+          ref={editorRef}
+          className="rounded-xl transition-colors duration-500"
+        >
           <EditorProvider
             className="writing-canvas w-full min-h-[120px] p-2 text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full"
             placeholder="Write your reply here..."
             onUpdate={({ editor }) => {
               onWordCountChange(editor.storage.characterCount.words());
+              onBodyChange(editor.getHTML());
             }}
           >
             <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
@@ -122,12 +117,9 @@ export default function ReplyEditor({
             className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-all shadow-sm"
           >
             Reply
-            <span className="material-symbols-outlined text-[18px]">
-              send
-            </span>
+            <span className="material-symbols-outlined text-[18px]">send</span>
           </button>
         </div>
       </div>
-    </form>
   );
 }
