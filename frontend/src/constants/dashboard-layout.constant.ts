@@ -1,6 +1,6 @@
-import type { DashboardData } from "@/types/dashboard.type";
+import type { DashboardDataProps } from "@/types/dashboard.type";
 
-export const sampleDashboardData: DashboardData = {
+export const DashboardData: DashboardDataProps = {
   userName: "Alex",
   subtitle:
     "Your communication mastery is evolving. Here is your current performance snapshot.",

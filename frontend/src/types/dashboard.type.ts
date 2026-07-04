@@ -40,7 +40,7 @@ export interface AISuggestion {
   onCtaClick?: () => void;
 }
 
-export interface DashboardData {
+export interface DashboardDataProps {
   userName: string;
   subtitle: string;
   activeNavHref: string;
