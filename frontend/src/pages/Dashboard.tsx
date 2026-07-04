@@ -3,10 +3,10 @@ import AIAdviceCard from "@/components/AIAdviceCard";
 import PracticeStreakCard from "@/components/PracticeStreakCard";
 import RecentScoresCard from "@/components/RecentScoreCard";
 import SkillProficiencyCard from "@/components/SkillProficiencyCard";
-import { sampleDashboardData } from "@/constants/dashboard-layout.constant";
+import { DashboardData } from "@/constants/dashboard-layout.constant";
 
 export default function Dashboard() {
-  const props = sampleDashboardData;
+  const props = DashboardData;
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2">
