@@ -8,7 +8,7 @@ export default function ReviewPanel({ scenario }: ReviewPanelProps) {
   if (!scenario) return null;
 
   return (
-    <aside className="hidden lg:flex flex-col h-full w-80 bg-card border-l border-border p-6 gap-6 overflow-y-auto shrink-0">
+    <aside className="hidden lg:flex flex-col h-full w-80 bg-card border-l border-border p-6 m-6 gap-6 overflow-y-auto shrink-0">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
         Review Panel
       </h3>

@@ -36,6 +36,7 @@ export class WritingSessionService {
   async findManyByUserId(userId: string): Promise<WritingSession[]> {
     return this.prisma.writingSession.findMany({
       where: { userId },
+      include: { scenario: true },
       orderBy: { createdAt: 'desc'}
     });
   }

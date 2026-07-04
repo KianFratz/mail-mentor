@@ -1,24 +1,23 @@
-import React, { useRef, useState, type RefObject } from "react";
+import React, { useRef, useState } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import type { Scenario } from "@/types/scenario.type";
 import api from "@/lib/axios";
-import type { ReactFormState } from "react-dom/client";
 
 interface CreateComposeProps {
   scenario: Scenario;
+  initialSubject?: string;
+  initialTextBody?: string;
 }
 
-const CreateCompose = ({ scenario }: CreateComposeProps) => {
+const CreateCompose = ({ scenario, initialSubject = "", initialTextBody = "" }: CreateComposeProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [wordCount, setWordCount] = useState(0);
-  const [subject, setSubject] = useState("");
-  const [textBody, setTextBody] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [subject, setSubject] = useState(initialSubject);
+  const [textBody, setTextBody] = useState(initialTextBody);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const token = localStorage.getItem("token");
@@ -35,15 +34,13 @@ const CreateCompose = ({ scenario }: CreateComposeProps) => {
       })
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <form action="" onSubmit={handleSubmit}>
-      <div className="flex h-full w-full overflow-hidden ">
-        <section className="flex-1 bg-background overflow-y-auto relative px-4 md:px-8 py-8">
+      <div className="flex h-full w-full">
+        <section className="flex-1 bg-background overflow-y-auto relative">
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -103,6 +100,7 @@ const CreateCompose = ({ scenario }: CreateComposeProps) => {
               <ReplyEditor
                 onWordCountChange={setWordCount}
                 onBodyChange={setTextBody}
+                initialTextBody={initialTextBody}
                 editorRef={editorRef}
               />
             </div>

@@ -25,12 +25,14 @@ import {
 interface ReplyEditorProps {
   onWordCountChange: (count: number) => void;
   onBodyChange: (body: string) => void;
+  initialTextBody?: string;
   editorRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ReplyEditor({
   onWordCountChange,
   onBodyChange,
+  initialTextBody,
   editorRef,
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
@@ -44,8 +46,9 @@ export default function ReplyEditor({
           className="rounded-xl transition-colors duration-500"
         >
           <EditorProvider
-            className="writing-canvas w-full min-h-[120px] p-2 text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full"
+            className="writing-canvas w-full min-h-[120px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-2"
             placeholder="Write your reply here..."
+            content={initialTextBody}
             onUpdate={({ editor }) => {
               onWordCountChange(editor.storage.characterCount.words());
               onBodyChange(editor.getHTML());
@@ -111,7 +114,7 @@ export default function ReplyEditor({
           </EditorProvider>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end p-4">
           <button
             type="submit"
             className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-all shadow-sm"

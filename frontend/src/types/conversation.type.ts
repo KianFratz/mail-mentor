@@ -1,3 +1,5 @@
+import type { Scenario } from "./scenario.type";
+
 export type SessionStatus = "draft" | "submitted" | "graded" | "abandoned";
 
 export interface WritingSession {
@@ -8,6 +10,7 @@ export interface WritingSession {
     textBody: string;
     wordCount: number;
     scenarioId: string;
+    scenario?: Scenario;
     createdAt: string;
     updatedAt: string;
 }
