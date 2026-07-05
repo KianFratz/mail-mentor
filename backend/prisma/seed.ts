@@ -1,7 +1,6 @@
 import { PrismaService } from './prisma.service';
 import { Prisma } from 'src/generated/prisma/client';
 
-
 const prisma = new PrismaService();
 
 const scenarios: Prisma.ScenarioCreateManyInput[] = [
