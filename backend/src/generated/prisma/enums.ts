@@ -43,3 +43,11 @@ export const SessionStatus = {
 } as const
 
 export type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus]
+
+
+export const MessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type MessageRole = (typeof MessageRole)[keyof typeof MessageRole]

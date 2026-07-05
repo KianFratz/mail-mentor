@@ -11,4 +11,5 @@
 export type * from './models/User.js'
 export type * from './models/WritingSession.js'
 export type * from './models/Scenario.js'
+export type * from './models/Message.js'
 export type * from './commonInputTypes.js'

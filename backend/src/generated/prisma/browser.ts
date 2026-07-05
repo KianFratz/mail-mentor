@@ -32,3 +32,8 @@ export type WritingSession = Prisma.WritingSessionModel
  * 
  */
 export type Scenario = Prisma.ScenarioModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel

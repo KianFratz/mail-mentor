@@ -250,6 +250,7 @@ export type WritingSessionWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"WritingSession"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   scenario?: Prisma.XOR<Prisma.ScenarioScalarRelationFilter, Prisma.ScenarioWhereInput>
+  messages?: Prisma.MessageListRelationFilter
 }
 
 export type WritingSessionOrderByWithRelationInput = {
@@ -264,6 +265,7 @@ export type WritingSessionOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   scenario?: Prisma.ScenarioOrderByWithRelationInput
+  messages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
 export type WritingSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +283,7 @@ export type WritingSessionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"WritingSession"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   scenario?: Prisma.XOR<Prisma.ScenarioScalarRelationFilter, Prisma.ScenarioWhereInput>
+  messages?: Prisma.MessageListRelationFilter
 }, "id">
 
 export type WritingSessionOrderByWithAggregationInput = {
@@ -325,6 +328,7 @@ export type WritingSessionCreateInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWritingSessionInput
   scenario: Prisma.ScenarioCreateNestedOneWithoutWritingSessionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionUncheckedCreateInput = {
@@ -337,6 +341,7 @@ export type WritingSessionUncheckedCreateInput = {
   scenarioId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionUpdateInput = {
@@ -349,6 +354,7 @@ export type WritingSessionUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWritingSessionNestedInput
   scenario?: Prisma.ScenarioUpdateOneRequiredWithoutWritingSessionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionUncheckedUpdateInput = {
@@ -361,6 +367,7 @@ export type WritingSessionUncheckedUpdateInput = {
   scenarioId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionCreateManyInput = {
@@ -451,6 +458,11 @@ export type WritingSessionSumOrderByAggregateInput = {
   wordCount?: Prisma.SortOrder
 }
 
+export type WritingSessionScalarRelationFilter = {
+  is?: Prisma.WritingSessionWhereInput
+  isNot?: Prisma.WritingSessionWhereInput
+}
+
 export type WritingSessionCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.WritingSessionCreateWithoutUserInput, Prisma.WritingSessionUncheckedCreateWithoutUserInput> | Prisma.WritingSessionCreateWithoutUserInput[] | Prisma.WritingSessionUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.WritingSessionCreateOrConnectWithoutUserInput | Prisma.WritingSessionCreateOrConnectWithoutUserInput[]
@@ -539,6 +551,20 @@ export type WritingSessionUncheckedUpdateManyWithoutScenarioNestedInput = {
   deleteMany?: Prisma.WritingSessionScalarWhereInput | Prisma.WritingSessionScalarWhereInput[]
 }
 
+export type WritingSessionCreateNestedOneWithoutMessagesInput = {
+  create?: Prisma.XOR<Prisma.WritingSessionCreateWithoutMessagesInput, Prisma.WritingSessionUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.WritingSessionCreateOrConnectWithoutMessagesInput
+  connect?: Prisma.WritingSessionWhereUniqueInput
+}
+
+export type WritingSessionUpdateOneRequiredWithoutMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.WritingSessionCreateWithoutMessagesInput, Prisma.WritingSessionUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.WritingSessionCreateOrConnectWithoutMessagesInput
+  upsert?: Prisma.WritingSessionUpsertWithoutMessagesInput
+  connect?: Prisma.WritingSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WritingSessionUpdateToOneWithWhereWithoutMessagesInput, Prisma.WritingSessionUpdateWithoutMessagesInput>, Prisma.WritingSessionUncheckedUpdateWithoutMessagesInput>
+}
+
 export type WritingSessionCreateWithoutUserInput = {
   id?: string
   status?: $Enums.SessionStatus
@@ -548,6 +574,7 @@ export type WritingSessionCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   scenario: Prisma.ScenarioCreateNestedOneWithoutWritingSessionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionUncheckedCreateWithoutUserInput = {
@@ -559,6 +586,7 @@ export type WritingSessionUncheckedCreateWithoutUserInput = {
   scenarioId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionCreateOrConnectWithoutUserInput = {
@@ -611,6 +639,7 @@ export type WritingSessionCreateWithoutScenarioInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWritingSessionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionUncheckedCreateWithoutScenarioInput = {
@@ -622,6 +651,7 @@ export type WritingSessionUncheckedCreateWithoutScenarioInput = {
   wordCount: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWritingSessionInput
 }
 
 export type WritingSessionCreateOrConnectWithoutScenarioInput = {
@@ -650,6 +680,70 @@ export type WritingSessionUpdateManyWithWhereWithoutScenarioInput = {
   data: Prisma.XOR<Prisma.WritingSessionUpdateManyMutationInput, Prisma.WritingSessionUncheckedUpdateManyWithoutScenarioInput>
 }
 
+export type WritingSessionCreateWithoutMessagesInput = {
+  id?: string
+  status?: $Enums.SessionStatus
+  subjectLine: string
+  textBody: string
+  wordCount: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutWritingSessionInput
+  scenario: Prisma.ScenarioCreateNestedOneWithoutWritingSessionInput
+}
+
+export type WritingSessionUncheckedCreateWithoutMessagesInput = {
+  id?: string
+  userId: string
+  status?: $Enums.SessionStatus
+  subjectLine: string
+  textBody: string
+  wordCount: number
+  scenarioId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WritingSessionCreateOrConnectWithoutMessagesInput = {
+  where: Prisma.WritingSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.WritingSessionCreateWithoutMessagesInput, Prisma.WritingSessionUncheckedCreateWithoutMessagesInput>
+}
+
+export type WritingSessionUpsertWithoutMessagesInput = {
+  update: Prisma.XOR<Prisma.WritingSessionUpdateWithoutMessagesInput, Prisma.WritingSessionUncheckedUpdateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.WritingSessionCreateWithoutMessagesInput, Prisma.WritingSessionUncheckedCreateWithoutMessagesInput>
+  where?: Prisma.WritingSessionWhereInput
+}
+
+export type WritingSessionUpdateToOneWithWhereWithoutMessagesInput = {
+  where?: Prisma.WritingSessionWhereInput
+  data: Prisma.XOR<Prisma.WritingSessionUpdateWithoutMessagesInput, Prisma.WritingSessionUncheckedUpdateWithoutMessagesInput>
+}
+
+export type WritingSessionUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSessionStatusFieldUpdateOperationsInput | $Enums.SessionStatus
+  subjectLine?: Prisma.StringFieldUpdateOperationsInput | string
+  textBody?: Prisma.StringFieldUpdateOperationsInput | string
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutWritingSessionNestedInput
+  scenario?: Prisma.ScenarioUpdateOneRequiredWithoutWritingSessionNestedInput
+}
+
+export type WritingSessionUncheckedUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSessionStatusFieldUpdateOperationsInput | $Enums.SessionStatus
+  subjectLine?: Prisma.StringFieldUpdateOperationsInput | string
+  textBody?: Prisma.StringFieldUpdateOperationsInput | string
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  scenarioId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type WritingSessionCreateManyUserInput = {
   id?: string
   status?: $Enums.SessionStatus
@@ -670,6 +764,7 @@ export type WritingSessionUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenario?: Prisma.ScenarioUpdateOneRequiredWithoutWritingSessionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionUncheckedUpdateWithoutUserInput = {
@@ -681,6 +776,7 @@ export type WritingSessionUncheckedUpdateWithoutUserInput = {
   scenarioId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionUncheckedUpdateManyWithoutUserInput = {
@@ -714,6 +810,7 @@ export type WritingSessionUpdateWithoutScenarioInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWritingSessionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionUncheckedUpdateWithoutScenarioInput = {
@@ -725,6 +822,7 @@ export type WritingSessionUncheckedUpdateWithoutScenarioInput = {
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWritingSessionNestedInput
 }
 
 export type WritingSessionUncheckedUpdateManyWithoutScenarioInput = {
@@ -739,6 +837,35 @@ export type WritingSessionUncheckedUpdateManyWithoutScenarioInput = {
 }
 
 
+/**
+ * Count Type WritingSessionCountOutputType
+ */
+
+export type WritingSessionCountOutputType = {
+  messages: number
+}
+
+export type WritingSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  messages?: boolean | WritingSessionCountOutputTypeCountMessagesArgs
+}
+
+/**
+ * WritingSessionCountOutputType without action
+ */
+export type WritingSessionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WritingSessionCountOutputType
+   */
+  select?: Prisma.WritingSessionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * WritingSessionCountOutputType without action
+ */
+export type WritingSessionCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageWhereInput
+}
+
 
 export type WritingSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -752,6 +879,8 @@ export type WritingSessionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   scenario?: boolean | Prisma.ScenarioDefaultArgs<ExtArgs>
+  messages?: boolean | Prisma.WritingSession$messagesArgs<ExtArgs>
+  _count?: boolean | Prisma.WritingSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["writingSession"]>
 
 export type WritingSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -798,6 +927,8 @@ export type WritingSessionOmit<ExtArgs extends runtime.Types.Extensions.Internal
 export type WritingSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   scenario?: boolean | Prisma.ScenarioDefaultArgs<ExtArgs>
+  messages?: boolean | Prisma.WritingSession$messagesArgs<ExtArgs>
+  _count?: boolean | Prisma.WritingSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WritingSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -813,6 +944,7 @@ export type $WritingSessionPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     scenario: Prisma.$ScenarioPayload<ExtArgs>
+    messages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1220,6 +1352,7 @@ export interface Prisma__WritingSessionClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   scenario<T extends Prisma.ScenarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ScenarioDefaultArgs<ExtArgs>>): Prisma.Prisma__ScenarioClient<runtime.Types.Result.GetResult<Prisma.$ScenarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  messages<T extends Prisma.WritingSession$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WritingSession$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1656,6 +1789,30 @@ export type WritingSessionDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many WritingSessions to delete.
    */
   limit?: number
+}
+
+/**
+ * WritingSession.messages
+ */
+export type WritingSession$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
 }
 
 /**

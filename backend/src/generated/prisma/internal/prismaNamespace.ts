@@ -386,7 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   WritingSession: 'WritingSession',
-  Scenario: 'Scenario'
+  Scenario: 'Scenario',
+  Message: 'Message'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,7 +403,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "writingSession" | "scenario"
+    modelProps: "user" | "writingSession" | "scenario" | "message"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Message: {
+      payload: Prisma.$MessagePayload<ExtArgs>
+      fields: Prisma.MessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        findFirst: {
+          args: Prisma.MessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        findMany: {
+          args: Prisma.MessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        create: {
+          args: Prisma.MessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        createMany: {
+          args: Prisma.MessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        delete: {
+          args: Prisma.MessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        update: {
+          args: Prisma.MessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.MessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.MessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        aggregate: {
+          args: Prisma.MessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessage>
+        }
+        groupBy: {
+          args: Prisma.MessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -715,6 +790,17 @@ export const ScenarioScalarFieldEnum = {
 } as const
 
 export type ScenarioScalarFieldEnum = (typeof ScenarioScalarFieldEnum)[keyof typeof ScenarioScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  content: 'content',
+  writingSessionId: 'writingSessionId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -876,6 +962,20 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'MessageRole'
+ */
+export type EnumMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageRole'>
+    
+
+
+/**
+ * Reference to a field of type 'MessageRole[]'
+ */
+export type ListEnumMessageRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1001,6 +1101,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   writingSession?: Prisma.WritingSessionOmit
   scenario?: Prisma.ScenarioOmit
+  message?: Prisma.MessageOmit
 }
 
 /* Types for Logging */

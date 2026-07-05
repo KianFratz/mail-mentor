@@ -63,6 +63,7 @@ model WritingSession {
   scenarioId  String        @db.Uuid
   createdAt   DateTime      @default(now()) @db.Timestamptz()
   updatedAt   DateTime      @default(now()) @db.Timestamptz()
+  messages    Message[]
 
   @@map("writing_sessions")
 }
@@ -88,4 +89,21 @@ enum SessionStatus {
   submitted
   graded
   abandoned
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model Message {
+  id               String         @id @default(cuid())
+  role             MessageRole
+  content          String
+  writingSession   WritingSession @relation(fields: [writingSessionId], references: [id], onDelete: Cascade)
+  writingSessionId String         @db.Uuid
+  createdAt        DateTime       @default(now())
+
+  @@index([writingSessionId, createdAt])
+  @@map("messages")
 }

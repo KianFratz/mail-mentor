@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   WritingSession: 'WritingSession',
-  Scenario: 'Scenario'
+  Scenario: 'Scenario',
+  Message: 'Message'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -120,6 +121,17 @@ export const ScenarioScalarFieldEnum = {
 } as const
 
 export type ScenarioScalarFieldEnum = (typeof ScenarioScalarFieldEnum)[keyof typeof ScenarioScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  content: 'content',
+  writingSessionId: 'writingSessionId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const SortOrder = {
