@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { WritingSessionModule } from './writing-session/writing-session.module';
 import { ScenariosModule } from './scenarios/scenarios.module';
+import { AiModule } from './ai/ai.module';
+import { AiController } from './ai/ai.controller';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { ScenariosModule } from './scenarios/scenarios.module';
     AuthModule,
     WritingSessionModule,
     ScenariosModule,
+    AiModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AiController],
   providers: [AppService],
 })
 export class AppModule {}

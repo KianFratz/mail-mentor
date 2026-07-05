@@ -12,9 +12,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Craft a professional request to your project manager for more time on a deliverable without sounding unprepared.',
     level: 'beginner',
-    aiPersona: 'Project Manager',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Project Manager',
+      personality: 'Organized and results-driven.',
+      mood: 'Neutral',
+      goal: 'Ensure project milestones are met.',
+      communicationStyle: 'Professional and direct',
+      background: 'Manages a cross-functional team delivering a SaaS product',
+    },
   },
   {
     category: 'Job Applications',
@@ -23,9 +29,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Summarize key points from a high-stakes networking call and propose clear next steps for collaboration.',
     level: 'intermediate',
-    aiPersona: 'Networking Contact',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Networking Contact',
+      personality: 'Friendly but busy.',
+      mood: 'Positive',
+      goal: 'Evaluate potential collaboration opportunities.',
+      communicationStyle: 'Casual yet professional',
+      background: 'Senior product strategist at a tech startup',
+    },
   },
   {
     category: 'Academic',
@@ -34,9 +46,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Provide evidence-based reasoning to a professor to discuss a discrepancy in an exam evaluation.',
     level: 'advanced',
-    aiPersona: 'Professor',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Professor',
+      personality: 'Strict but fair.',
+      mood: 'Neutral',
+      goal: 'Ensure academic integrity and accurate grading.',
+      communicationStyle: 'Formal and precise',
+      background: 'PhD in Computer Science with 15 years of teaching experience',
+    },
   },
   {
     category: 'Customer Service',
@@ -45,9 +63,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Acknowledge service failures and rebuild trust through empathy and actionable recovery steps.',
     level: 'beginner',
-    aiPersona: 'Upset Client',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Upset Client',
+      personality: 'Frustrated but willing to listen.',
+      mood: 'Angry',
+      goal: 'Receive a sincere apology and a clear solution.',
+      communicationStyle: 'Direct and impatient',
+      background: 'Ordered a laptop for work but received the wrong item',
+    },
   },
   {
     category: 'Workplace',
@@ -56,9 +80,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Politely decline a calendar invite while offering alternative ways to contribute or suggesting a delegate.',
     level: 'intermediate',
-    aiPersona: 'Colleague',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Customer',
+      personality: 'Frustrated but willing to listen.',
+      mood: 'Angry',
+      goal: 'Receive a sincere apology and a clear solution.',
+      communicationStyle: 'Direct and impatient',
+      background: 'Ordered a laptop for work but received the wrong item',
+    },
   },
   {
     category: 'Customer Service',
@@ -67,9 +97,15 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
     description:
       'Gracefully manage a client requesting extra features outside the original project agreement without sounding negative.',
     level: 'advanced',
-    aiPersona: 'Client',
-    hrName: 'Alex Rivera',
-    hrProfession: 'Aspiring UX Researcher',
+    aiPersona: {
+      name: 'Alex Rivera',
+      role: 'Client',
+      personality: 'Enthusiastic but demanding.',
+      mood: 'Excited',
+      goal: 'Get as many features as possible within budget.',
+      communicationStyle: 'Persuasive and persistent',
+      background: 'Small business owner launching a new e-commerce platform',
+    },
   },
 ];
 

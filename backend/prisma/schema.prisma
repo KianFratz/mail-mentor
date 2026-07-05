@@ -72,11 +72,9 @@ model Scenario {
   title        String
   category     String
   level        SkillLevel @default(beginner)
-  aiPersona    String
+  aiPersona    Json
   description  String
   color        String
-  hrName       String
-  hrProfession String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
