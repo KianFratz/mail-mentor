@@ -8,9 +8,17 @@ interface CreateComposeProps {
   scenario: Scenario;
   initialSubject?: string;
   initialTextBody?: string;
+  sessionId?: string;
+  userName?: string;
 }
 
-const CreateCompose = ({ scenario, initialSubject = "", initialTextBody = "" }: CreateComposeProps) => {
+const CreateCompose = ({
+  scenario,
+  initialSubject = "",
+  initialTextBody = "",
+  sessionId,
+  userName,
+}: CreateComposeProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [wordCount, setWordCount] = useState(0);
   const [subject, setSubject] = useState(initialSubject);
@@ -102,6 +110,9 @@ const CreateCompose = ({ scenario, initialSubject = "", initialTextBody = "" }: 
                 onBodyChange={setTextBody}
                 initialTextBody={initialTextBody}
                 editorRef={editorRef}
+                sessionId={sessionId}
+                userName={userName}
+                aiName={scenario.hrName}
               />
             </div>
           </div>

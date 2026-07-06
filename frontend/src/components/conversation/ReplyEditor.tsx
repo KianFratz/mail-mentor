@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   EditorProvider,
   EditorBubbleMenu,
@@ -21,37 +21,156 @@ import {
   EditorLinkSelector,
   EditorClearFormatting,
 } from "@/components/kibo-ui/editor";
-
-interface ReplyEditorProps {
-  onWordCountChange: (count: number) => void;
-  onBodyChange: (body: string) => void;
-  initialTextBody?: string;
-  editorRef: React.RefObject<HTMLDivElement | null>;
-}
+import api from "@/lib/axios";
+import type { ChatMessage, ReplyEditorProps } from "@/types/reply-editor.type";
+import { getInitials } from "@/lib/utils";
+import { MessageBubble } from "../MessageBubble";
+import { TypingIndicator } from "../TypingIndicator";
 
 export default function ReplyEditor({
   onWordCountChange,
   onBodyChange,
   initialTextBody,
   editorRef,
+  sessionId,
+  userName = "User",
+  aiName = "AI",
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
   const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
 
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [currentBody, setCurrentBody] = useState(initialTextBody ?? "");
+  const [isSending, setIsSending] = useState(false);
+  const [editorKey, setEditorKey] = useState(0); // used to reset editor
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const userInitials = getInitials(userName, "U");
+  const aiInitials = getInitials(aiName, "AI");
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isSending]);
+
+  const handleSend = async () => {
+    const stripped = currentBody.replace(/<[^>]*>/g, "").trim();
+    if (!stripped || isSending) return;
+
+    const userMsg: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: currentBody,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setIsSending(true);
+
+    // Reset editor content by remounting it
+    setEditorKey((k) => k + 1);
+    setCurrentBody("");
+    onBodyChange("");
+    onWordCountChange(0);
+
+    try {
+      if (!sessionId) {
+        throw new Error("No sessionId provided — cannot call reply endpoint.");
+      }
+
+      const response = await api.post(`/writing-sessions/${sessionId}/reply`, {
+        message: stripped,
+      });
+
+      const aiReply: string =
+        response.data?.reply ?? "I'm not sure how to respond to that.";
+
+      const aiMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "ai",
+        content: aiReply,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err) {
+      console.error("Reply endpoint error:", err);
+      const errMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "ai",
+        content:
+          "Sorry, something went wrong while fetching a response. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errMsg]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col" style={{ minHeight: "480px" }}>
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-slate-50/60 min-h-[220px]">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full py-10 text-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center mb-1">
+              <span className="material-symbols-outlined text-violet-500 text-[22px]">
+                forum
+              </span>
+            </div>
+            <p className="text-sm font-medium text-slate-600">
+              Start the conversation
+            </p>
+            <p className="text-xs text-slate-400 max-w-xs">
+              Write your reply below and hit{" "}
+              <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-mono shadow-sm">
+                Send Reply
+              </kbd>{" "}
+              to get an AI response.
+            </p>
+          </div>
+        )}
+
+        {messages.map((msg) => (
+          <MessageBubble
+            key={msg.id}
+            message={msg}
+            userInitials={userInitials}
+            aiInitials={aiInitials}
+          />
+        ))}
+
+        {isSending && <TypingIndicator aiInitials={aiInitials} />}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="border-t border-slate-200" />
+
+      <div onKeyDown={handleKeyDown}>
         <div
           ref={editorRef}
-          className="rounded-xl transition-colors duration-500"
+          className="rounded-b-xl transition-colors duration-500"
         >
           <EditorProvider
-            className="writing-canvas w-full min-h-[120px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-2"
-            placeholder="Write your reply here..."
+            key={editorKey}
+            className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
+            placeholder="Write your reply… (Ctrl+Enter to send)"
             content={initialTextBody}
             onUpdate={({ editor }) => {
               onWordCountChange(editor.storage.characterCount.words());
-              onBodyChange(editor.getHTML());
+              const html = editor.getHTML();
+              onBodyChange(html);
+              setCurrentBody(html);
             }}
           >
             <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
@@ -114,15 +233,38 @@ export default function ReplyEditor({
           </EditorProvider>
         </div>
 
-        <div className="flex justify-end p-4">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
           <button
-            type="submit"
-            className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-all shadow-sm"
+            type="button"
+            onClick={handleSend}
+            disabled={isSending}
+            className="
+              flex items-center gap-2 px-5 py-2.5
+              bg-gradient-to-r from-violet-600 to-indigo-600
+              text-white rounded-lg text-sm font-semibold
+              hover:from-violet-700 hover:to-indigo-700
+              active:scale-95 transition-all shadow-md shadow-violet-200
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+            "
           >
-            Reply
-            <span className="material-symbols-outlined text-[18px]">send</span>
+            {isSending ? (
+              <>
+                <span className="material-symbols-outlined text-[16px] animate-spin">
+                  sync
+                </span>
+                Sending…
+              </>
+            ) : (
+              <>
+                Send Reply
+                <span className="material-symbols-outlined text-[16px]">
+                  send
+                </span>
+              </>
+            )}
           </button>
         </div>
       </div>
+    </div>
   );
 }

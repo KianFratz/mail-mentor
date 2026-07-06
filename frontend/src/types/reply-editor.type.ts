@@ -1,0 +1,18 @@
+export type MessageRole = "user" | "ai";
+
+export interface ChatMessage {
+  id: string;
+  role: MessageRole;
+  content: string;         
+  timestamp: Date;
+}
+
+export interface ReplyEditorProps {
+  onWordCountChange: (count: number) => void;
+  onBodyChange: (body: string) => void;
+  initialTextBody?: string;
+  editorRef: React.RefObject<HTMLDivElement | null>;
+  sessionId?: string;
+  userName?: string;
+  aiName?: string;
+}
