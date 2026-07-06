@@ -12,20 +12,16 @@ export function getInitials(name?: string, fallback = "U"): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function decodeTokenEmail(token: string | null): string | undefined {
-  if (!token) return undefined;
+export function decodeTokenPayload(token: string | null): Record<string, unknown> | null {
+  if (!token) return null;
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload?.email as string | undefined;
+    return JSON.parse(atob(token.split(".")[1]));
   } catch {
-    return undefined;
+    return null;
   }
 }
 
-export function emailToInitials(email?: string): string | undefined {
-  if (!email) return undefined;
-  const local = email.split("@")[0];
-  const parts = local.split(/[._\-]/g).filter(Boolean);
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+export function getUserInitials(token: string | null): string {
+  const payload = decodeTokenPayload(token);
+  return getInitials(payload?.name as string | undefined);
 }

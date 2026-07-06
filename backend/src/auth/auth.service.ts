@@ -20,7 +20,6 @@ export class AuthService {
   ) {}
 
   async loginWithGoolge(googleUser: any) {
-    // Find or create user in PostgreSQL via Prisma
     let user = await this.prisma.user.findUnique({
       where: { email: googleUser.email },
     });
@@ -44,7 +43,7 @@ export class AuthService {
   }
 
   private generateTokenPair(user: any) {
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { sub: user.id, email: user.email, role: user.role, name: user.name };
 
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
