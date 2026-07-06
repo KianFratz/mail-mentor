@@ -26,6 +26,7 @@ import type { ChatMessage, ReplyEditorProps } from "@/types/reply-editor.type";
 import { getInitials } from "@/lib/utils";
 import { MessageBubble } from "../MessageBubble";
 import { TypingIndicator } from "../TypingIndicator";
+import axios from "axios";
 
 export default function ReplyEditor({
   onWordCountChange,
@@ -43,14 +44,13 @@ export default function ReplyEditor({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentBody, setCurrentBody] = useState(initialTextBody ?? "");
   const [isSending, setIsSending] = useState(false);
-  const [editorKey, setEditorKey] = useState(0); // used to reset editor
+  const [editorKey, setEditorKey] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const userInitials = getInitials(userName, "U");
   const aiInitials = getInitials(aiName, "AI");
 
-  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isSending]);
@@ -69,11 +69,13 @@ export default function ReplyEditor({
     setMessages((prev) => [...prev, userMsg]);
     setIsSending(true);
 
-    // Reset editor content by remounting it
     setEditorKey((k) => k + 1);
     setCurrentBody("");
     onBodyChange("");
     onWordCountChange(0);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
       if (!sessionId) {
@@ -96,24 +98,23 @@ export default function ReplyEditor({
 
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err) {
+      const isTimeout =
+        axios.isCancel(err) ||
+        (axios.isAxiosError(err) && err.code == "ERR_CANCELED");
+
       console.error("Reply endpoint error:", err);
       const errMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: "ai",
-        content:
-          "Sorry, something went wrong while fetching a response. Please try again.",
+        content: isTimeout
+          ? "The AI is taking too long to respond. Please try again."
+          : "Sorry, something went wrong while fetching a response. Please try again.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errMsg]);
     } finally {
+      clearTimeout(timeoutId)
       setIsSending(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-      e.preventDefault();
-      handleSend();
     }
   };
 
@@ -156,7 +157,7 @@ export default function ReplyEditor({
 
       <div className="border-t border-slate-200" />
 
-      <div onKeyDown={handleKeyDown}>
+      <div>
         <div
           ref={editorRef}
           className="rounded-b-xl transition-colors duration-500"

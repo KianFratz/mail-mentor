@@ -2,7 +2,7 @@ import api from "@/lib/axios";
 import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
 import CreateCompose from "@/components/conversation/CreateCompose";
-import { decodeTokenEmail, emailToInitials } from "@/lib/utils";
+import { getUserInitials } from "@/lib/utils";
 
 function Conversation() {
   const [loading, setLoading] = useState(false);
@@ -28,8 +28,7 @@ function Conversation() {
 
   if (selectedConversation && selectedConversation.scenario) {
     const token = localStorage.getItem("access_token");
-    const email = decodeTokenEmail(token);
-    const userInitials = emailToInitials(email);
+    const userInitials = getUserInitials(token);
 
     return (
       <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
