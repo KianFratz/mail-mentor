@@ -14,22 +14,59 @@ export class AiService {
   async reply(sessionId: string, userMessage: string) {
     await this.writingSessionService.saveUserMessage(sessionId, userMessage);
 
-    const session = await this.writingSessionService.getSessionWithHistory(sessionId)
-    const messages = await this.prompt.buildConversationPrompt(session.scenario, session.messages);
-   
-    const ai = await this.ollama.chat(messages);
+    const session =
+      await this.writingSessionService.getSessionWithHistory(sessionId);
+    const messages = await this.prompt.buildConversationPrompt(
+      session.scenario,
+      session.messages,
+    );
 
-    const content = ai?.message?.content || "";
+    const ai = await this.ollama.chat(messages);
+    const content = ai?.message?.content || '';
 
     if (!content) {
-      throw new Error("Failed to extract content from AI response: " + JSON.stringify(ai));
+      throw new Error(
+        'Failed to extract content from AI response: ' + JSON.stringify(ai),
+      );
     }
+
+    const cleanedResponse = this.sanitizeAIResponse(content);
 
     await this.writingSessionService.saveAssistantMessage(
       sessionId,
-      ai.message.content,
+      cleanedResponse,
     );
 
     return ai.message.content;
+  }
+
+  private sanitizeAIResponse(text: string): string {
+    return (
+      text
+        // Remove code blocks
+        .replace(/```[\s\S]*?```/g, '')
+
+        // Remove inline code
+        .replace(/`([^`]*)`/g, '$1')
+
+        // Remove bold (**text** or __text__)
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/__(.*?)__/g, '$1')
+
+        // Remove italic (*text* or _text_)
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+
+        // Remove headings (# ## ###)
+        .replace(/^#{1,6}\s+/gm, '')
+
+        // Remove blockquotes
+        .replace(/^>\s?/gm, '')
+
+        // Remove horizontal rules
+        .replace(/^[-*_]{3,}$/gm, '')
+
+        .trim()
+    );
   }
 }
