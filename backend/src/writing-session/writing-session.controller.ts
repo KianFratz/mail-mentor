@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get, Param } from '@nestjs/common';
 import { WritingSessionService } from './writing-session.service';
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -18,5 +18,11 @@ export class WritingSessionController {
   @Get('me')
   async getWritingSessionByUser(@CurrentUser("userId") userId: string) {
     return this.writingSessionService.findManyByUserId(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getSessionWithHistory(@Param('id') id: string) {
+    return this.writingSessionService.getSessionWithHistory(id);
   }
 }

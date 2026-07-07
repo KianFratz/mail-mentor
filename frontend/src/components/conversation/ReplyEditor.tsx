@@ -52,6 +52,28 @@ export default function ReplyEditor({
   const aiInitials = getInitials(aiName, "AI");
 
   useEffect(() => {
+    const fetchHistory = async () => {
+      if (!sessionId) return;
+      try {
+        const response = await api.get(`/writing-session/${sessionId}`);
+        const session = response.data;
+        if (session.messages && session.messages.length > 0) {
+          const historyMessages: ChatMessage[] = session.messages.map((m: any) => ({
+            id: m.id,
+            role: m.role === "ASSISTANT" ? "ai" : "user",
+            content: m.content,
+            timestamp: new Date(m.createdAt),
+          }));
+          setMessages(historyMessages);
+        }
+      } catch (err) {
+        console.error("Failed to fetch session history:", err);
+      }
+    };
+    fetchHistory();
+  }, [sessionId]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isSending]);
 
