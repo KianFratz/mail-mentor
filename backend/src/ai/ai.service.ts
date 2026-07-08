@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
+import { JsonNullValueInput } from 'src/generated/prisma/internal/prismaNamespaceBrowser';
 
 @Injectable()
 export class AiService {
@@ -68,5 +69,53 @@ export class AiService {
 
         .trim()
     );
+  }
+
+  async generateFeedback(sessionId: string) {
+    const session =
+      await this.writingSessionService.getSessionWithHistory(sessionId);
+
+    const userMessages = session.messages.filter((m) => m.role === 'USER');
+    if (userMessages.length === 0) {
+      throw new BadRequestException(
+        'No user messages found on this session to evaluate.',
+      );
+    }
+
+    const messages = await this.prompt.buildFeedbackPrompt(
+      session.scenario,
+      session.messages,
+    );
+
+    const ai = await this.ollama.chat(messages);
+    const content = ai?.message?.content || '';
+
+    if (!content) {
+      throw new Error('Failed to get feedback from AI:' + JSON.stringify(ai));
+    }
+
+    const cleanedContent = content
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
+    const parsed = JSON.parse(cleanedContent);
+
+    const feedback = {
+      overallScore: parsed.overallScore,
+      categoryScores: parsed.categories, 
+      strengths: parsed.strengths,
+      improvements: parsed.areasForImprovement, 
+      suggestedRevision: parsed.suggestedRevision,
+    };
+
+    const saved = await this.writingSessionService.saveFeedback(
+      sessionId,
+      feedback,
+    );
+
+    await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
+
+    return saved;
   }
 }

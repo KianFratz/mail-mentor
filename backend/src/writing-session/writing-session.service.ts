@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { PrismaService } from 'prisma/prisma.service';
-import { WritingSession } from 'src/generated/prisma/client';
+import { SessionStatus, WritingSession } from 'src/generated/prisma/client';
+import { error } from 'console';
 
 @Injectable()
 export class WritingSessionService {
@@ -75,5 +76,39 @@ export class WritingSessionService {
         content,
       },
     });
+  }
+
+  async saveFeedback(sessionId: string, feedback: any) {
+    
+
+    return this.prisma.sessionFeedback.create({
+      data: {
+        writingSessionId: sessionId,
+        overallScore: feedback.overallScore,
+        categoryScores: feedback.categoryScores,
+        strengths: feedback.strengths,
+        improvements: feedback.improvements,
+        suggestedRevision: feedback.suggestedRevision,
+      },
+    });
+  }
+
+  async updateSessionStatus(sessionId: string, status: SessionStatus) {
+    return this.prisma.writingSession.update({
+      where: { id: sessionId },
+      data: { status },
+    });
+  }
+
+  async getFeedback(sessionId: string) {
+    const feedback = await this.prisma.sessionFeedback.findUnique({
+      where: { writingSessionId: sessionId },
+    });
+
+    if (!feedback) {
+      throw new NotFoundException(`No feedback found for "${sessionId}".`);
+    }
+
+    return feedback;
   }
 }
