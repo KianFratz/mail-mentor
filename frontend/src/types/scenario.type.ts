@@ -9,10 +9,18 @@ export interface Scenario {
   color: "blue" | "purple" | "green" | "orange";
   title: string;
   description: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  aiPersona?: string;
-  hrName: string;
-  hrProfession: string;
+  level: "beginner" | "intermediate" | "advanced";
+  aiPersona?: AiPersona;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface AiPersona {
+  name: string;
+  role: string;
+  background: string;
+  communicationStyle: string;
+  goal: string;
+  mode: string;
+  personality: string;
 }

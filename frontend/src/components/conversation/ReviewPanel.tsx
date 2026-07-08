@@ -76,9 +76,9 @@ export default function ReviewPanel({ scenario }: ReviewPanelProps) {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuATzUKM1t1LOJrjWmtC32_8orAq1lcVQVgwhHxBO7csVT-AgwJ8CTBOYqfRfLa8m8ou13xyFU71EWe3jEvquqwhMQh6FgkgB0Rn_OJVse5FMLnscGzIDPIEhO1-EDA2FAHqqaRag6ateTvr4XN5XBU-QTz7JcbgOXVeUfnhdpf-gdn9zrVVbJ0CY41mxXY8hmQmxkPnSAIS9yCdpqqPY65Oo79Re1GxilCWeUEje8NeIC_Rn_mUTYrCJKiwfO6MyyJ2EXnrZXT7_YAK"
           />
           <div>
-            <p className="text-sm font-semibold text-foreground">{scenario.hrName}</p>
+            <p className="text-sm font-semibold text-foreground">{scenario.aiPersona.name}</p>
             <p className="text-sm text-muted-foreground">
-              {scenario.hrProfession}
+              {scenario.aiPersona.role}
             </p>
           </div>
         </div>
