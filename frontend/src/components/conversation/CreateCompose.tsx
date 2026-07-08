@@ -83,7 +83,7 @@ const CreateCompose = ({
                 </span>
                 <div className="flex-1 flex items-center gap-2 text-sm text-muted-foreground">
                   <span className="px-2.5 py-1 rounded-md font-medium">
-                    {scenario.hrName}
+                    {scenario.aiPersona.name}
                   </span>
                 </div>
               </div>
@@ -101,6 +101,7 @@ const CreateCompose = ({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Example..."
+                  readOnly={Boolean(subject)}
                   className="flex-1 bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none focus:outline-none"
                 />
               </div>
@@ -112,7 +113,7 @@ const CreateCompose = ({
                 editorRef={editorRef}
                 sessionId={sessionId}
                 userName={userName}
-                aiName={scenario.hrName}
+                aiName={scenario.aiPersona.name}
               />
             </div>
           </div>
