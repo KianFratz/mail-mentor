@@ -119,6 +119,7 @@ export default function ReplyEditor({
       };
 
       setMessages((prev) => [...prev, aiMsg]);
+      console.log(aiMsg);
     } catch (err) {
       const isTimeout =
         axios.isCancel(err) ||
@@ -187,8 +188,8 @@ export default function ReplyEditor({
           <EditorProvider
             key={editorKey}
             className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
-            placeholder="Write your reply… (Ctrl+Enter to send)"
-            content={initialTextBody}
+            placeholder="Write your reply…"
+            content={editorKey === 0 ? initialTextBody : ""}
             onUpdate={({ editor }) => {
               onWordCountChange(editor.storage.characterCount.words());
               const html = editor.getHTML();

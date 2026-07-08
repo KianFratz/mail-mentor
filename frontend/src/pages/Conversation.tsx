@@ -43,7 +43,7 @@ function Conversation() {
           <CreateCompose
             scenario={selectedConversation.scenario}
             initialSubject={selectedConversation.subjectLine}
-            initialTextBody={selectedConversation.textBody}
+            initialTextBody=""
             sessionId={selectedConversation.id}
             userName={userInitials}
           />
