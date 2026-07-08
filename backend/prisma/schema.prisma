@@ -29,18 +29,19 @@ model User {
 }
 
 model WritingSession {
-  id          String        @id @default(uuid()) @db.Uuid
-  userId      String        @db.Uuid
-  status      SessionStatus @default(draft)
-  subjectLine String
-  textBody    String
-  wordCount   Int
-  scenarioId  String        @db.Uuid
-  createdAt   DateTime      @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime      @default(now()) @db.Timestamptz(6)
-  messages    Message[]
-  scenario    Scenario      @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @db.Uuid
+  status          SessionStatus    @default(draft)
+  subjectLine     String
+  textBody        String
+  wordCount       Int
+  scenarioId      String           @db.Uuid
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime         @default(now()) @db.Timestamptz(6)
+  messages        Message[]
+  scenario        Scenario         @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionFeedback SessionFeedback?
 
   @@map("writing_sessions")
 }
@@ -52,7 +53,7 @@ model Scenario {
   level          SkillLevel       @default(beginner)
   description    String
   color          String
-  createdAt      DateTime         @default(now())
+  createdAt      DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt      DateTime         @updatedAt
   aiPersona      Json
   writingSession WritingSession[]
@@ -65,11 +66,25 @@ model Message {
   role             MessageRole
   content          String
   writingSessionId String         @db.Uuid
-  createdAt        DateTime       @default(now())
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6)
   writingSession   WritingSession @relation(fields: [writingSessionId], references: [id], onDelete: Cascade)
 
   @@index([writingSessionId, createdAt])
   @@map("messages")
+}
+
+model SessionFeedback {
+  id                String         @id @default(uuid()) @db.Uuid
+  writingSessionId  String         @unique @db.Uuid
+  overallScore      Int
+  categoryScores    Json
+  strengths         Json
+  improvements      Json
+  suggestedRevision Json
+  createdAt         DateTime       @default(now()) @db.Timestamptz(6)
+  writingSession    WritingSession @relation(fields: [writingSessionId], references: [id], onDelete: Cascade)
+
+  @@map("session_feedbacks")
 }
 
 enum UserRole {
