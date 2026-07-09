@@ -25,4 +25,10 @@ export class WritingSessionController {
   async getSessionWithHistory(@Param('id') id: string) {
     return this.writingSessionService.getSessionWithHistory(id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/feedback')
+  async getSessionFeedback(@Param('id') sessionId: string) {
+    return this.writingSessionService.getFeedback(sessionId);
+  }
 }
