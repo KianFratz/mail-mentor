@@ -27,6 +27,8 @@ import { getInitials } from "@/lib/utils";
 import { MessageBubble } from "../MessageBubble";
 import { TypingIndicator } from "../TypingIndicator";
 import axios from "axios";
+import { toastManager } from "../ui/toast";
+import ConfirmDialog from "../ConfirmDialog";
 
 export default function ReplyEditor({
   onWordCountChange,
@@ -36,6 +38,7 @@ export default function ReplyEditor({
   sessionId,
   userName = "User",
   aiName = "AI",
+  onEndSession,
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
@@ -45,6 +48,8 @@ export default function ReplyEditor({
   const [currentBody, setCurrentBody] = useState(initialTextBody ?? "");
   const [isSending, setIsSending] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
+  const [isEndingSession, setIsEndingSession] = useState(false);
+  const [showEndDialog, setShowEndDialog] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -58,12 +63,14 @@ export default function ReplyEditor({
         const response = await api.get(`/writing-session/${sessionId}`);
         const session = response.data;
         if (session.messages && session.messages.length > 0) {
-          const historyMessages: ChatMessage[] = session.messages.map((m: any) => ({
-            id: m.id,
-            role: m.role === "ASSISTANT" ? "ai" : "user",
-            content: m.content,
-            timestamp: new Date(m.createdAt),
-          }));
+          const historyMessages: ChatMessage[] = session.messages.map(
+            (m: any) => ({
+              id: m.id,
+              role: m.role === "ASSISTANT" ? "ai" : "user",
+              content: m.content,
+              timestamp: new Date(m.createdAt),
+            }),
+          );
           setMessages(historyMessages);
         }
       } catch (err) {
@@ -136,8 +143,39 @@ export default function ReplyEditor({
       };
       setMessages((prev) => [...prev, errMsg]);
     } finally {
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
       setIsSending(false);
+    }
+  };
+
+  const handleEndSession = async () => {
+    if (!sessionId || messages.length === 0) return;
+    setIsEndingSession(true);
+
+    try {
+      const response = await api.post(`writing-sessions/${sessionId}/feedback`);
+      onEndSession?.(response.data);
+    } catch (err) {
+      console.error("Failed to generate feedback:", err);
+      let message = "Something went wrong, please try again later.";
+
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.response?.data || message;
+
+        if (Array.isArray(message)) {
+          message = message.join(", ");
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
+      toastManager.add({
+        title: "Failed to generate feedback",
+        description: message,
+        type: "error",
+      });
+    } finally {
+      setIsEndingSession(false);
     }
   };
 
@@ -257,7 +295,35 @@ export default function ReplyEditor({
           </EditorProvider>
         </div>
 
-        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
+        <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
+          <button
+            type="button"
+            onClick={() => setShowEndDialog(true)}
+            disabled={isSending || isEndingSession}
+            className="
+          flex items-center gap-2 px-5 py-2.5
+    bg-gradient-to-r from-rose-500 to-orange-500
+    text-white rounded-lg text-sm font-semibold
+    hover:from-rose-600 hover:to-orange-600
+    active:scale-95 transition-all shadow-md shadow-rose-200
+    disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isEndingSession ? (
+              <>
+                <span className="material-symbols-outlined text-[16px] animate-spin">
+                  sync
+                </span>
+                Generating Feedback...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-[16px]">
+                  rate_review
+                </span>
+                End Session
+              </>
+            )}
+          </button>
           <button
             type="button"
             onClick={handleSend}
@@ -287,6 +353,19 @@ export default function ReplyEditor({
               </>
             )}
           </button>
+          <ConfirmDialog
+            open={showEndDialog}
+            title="End Writing Session?"
+            message="The AI will analyze your writing and provide detailed feedback after ending this session."
+            confirmText="End Session"
+            cancelText="Continue Writing"
+            loading={isEndingSession}
+            onCancel={() => setShowEndDialog(false)}
+            onConfirm={() => {
+              setShowEndDialog(false);
+              handleEndSession();
+            }}
+          />
         </div>
       </div>
     </div>

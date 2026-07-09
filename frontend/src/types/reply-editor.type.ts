@@ -1,3 +1,5 @@
+import type { FeedbackIssue, SessionFeedback } from "./feedback.type";
+
 export type MessageRole = "user" | "ai";
 
 export interface ChatMessage {
@@ -15,4 +17,5 @@ export interface ReplyEditorProps {
   sessionId?: string;
   userName?: string;
   aiName?: string;
+  onEndSession?: (feedback: SessionFeedback) => void;
 }

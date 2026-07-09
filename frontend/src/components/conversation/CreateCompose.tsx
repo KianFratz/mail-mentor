@@ -3,6 +3,9 @@ import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import type { Scenario } from "@/types/scenario.type";
 import api from "@/lib/axios";
+import type { SessionFeedback } from "@/types/feedback.type";
+import FeedbackPanel from "./FeedbackPanel";
+import type { ChatMessage } from "@/types/reply-editor.type";
 
 interface CreateComposeProps {
   scenario: Scenario;
@@ -23,6 +26,9 @@ const CreateCompose = ({
   const [wordCount, setWordCount] = useState(0);
   const [subject, setSubject] = useState(initialSubject);
   const [textBody, setTextBody] = useState(initialTextBody);
+  const [feedback, setFeedback] = useState<SessionFeedback | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,18 +36,45 @@ const CreateCompose = ({
     try {
       const token = localStorage.getItem("token");
 
-      await api.post("/writing-session/create", {
-        subjectLine: subject,
-        textBody,
-        wordCount,
-        scenarioId: scenario.id,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+      await api.post(
+        "/writing-session/create",
+        {
+          subjectLine: subject,
+          textBody,
+          wordCount,
+          scenarioId: scenario.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const fetchHistory = async () => {
+    if (!sessionId) return;
+
+    try {
+      const response = await api.get(`/writing-sessions/${sessionId}`);
+      const session = response.data;
+
+      if (session.messages && session.messages.length > 0) {
+        const historyMessages: ChatMessage[] = session.messages.map(
+          (m: any) => ({
+            id: m.id,
+            role: m.role === "ASSISTANT" ? "au" : "user",
+            content: m.content,
+            timestamp: new Date(m.createdAt),
+          }),
+        );
+        setMessages(historyMessages);
+      }
+    } catch (err) {
+      console.error("Failed to fetch session history: ", err);
     }
   };
 
@@ -106,15 +139,28 @@ const CreateCompose = ({
                 />
               </div>
 
-              <ReplyEditor
-                onWordCountChange={setWordCount}
-                onBodyChange={setTextBody}
-                initialTextBody={initialTextBody}
-                editorRef={editorRef}
-                sessionId={sessionId}
-                userName={userName}
-                aiName={scenario.aiPersona.name}
-              />
+              {feedback && showFeedback ? (
+                <>
+                  <FeedbackPanel
+                    feedback={feedback}
+                    messages={messages}
+                    onBack={() => setShowFeedback(false)}
+                  />
+                </>
+              ) : (
+                <>
+                  <ReplyEditor
+                    onWordCountChange={setWordCount}
+                    onBodyChange={setTextBody}
+                    initialTextBody={initialTextBody}
+                    editorRef={editorRef}
+                    sessionId={sessionId}
+                    userName={userName}
+                    aiName={scenario.aiPersona.name}
+                    isEndingSession
+                  />
+                </>
+              )}
             </div>
           </div>
         </section>
