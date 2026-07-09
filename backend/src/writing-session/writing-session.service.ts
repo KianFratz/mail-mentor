@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { SessionStatus, WritingSession } from 'src/generated/prisma/client';
 import { error } from 'console';
+import { exit } from 'process';
 
 @Injectable()
 export class WritingSessionService {
@@ -79,7 +80,7 @@ export class WritingSessionService {
   }
 
   async saveFeedback(sessionId: string, feedback: any) {
-    
+    await this.isFeedbackExisting(sessionId);
 
     return this.prisma.sessionFeedback.create({
       data: {
@@ -110,5 +111,15 @@ export class WritingSessionService {
     }
 
     return feedback;
+  }
+
+  private async isFeedbackExisting(sessionId: string) {
+    const existingFeedback = await this.prisma.sessionFeedback.findUnique({
+      where: { writingSessionId: sessionId }
+    })
+
+    if (existingFeedback) {
+      throw new BadRequestException("Feedback already exists for this session")
+    }
   }
 }

@@ -157,7 +157,6 @@ const CreateCompose = ({
                     sessionId={sessionId}
                     userName={userName}
                     aiName={scenario.aiPersona.name}
-                    isEndingSession
                   />
                 </>
               )}
