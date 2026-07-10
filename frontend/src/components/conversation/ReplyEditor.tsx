@@ -56,8 +56,6 @@ export default function ReplyEditor({
   const userInitials = getInitials(userName, "U");
   const aiInitials = getInitials(aiName, "AI");
 
-  console.log("Writing session status", writingSessionStatus);
-
   useEffect(() => {
     const fetchHistory = async () => {
       if (!sessionId) return;
@@ -156,7 +154,7 @@ export default function ReplyEditor({
 
     try {
       const response = await api.post(`writing-sessions/${sessionId}/feedback`);
-      onEndSession?.(response.data);
+      onEndSession?.(response.data, messages);
     } catch (err) {
       console.error("Failed to generate feedback:", err);
       let message = "Something went wrong, please try again later.";
@@ -300,7 +298,7 @@ export default function ReplyEditor({
         <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
           {writingSessionStatus === "graded" ? (
             <>
-              <Button onClick={() => setShowFeedback(true)}>
+              <Button type="button" onClick={() => setShowFeedback(true)}>
                 View Feedback
               </Button>
             </>

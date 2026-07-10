@@ -33,10 +33,11 @@ const CreateCompose = ({
   const [showFeedback, setShowFeedback] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const handleEndSession = (feedbackData: SessionFeedback) => {
+  const handleEndSession = (feedbackData: SessionFeedback, finalMessages: ChatMessage[]) => {
     setFeedback(feedbackData);
+    setMessages(finalMessages);
     setShowFeedback(true);
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,28 +64,35 @@ const CreateCompose = ({
     }
   };
 
-  const fetchHistory = async () => {
-    if (!sessionId) return;
+  React.useEffect(() => {
+    const initializeSessionData = async () => {
+      if (!sessionId || writingSessionStatus !== "graded") return;
 
-    try {
-      const response = await api.get(`/writing-sessions/${sessionId}`);
-      const session = response.data;
+      try {
+        const historyRes = await api.get(`/writing-session/${sessionId}`);
+        const session = historyRes.data;
 
-      if (session.messages && session.messages.length > 0) {
-        const historyMessages: ChatMessage[] = session.messages.map(
-          (m: any) => ({
-            id: m.id,
-            role: m.role === "ASSISTANT" ? "au" : "user",
-            content: m.content,
-            timestamp: new Date(m.createdAt),
-          }),
-        );
-        setMessages(historyMessages);
+        if (session.messages && session.messages.length > 0) {
+          const historyMessages: ChatMessage[] = session.messages.map(
+            (m: any) => ({
+              id: m.id,
+              role: m.role === "ASSISTANT" ? "ai" : "user",
+              content: m.content,
+              timestamp: new Date(m.createdAt),
+            }),
+          );
+          setMessages(historyMessages);
+        }
+
+        const feedbackRes = await api.get(`/writing-session/${sessionId}/feedback`);
+        setFeedback(feedbackRes.data);
+      } catch (err) {
+        console.error("Failed to fetch session data: ", err);
       }
-    } catch (err) {
-      console.error("Failed to fetch session history: ", err);
-    }
-  };
+    };
+
+    initializeSessionData();
+  }, [sessionId, writingSessionStatus]);
 
   return (
     <form action="" onSubmit={handleSubmit}>
@@ -167,6 +175,7 @@ const CreateCompose = ({
                     aiName={scenario.aiPersona.name}
                     writingSessionStatus={writingSessionStatus}
                     setShowFeedback={setShowFeedback}
+                    onEndSession={handleEndSession}
                   />
                 </>
               )}
