@@ -46,6 +46,7 @@ function Conversation() {
             initialTextBody=""
             sessionId={selectedConversation.id}
             userName={userInitials}
+            writingSessionStatus={selectedConversation.status}
           />
         </div>
       </div>

@@ -6,6 +6,7 @@ import api from "@/lib/axios";
 import type { SessionFeedback } from "@/types/feedback.type";
 import type { ChatMessage } from "@/types/reply-editor.type";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
+import type { WritingSession } from "@/types/conversation.type";
 
 interface CreateComposeProps {
   scenario: Scenario;
@@ -13,6 +14,7 @@ interface CreateComposeProps {
   initialTextBody?: string;
   sessionId?: string;
   userName?: string;
+  writingSessionStatus?: string;
 }
 
 const CreateCompose = ({
@@ -21,6 +23,7 @@ const CreateCompose = ({
   initialTextBody = "",
   sessionId,
   userName,
+  writingSessionStatus,
 }: CreateComposeProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [wordCount, setWordCount] = useState(0);
@@ -162,6 +165,8 @@ const CreateCompose = ({
                     sessionId={sessionId}
                     userName={userName}
                     aiName={scenario.aiPersona.name}
+                    writingSessionStatus={writingSessionStatus}
+                    setShowFeedback={setShowFeedback}
                   />
                 </>
               )}

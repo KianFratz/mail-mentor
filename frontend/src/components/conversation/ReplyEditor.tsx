@@ -29,6 +29,7 @@ import { TypingIndicator } from "../TypingIndicator";
 import axios from "axios";
 import { toastManager } from "../ui/toast";
 import ConfirmDialog from "../ConfirmDialog";
+import { Button } from "../ui/button";
 
 export default function ReplyEditor({
   onWordCountChange,
@@ -39,22 +40,23 @@ export default function ReplyEditor({
   userName = "User",
   aiName = "AI",
   onEndSession,
+  writingSessionStatus,
+  setShowFeedback
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
   const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
-
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentBody, setCurrentBody] = useState(initialTextBody ?? "");
   const [isSending, setIsSending] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const [isEndingSession, setIsEndingSession] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const userInitials = getInitials(userName, "U");
   const aiInitials = getInitials(aiName, "AI");
+
+  console.log("Writing session status", writingSessionStatus);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -296,41 +298,49 @@ export default function ReplyEditor({
         </div>
 
         <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
-          {messages.length > 0 && (
-            <button
-            type="button"
-            onClick={() => setShowEndDialog(true)}
-            disabled={isSending || isEndingSession || messages.length < 5}
-            className="
+          {writingSessionStatus === "graded" ? (
+            <>
+              <Button onClick={() => setShowFeedback(true)}>
+                View Feedback
+              </Button>
+            </>
+          ) : (
+            <>
+              {messages.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowEndDialog(true)}
+                  disabled={isSending || isEndingSession || messages.length < 5}
+                  className="
           flex items-center gap-2 px-5 py-2.5
     bg-gradient-to-r from-rose-500 to-orange-500
     text-white rounded-lg text-sm font-semibold
     hover:from-rose-600 hover:to-orange-600
     active:scale-95 transition-all shadow-md shadow-rose-200
     disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isEndingSession && messages.length === 0 ? (
-              <>
-                <span className="material-symbols-outlined text-[16px] animate-spin">
-                  sync
-                </span>
-                Generating Feedback...
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-[16px]">
-                  rate_review
-                </span>
-                End Session
-              </>
-            )}
-          </button>
-          )}
-          <button
-            type="button"
-            onClick={handleSend}
-            disabled={isSending}
-            className="
+                >
+                  {isEndingSession && messages.length === 0 ? (
+                    <>
+                      <span className="material-symbols-outlined text-[16px] animate-spin">
+                        sync
+                      </span>
+                      Generating Feedback...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-[16px]">
+                        rate_review
+                      </span>
+                      End Session
+                    </>
+                  )}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handleSend}
+                disabled={isSending}
+                className="
               flex items-center gap-2 px-5 py-2.5
               bg-gradient-to-r from-violet-600 to-indigo-600
               text-white rounded-lg text-sm font-semibold
@@ -338,36 +348,38 @@ export default function ReplyEditor({
               active:scale-95 transition-all shadow-md shadow-violet-200
               disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
             "
-          >
-            {isSending ? (
-              <>
-                <span className="material-symbols-outlined text-[16px] animate-spin">
-                  sync
-                </span>
-                Sending…
-              </>
-            ) : (
-              <>
-                Send Reply
-                <span className="material-symbols-outlined text-[16px]">
-                  send
-                </span>
-              </>
-            )}
-          </button>
-          <ConfirmDialog
-            open={showEndDialog}
-            title="End Writing Session?"
-            message="The AI will analyze your writing and provide detailed feedback after ending this session."
-            confirmText="End Session"
-            cancelText="Continue Writing"
-            loading={isEndingSession}
-            onCancel={() => setShowEndDialog(false)}
-            onConfirm={() => {
-              setShowEndDialog(false);
-              handleEndSession();
-            }}
-          />
+              >
+                {isSending ? (
+                  <>
+                    <span className="material-symbols-outlined text-[16px] animate-spin">
+                      sync
+                    </span>
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    Send Reply
+                    <span className="material-symbols-outlined text-[16px]">
+                      send
+                    </span>
+                  </>
+                )}
+              </button>
+              <ConfirmDialog
+                open={showEndDialog}
+                title="End Writing Session?"
+                message="The AI will analyze your writing and provide detailed feedback after ending this session."
+                confirmText="End Session"
+                cancelText="Continue Writing"
+                loading={isEndingSession}
+                onCancel={() => setShowEndDialog(false)}
+                onConfirm={() => {
+                  setShowEndDialog(false);
+                  handleEndSession();
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import type { WritingSession } from "./conversation.type";
 import type { SessionFeedback } from "./feedback.type";
 
 export type MessageRole = "user" | "ai";
@@ -18,4 +19,6 @@ export interface ReplyEditorProps {
   userName?: string;
   aiName?: string;
   onEndSession?: (feedback: SessionFeedback) => void;
+  writingSessionStatus?: string;
+  setShowFeedback: (value: boolean) => void;
 }
