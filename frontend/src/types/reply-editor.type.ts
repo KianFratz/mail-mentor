@@ -1,4 +1,4 @@
-import type { FeedbackIssue, SessionFeedback } from "./feedback.type";
+import type { SessionFeedback } from "./feedback.type";
 
 export type MessageRole = "user" | "ai";
 

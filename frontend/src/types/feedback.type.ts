@@ -32,3 +32,9 @@ export interface SuggestedRevision {
     original: string;
     explanation: string;
 }
+
+export function statusForScore(score: number): IssueSeverity {
+  if (score >= 80) return "minor";
+  if (score >= 70) return "moderate";
+  return "major";
+}

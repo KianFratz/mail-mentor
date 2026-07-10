@@ -4,8 +4,8 @@ import ReviewPanel from "./ReviewPanel";
 import type { Scenario } from "@/types/scenario.type";
 import api from "@/lib/axios";
 import type { SessionFeedback } from "@/types/feedback.type";
-import FeedbackPanel from "./FeedbackPanel";
 import type { ChatMessage } from "@/types/reply-editor.type";
+import { FeedbackPanel } from "../feedback/FeedbackPanel";
 
 interface CreateComposeProps {
   scenario: Scenario;
