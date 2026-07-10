@@ -30,6 +30,11 @@ const CreateCompose = ({
   const [showFeedback, setShowFeedback] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
+  const handleEndSession = (feedbackData: SessionFeedback) => {
+    setFeedback(feedbackData);
+    setShowFeedback(true);
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
