@@ -7,6 +7,8 @@ import type { SessionFeedback } from "@/types/feedback.type";
 import type { ChatMessage } from "@/types/reply-editor.type";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
 import type { WritingSession } from "@/types/conversation.type";
+import axios from "axios";
+import { toastManager } from "../ui/toast";
 
 interface CreateComposeProps {
   scenario: Scenario;
@@ -32,33 +34,39 @@ const CreateCompose = ({
   const [feedback, setFeedback] = useState<SessionFeedback | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(
+    sessionId,
+  );
 
-  const handleEndSession = (feedbackData: SessionFeedback, finalMessages: ChatMessage[]) => {
+  const handleEndSession = (
+    feedbackData: SessionFeedback,
+    finalMessages: ChatMessage[],
+  ) => {
     setFeedback(feedbackData);
     setMessages(finalMessages);
     setShowFeedback(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleStartSession = async (): Promise<string> => {
+    if (!subject.trim()) {
+      toastManager.add({
+        title: "Input validation",
+        description: "Subject is required",
+        type: "error",
+      });
+      return;
+    }
 
     try {
-      const token = localStorage.getItem("token");
+      const response = await api.post("/writing-session/create", {
+        subjectLine: subject,
+        textBody,
+        wordCount,
+        scenarioId: scenario.id,
+      });
 
-      await api.post(
-        "/writing-session/create",
-        {
-          subjectLine: subject,
-          textBody,
-          wordCount,
-          scenarioId: scenario.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      setActiveSessionId(response.data.id);
+      return response.data.id;
     } catch (error) {
       console.error(error);
     }
@@ -84,7 +92,9 @@ const CreateCompose = ({
           setMessages(historyMessages);
         }
 
-        const feedbackRes = await api.get(`/writing-session/${sessionId}/feedback`);
+        const feedbackRes = await api.get(
+          `/writing-session/${sessionId}/feedback`,
+        );
         setFeedback(feedbackRes.data);
       } catch (err) {
         console.error("Failed to fetch session data: ", err);
@@ -95,7 +105,7 @@ const CreateCompose = ({
   }, [sessionId, writingSessionStatus]);
 
   return (
-    <form action="" onSubmit={handleSubmit}>
+    <form action="" onSubmit={(e) => e.preventDefault()}>
       <div className="flex h-full w-full">
         <section className="flex-1 bg-background overflow-y-auto relative">
           <div className="max-w-4xl mx-auto space-y-6">
@@ -149,12 +159,14 @@ const CreateCompose = ({
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
+                  readOnly={
+                    writingSessionStatus === "graded" ||
+                    writingSessionStatus === "draft"
+                  }
                   placeholder="Example..."
-                  readOnly={Boolean(subject)}
                   className="flex-1 bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none focus:outline-none"
                 />
               </div>
-
               {feedback && showFeedback ? (
                 <>
                   <FeedbackPanel
@@ -170,12 +182,13 @@ const CreateCompose = ({
                     onBodyChange={setTextBody}
                     initialTextBody={initialTextBody}
                     editorRef={editorRef}
-                    sessionId={sessionId}
+                    sessionId={activeSessionId}
                     userName={userName}
                     aiName={scenario.aiPersona.name}
                     writingSessionStatus={writingSessionStatus}
                     setShowFeedback={setShowFeedback}
                     onEndSession={handleEndSession}
+                    onStartSession={handleStartSession}
                   />
                 </>
               )}

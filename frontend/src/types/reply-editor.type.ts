@@ -18,6 +18,7 @@ export interface ReplyEditorProps {
   userName?: string;
   aiName?: string;
   onEndSession?: (feedback: SessionFeedback, messages: ChatMessage[]) => void;
+  onStartSession?: () => Promise<string>;
   writingSessionStatus?: string;
   setShowFeedback: (value: boolean) => void;
 }

@@ -40,8 +40,9 @@ export default function ReplyEditor({
   userName = "User",
   aiName = "AI",
   onEndSession,
+  onStartSession,
   writingSessionStatus,
-  setShowFeedback
+  setShowFeedback,
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
@@ -107,11 +108,16 @@ export default function ReplyEditor({
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      if (!sessionId) {
-        throw new Error("No sessionId provided — cannot call reply endpoint.");
+      let currentSessionId = sessionId;
+      if (!currentSessionId) {
+        if (onStartSession) {
+          currentSessionId = await onStartSession();
+        } else {
+          throw new Error("No sessionId provided — cannot call reply endpoint.");
+        }
       }
 
-      const response = await api.post(`/writing-sessions/${sessionId}/reply`, {
+      const response = await api.post(`/writing-sessions/${currentSessionId}/reply`, {
         message: stripped,
       });
 
@@ -126,7 +132,6 @@ export default function ReplyEditor({
       };
 
       setMessages((prev) => [...prev, aiMsg]);
-      console.log(aiMsg);
     } catch (err) {
       const isTimeout =
         axios.isCancel(err) ||
@@ -151,6 +156,15 @@ export default function ReplyEditor({
   const handleEndSession = async () => {
     if (!sessionId || messages.length === 0) return;
     setIsEndingSession(true);
+
+    if (!messages) {
+      toastManager.add({
+        title: "Input validation",
+        description: "Message is required",
+        type: "error",
+      });
+      return;
+    }
 
     try {
       const response = await api.post(`writing-sessions/${sessionId}/feedback`);
@@ -305,7 +319,7 @@ export default function ReplyEditor({
           ) : (
             <>
               {messages.length > 0 && (
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowEndDialog(true)}
                   disabled={isSending || isEndingSession || messages.length < 5}
@@ -332,9 +346,9 @@ export default function ReplyEditor({
                       End Session
                     </>
                   )}
-                </button>
+                </Button>
               )}
-              <button
+              <Button
                 type="button"
                 onClick={handleSend}
                 disabled={isSending}
@@ -362,7 +376,7 @@ export default function ReplyEditor({
                     </span>
                   </>
                 )}
-              </button>
+              </Button>
               <ConfirmDialog
                 open={showEndDialog}
                 title="End Writing Session?"
