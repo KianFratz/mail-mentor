@@ -43,6 +43,7 @@ export default function ReplyEditor({
   onStartSession,
   writingSessionStatus,
   setShowFeedback,
+  disableSend,
 }: ReplyEditorProps) {
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
@@ -87,7 +88,7 @@ export default function ReplyEditor({
 
   const handleSend = async () => {
     const stripped = currentBody.replace(/<[^>]*>/g, "").trim();
-    if (!stripped || isSending) return;
+    if (isSending) return;
 
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
@@ -351,7 +352,7 @@ export default function ReplyEditor({
               <Button
                 type="button"
                 onClick={handleSend}
-                disabled={isSending}
+                disabled={isSending || disableSend || !currentBody.replace(/<[^>]*>/g, "").trim()} 
                 className="
               flex items-center gap-2 px-5 py-2.5
               bg-gradient-to-r from-violet-600 to-indigo-600

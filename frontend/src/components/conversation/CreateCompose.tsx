@@ -51,7 +51,7 @@ const CreateCompose = ({
     if (!subject.trim()) {
       toastManager.add({
         title: "Input validation",
-        description: "Subject is required",
+        description: "Subject should not be empty",
         type: "error",
       });
       return;
@@ -189,6 +189,7 @@ const CreateCompose = ({
                     setShowFeedback={setShowFeedback}
                     onEndSession={handleEndSession}
                     onStartSession={handleStartSession}
+                    disableSend={!subject.trim()}
                   />
                 </>
               )}

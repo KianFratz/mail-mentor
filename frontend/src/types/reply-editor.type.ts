@@ -21,4 +21,5 @@ export interface ReplyEditorProps {
   onStartSession?: () => Promise<string>;
   writingSessionStatus?: string;
   setShowFeedback: (value: boolean) => void;
+  disableSend?: boolean;
 }
