@@ -1,23 +1,12 @@
 import React, { useRef, useState } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
-import type { Scenario } from "@/types/scenario.type";
 import api from "@/lib/axios";
 import type { SessionFeedback } from "@/types/feedback.type";
 import type { ChatMessage } from "@/types/reply-editor.type";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
-import type { WritingSession } from "@/types/conversation.type";
-import axios from "axios";
 import { toastManager } from "../ui/toast";
-
-interface CreateComposeProps {
-  scenario: Scenario;
-  initialSubject?: string;
-  initialTextBody?: string;
-  sessionId?: string;
-  userName?: string;
-  writingSessionStatus?: string;
-}
+import type { CreateComposeProps } from "@/types/create-compose.type";
 
 const CreateCompose = ({
   scenario,

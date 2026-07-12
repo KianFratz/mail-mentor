@@ -99,7 +99,6 @@ export default function ReplyEditor({
 
     setMessages((prev) => [...prev, userMsg]);
     setIsSending(true);
-
     setEditorKey((k) => k + 1);
     setCurrentBody("");
     onBodyChange("");
@@ -114,13 +113,18 @@ export default function ReplyEditor({
         if (onStartSession) {
           currentSessionId = await onStartSession();
         } else {
-          throw new Error("No sessionId provided — cannot call reply endpoint.");
+          throw new Error(
+            "No sessionId provided — cannot call reply endpoint.",
+          );
         }
       }
 
-      const response = await api.post(`/writing-sessions/${currentSessionId}/reply`, {
-        message: stripped,
-      });
+      const response = await api.post(
+        `/writing-sessions/${currentSessionId}/reply`,
+        {
+          message: stripped,
+        },
+      );
 
       const aiReply: string =
         response.data?.reply ?? "I'm not sure how to respond to that.";
@@ -352,7 +356,11 @@ export default function ReplyEditor({
               <Button
                 type="button"
                 onClick={handleSend}
-                disabled={isSending || disableSend || !currentBody.replace(/<[^>]*>/g, "").trim()} 
+                disabled={
+                  isSending ||
+                  disableSend ||
+                  !currentBody.replace(/<[^>]*>/g, "").trim()
+                }
                 className="
               flex items-center gap-2 px-5 py-2.5
               bg-gradient-to-r from-violet-600 to-indigo-600
