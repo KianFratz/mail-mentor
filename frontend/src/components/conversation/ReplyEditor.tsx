@@ -90,6 +90,33 @@ export default function ReplyEditor({
     const stripped = currentBody.replace(/<[^>]*>/g, "").trim();
     if (isSending) return;
 
+    if (disableSend && !stripped) {
+      toastManager.add({
+        title: "Input validation",
+        description: "Subject and text body should not be empty",
+        type: "error",
+      });
+      return;
+    }
+
+    if (disableSend) {
+      toastManager.add({
+        title: "Input validation",
+        description: "Subject should not be empty",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!stripped) {
+      toastManager.add({
+        title: "Input validation",
+        description: "Text body should not be empty",
+        type: "error",
+      });
+      return;
+    }
+
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
@@ -305,8 +332,18 @@ export default function ReplyEditor({
                   {messages.length > 0 && (
                     <Button
                       type="button"
-                      onClick={() => setShowEndDialog(true)}
-                      disabled={isSending || isEndingSession || messages.length < 5}
+                      onClick={() => {
+                        if (messages.length < 4) {
+                          toastManager.add({
+                            title: "Session validation",
+                            description: "Messages should be at least 4 or greater than.",
+                            type: "error",
+                          });
+                          return;
+                        }
+                        setShowEndDialog(true);
+                      }}
+                      disabled={isSending || isEndingSession}
                       className="
               flex items-center gap-2 px-5 py-2.5
         bg-gradient-to-r from-rose-500 to-orange-500
@@ -335,11 +372,7 @@ export default function ReplyEditor({
                   <Button
                     type="button"
                     onClick={handleSend}
-                    disabled={
-                      isSending ||
-                      disableSend ||
-                      !currentBody.replace(/<[^>]*>/g, "").trim()
-                    }
+                    disabled={isSending}
                     className="
                   flex items-center gap-2 px-5 py-2.5
                   bg-gradient-to-r from-violet-600 to-indigo-600
