@@ -14,7 +14,6 @@ export const DashboardData: DashboardDataProps = {
     { label: "Dashboard", icon: "home", href: "/dashboard" },
     { label: "Scenarios", icon: "library_books", href: "/scenarios" },
     { label: "Conversation", icon: "chat", href: "/conversation" },
-    { label: "Draft", icon: "draft", href: "/draft" },
     { label: "Progress", icon: "area_chart", href: "/progress" },
     { label: "Settings", icon: "settings", href: "/settings" },
   ],

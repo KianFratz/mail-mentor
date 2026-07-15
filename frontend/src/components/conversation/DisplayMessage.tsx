@@ -4,11 +4,11 @@ import { TypingIndicator } from "../TypingIndicator";
 import type { ChatMessage } from "@/types/reply-editor.type";
 
 interface DisplayMessageProps {
-    messages: ChatMessage[];
-    userInitials: string;
-    aiInitials: string;
-    isSending: boolean;
-    messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  messages: ChatMessage[];
+  userInitials: string;
+  aiInitials: string;
+  isSending: boolean;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function DisplayMessage({
