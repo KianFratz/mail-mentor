@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   EditorProvider,
   EditorBubbleMenu,
@@ -29,6 +29,7 @@ import { toastManager } from "../ui/toast";
 import ConfirmDialog from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import DisplayMessage from "./DisplayMessage";
+import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
 
 export default function ReplyEditor({
   onWordCountChange,
@@ -199,182 +200,190 @@ export default function ReplyEditor({
 
   return (
     <div className="flex flex-col" style={{ minHeight: "480px" }}>
-      <DisplayMessage
-        messages={messages}
-        userInitials={userInitials}
-        aiInitials={aiInitials}
-        isSending={isSending}
-        messagesEndRef={messagesEndRef}
-      />
-
-      <div className="border-t border-slate-200" />
-
-      <div>
-        <div
-          ref={editorRef}
-          className="rounded-b-xl transition-colors duration-500"
-        >
-          <EditorProvider
-            key={editorKey}
-            className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
-            placeholder="Write your reply…"
-            content={editorKey === 0 ? initialTextBody : ""}
-            onUpdate={({ editor }) => {
-              onWordCountChange(editor.storage.characterCount.words());
-              const html = editor.getHTML();
-              onBodyChange(html);
-              setCurrentBody(html);
-            }}
-          >
-            <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
-              <EditorNodeHeading1 hideName />
-              <EditorNodeTaskList hideName />
-              <EditorNodeBulletList hideName />
-              <EditorNodeOrderedList hideName />
-              <EditorNodeCode hideName />
-              <EditorNodeTable hideName />
-            </EditorFloatingMenu>
-
-            <EditorBubbleMenu>
-              <EditorSelector
-                open={textSelectorOpen}
-                onOpenChange={(open) => {
-                  setTextSelectorOpen(open);
-                  if (open) setFormatSelectorOpen(false);
-                }}
-                title="Text"
-              >
-                <EditorNodeText />
-                <EditorNodeHeading1 />
-                <EditorNodeBulletList />
-                <EditorNodeOrderedList />
-                <EditorNodeTaskList />
-                <EditorNodeCode />
-                <EditorNodeTable />
-              </EditorSelector>
-
-              <EditorSelector
-                open={formatSelectorOpen}
-                onOpenChange={(open) => {
-                  setFormatSelectorOpen(open);
-                  if (open) setTextSelectorOpen(false);
-                }}
-                title="Format"
-              >
-                <EditorFormatBold />
-                <EditorFormatItalic />
-                <EditorFormatUnderline />
-                <EditorFormatStrike />
-                <EditorFormatCode />
-                <EditorFormatSubscript />
-                <EditorFormatSuperscript />
-              </EditorSelector>
-
-              <EditorLinkSelector
-                open={linkSelectorOpen}
-                onOpenChange={(open) => {
-                  setLinkSelectorOpen(open);
-                  if (open) {
-                    setTextSelectorOpen(false);
-                    setFormatSelectorOpen(false);
-                  }
-                }}
-              />
-
-              <EditorClearFormatting hideName />
-            </EditorBubbleMenu>
-          </EditorProvider>
+      {isEndingSession ? (
+        <div className="p-6 w-full">
+          <FeedbackPanelSkeleton />
         </div>
+      ) : (
+        <>
+          <DisplayMessage
+            messages={messages}
+            userInitials={userInitials}
+            aiInitials={aiInitials}
+            isSending={isSending}
+            messagesEndRef={messagesEndRef}
+          />
 
-        <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
-          {writingSessionStatus === "graded" ? (
-            <>
-              <Button type="button" onClick={() => setShowFeedback(true)}>
-                View Feedback
-              </Button>
-            </>
-          ) : (
-            <>
-              {messages.length > 0 && (
-                <Button
-                  type="button"
-                  onClick={() => setShowEndDialog(true)}
-                  disabled={isSending || isEndingSession || messages.length < 5}
-                  className="
-          flex items-center gap-2 px-5 py-2.5
-    bg-gradient-to-r from-rose-500 to-orange-500
-    text-white rounded-lg text-sm font-semibold
-    hover:from-rose-600 hover:to-orange-600
-    active:scale-95 transition-all shadow-md shadow-rose-200
-    disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isEndingSession && messages.length === 0 ? (
-                    <>
-                      <span className="material-symbols-outlined text-[16px] animate-spin">
-                        sync
-                      </span>
-                      Generating Feedback...
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-[16px]">
-                        rate_review
-                      </span>
-                      End Session
-                    </>
-                  )}
-                </Button>
-              )}
-              <Button
-                type="button"
-                onClick={handleSend}
-                disabled={
-                  isSending ||
-                  disableSend ||
-                  !currentBody.replace(/<[^>]*>/g, "").trim()
-                }
-                className="
+          <div className="border-t border-slate-200" />
+
+          <div>
+            <div
+              ref={editorRef}
+              className="rounded-b-xl transition-colors duration-500"
+            >
+              <EditorProvider
+                key={editorKey}
+                className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
+                placeholder="Write your reply…"
+                content={editorKey === 0 ? initialTextBody : ""}
+                onUpdate={({ editor }) => {
+                  onWordCountChange(editor.storage.characterCount.words());
+                  const html = editor.getHTML();
+                  onBodyChange(html);
+                  setCurrentBody(html);
+                }}
+              >
+                <EditorFloatingMenu className="flex items-center gap-0.5 rounded-xl border bg-background p-0.5 shadow">
+                  <EditorNodeHeading1 hideName />
+                  <EditorNodeTaskList hideName />
+                  <EditorNodeBulletList hideName />
+                  <EditorNodeOrderedList hideName />
+                  <EditorNodeCode hideName />
+                  <EditorNodeTable hideName />
+                </EditorFloatingMenu>
+
+                <EditorBubbleMenu>
+                  <EditorSelector
+                    open={textSelectorOpen}
+                    onOpenChange={(open) => {
+                      setTextSelectorOpen(open);
+                      if (open) setFormatSelectorOpen(false);
+                    }}
+                    title="Text"
+                  >
+                    <EditorNodeText />
+                    <EditorNodeHeading1 />
+                    <EditorNodeBulletList />
+                    <EditorNodeOrderedList />
+                    <EditorNodeTaskList />
+                    <EditorNodeCode />
+                    <EditorNodeTable />
+                  </EditorSelector>
+
+                  <EditorSelector
+                    open={formatSelectorOpen}
+                    onOpenChange={(open) => {
+                      setFormatSelectorOpen(open);
+                      if (open) setTextSelectorOpen(false);
+                    }}
+                    title="Format"
+                  >
+                    <EditorFormatBold />
+                    <EditorFormatItalic />
+                    <EditorFormatUnderline />
+                    <EditorFormatStrike />
+                    <EditorFormatCode />
+                    <EditorFormatSubscript />
+                    <EditorFormatSuperscript />
+                  </EditorSelector>
+
+                  <EditorLinkSelector
+                    open={linkSelectorOpen}
+                    onOpenChange={(open) => {
+                      setLinkSelectorOpen(open);
+                      if (open) {
+                        setTextSelectorOpen(false);
+                        setFormatSelectorOpen(false);
+                      }
+                    }}
+                  />
+
+                  <EditorClearFormatting hideName />
+                </EditorBubbleMenu>
+              </EditorProvider>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
+              {writingSessionStatus === "graded" ? (
+                <>
+                  <Button type="button" onClick={() => setShowFeedback(true)}>
+                    View Feedback
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {messages.length > 0 && (
+                    <Button
+                      type="button"
+                      onClick={() => setShowEndDialog(true)}
+                      disabled={isSending || isEndingSession || messages.length < 5}
+                      className="
               flex items-center gap-2 px-5 py-2.5
-              bg-gradient-to-r from-violet-600 to-indigo-600
-              text-white rounded-lg text-sm font-semibold
-              hover:from-violet-700 hover:to-indigo-700
-              active:scale-95 transition-all shadow-md shadow-violet-200
-              disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
-            "
-              >
-                {isSending ? (
-                  <>
-                    <span className="material-symbols-outlined text-[16px] animate-spin">
-                      sync
-                    </span>
-                    Sending…
-                  </>
-                ) : (
-                  <>
-                    Send Reply
-                    <span className="material-symbols-outlined text-[16px]">
-                      send
-                    </span>
-                  </>
-                )}
-              </Button>
-              <ConfirmDialog
-                open={showEndDialog}
-                title="End Writing Session?"
-                message="The AI will analyze your writing and provide detailed feedback after ending this session."
-                confirmText="End Session"
-                cancelText="Continue Writing"
-                loading={isEndingSession}
-                onCancel={() => setShowEndDialog(false)}
-                onConfirm={() => {
-                  setShowEndDialog(false);
-                  handleEndSession();
-                }}
-              />
-            </>
-          )}
-        </div>
-      </div>
+        bg-gradient-to-r from-rose-500 to-orange-500
+        text-white rounded-lg text-sm font-semibold
+        hover:from-rose-600 hover:to-orange-600
+        active:scale-95 transition-all shadow-md shadow-rose-200
+        disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isEndingSession && messages.length === 0 ? (
+                        <>
+                          <span className="material-symbols-outlined text-[16px] animate-spin">
+                            sync
+                          </span>
+                          Generating Feedback...
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-[16px]">
+                            rate_review
+                          </span>
+                          End Session
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    onClick={handleSend}
+                    disabled={
+                      isSending ||
+                      disableSend ||
+                      !currentBody.replace(/<[^>]*>/g, "").trim()
+                    }
+                    className="
+                  flex items-center gap-2 px-5 py-2.5
+                  bg-gradient-to-r from-violet-600 to-indigo-600
+                  text-white rounded-lg text-sm font-semibold
+                  hover:from-violet-700 hover:to-indigo-700
+                  active:scale-95 transition-all shadow-md shadow-violet-200
+                  disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+                "
+                  >
+                    {isSending ? (
+                      <>
+                        <span className="material-symbols-outlined text-[16px] animate-spin">
+                          sync
+                        </span>
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        Send Reply
+                        <span className="material-symbols-outlined text-[16px]">
+                          send
+                        </span>
+                      </>
+                    )}
+                  </Button>
+                  <ConfirmDialog
+                    open={showEndDialog}
+                    title="End Writing Session?"
+                    message="The AI will analyze your writing and provide detailed feedback after ending this session."
+                    confirmText="End Session"
+                    cancelText="Continue Writing"
+                    loading={isEndingSession}
+                    onCancel={() => setShowEndDialog(false)}
+                    onConfirm={() => {
+                      setShowEndDialog(false);
+                      handleEndSession();
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
