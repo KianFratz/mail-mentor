@@ -253,6 +253,24 @@ export default function ReplyEditor({
                 className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
                 placeholder="Write your reply…"
                 content={editorKey === 0 ? initialTextBody : ""}
+                editorProps={{
+                  handlePaste(view, event) {
+                    const text = event.clipboardData?.getData("text/plain");
+
+                    if (text) {
+                      const { schema } = view.state;
+                      const node = schema.text(text);
+                      const tr = view.state.tr.replaceSelectionWith(
+                        node,
+                        false,
+                      );
+                      view.dispatch(tr);
+                      return true;
+                    }
+
+                    return false;
+                  },
+                }}
                 onUpdate={({ editor }) => {
                   onWordCountChange(editor.storage.characterCount.words());
                   const html = editor.getHTML();
@@ -336,7 +354,8 @@ export default function ReplyEditor({
                         if (messages.length < 4) {
                           toastManager.add({
                             title: "Session validation",
-                            description: "Messages should be at least 4 or greater than.",
+                            description:
+                              "Messages should be at least 4 or greater than.",
                             type: "error",
                           });
                           return;
