@@ -1,4 +1,5 @@
 import axios from "axios";
+import { emitTokenChange } from "./tokenEvents";
 
 const TOKEN_KEY = "access_token";
 
@@ -52,6 +53,7 @@ api.interceptors.response.use(
       try {
         const data = await api.post("/auth/refresh");
         localStorage.setItem(TOKEN_KEY, data.data.access_token);
+        emitTokenChange(data.data.access_token);
 
         refreshQueue.forEach((cb) => cb(data.data.access_token));
         refreshQueue = [];

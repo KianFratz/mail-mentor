@@ -1,3 +1,4 @@
+import { onTokenChange } from "@/lib/tokenEvents";
 import type { AuthContextValue } from "@/types/auth.type";
 import React, {
   createContext,
@@ -13,7 +14,7 @@ const TOKEN_KEY = "access_token";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem(TOKEN_KEY)
+    localStorage.getItem(TOKEN_KEY),
   );
 
   useEffect(() => {
@@ -23,6 +24,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(TOKEN_KEY);
     }
   }, [token]);
+
+  useEffect(() => {
+    const unsubscribe = onTokenChange((newToken) => {
+      setToken(newToken);
+    })
+    return unsubscribe;
+  }, []);
 
   const saveToken = useCallback((newToken: string) => {
     setToken(newToken);
@@ -41,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       saveToken,
       logout,
     }),
-    [token, saveToken, logout]
+    [token, saveToken, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
