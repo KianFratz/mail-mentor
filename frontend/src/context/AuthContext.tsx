@@ -1,3 +1,4 @@
+import api from "@/lib/axios";
 import { onTokenChange } from "@/lib/tokenEvents";
 import type { AuthContextValue } from "@/types/auth.type";
 import React, {
@@ -16,6 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem(TOKEN_KEY),
   );
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -28,8 +30,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onTokenChange((newToken) => {
       setToken(newToken);
-    })
+    });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async () => {
+      try {
+        const { data } = await api.post("/auth/refresh");
+        if (!cancelled) {
+          setToken(data.access_token);
+        }
+      } catch {
+        if (!cancelled) {
+          setToken(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsInitializing(false);
+        }
+      }
+    };
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const saveToken = useCallback((newToken: string) => {
@@ -46,10 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       token,
       isAuthenticated: Boolean(token),
+      isInitializing,
       saveToken,
       logout,
     }),
-    [token, saveToken, logout],
+    [token, isInitializing, saveToken, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
