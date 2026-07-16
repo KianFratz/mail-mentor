@@ -7,9 +7,9 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-// Attach token to every outgoing request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -21,21 +21,64 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Auto-logout on 401 Unauthorized
+let isRefreshing = false;
+let refreshQueue: Array<(token: string | null) => void> = [];
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const isLoginRequest = error.config?.url?.includes("auth/login");
+    const isRefreshRequest = error.config?.url?.includes("auth/refresh");
 
-    // Only redirect if it's a 401 error AND NOT the login request itself
-    if (error.response?.status === 401 && !isLoginRequest) {
-      localStorage.removeItem(TOKEN_KEY);
-      // Hard redirect — wipes all in-memory React state cleanly
-      window.location.replace("/login");
+    if (isLoginRequest || isRefreshRequest) {
+      return Promise.reject(error);
+    }
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          refreshQueue.push((newToken) => {
+            if (!newToken) reject(error);
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            resolve(api(originalRequest));
+          })
+        })
+      }
+
+      isRefreshing = true;
+      try {
+        const data = await api.post("/auth/refresh");
+        localStorage.setItem(TOKEN_KEY, data.data.access_token);
+
+        refreshQueue.forEach((cb) => cb(data.data.access_token));
+        refreshQueue = [];
+
+        originalRequest.headers.Authorization = `Bearer ${data.data.access_token}`;
+        return api(originalRequest);
+      } catch (refreshError){
+        refreshQueue.forEach((cb) => cb(null));
+        refreshQueue = [];
+        hardLogout();
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    if (error.response?.status === 401) {
+      hardLogout();
     }
     
     return Promise.reject(error);
   },
 );
+
+function hardLogout() {
+  localStorage.removeItem(TOKEN_KEY);
+  window.location.replace("/login");
+}
 
 export default api;

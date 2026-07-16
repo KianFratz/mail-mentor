@@ -1,3 +1,4 @@
+import type { AuthContextValue } from "@/types/auth.type";
 import React, {
   createContext,
   useCallback,
@@ -7,15 +8,6 @@ import React, {
   useState,
 } from "react";
 
-interface AuthContextValue {
-  token: string | null;
-  isAuthenticated: boolean;
-  // Call after a successful login to persist the token
-  saveToken: (token: string) => void;
-  // Clears auth state and redirects to /login
-  logout: () => void;
-}
-
 const AuthContext = createContext<AuthContextValue | null>(null);
 const TOKEN_KEY = "access_token";
 
@@ -24,7 +16,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.getItem(TOKEN_KEY)
   );
 
-  // Keep localStorage in sync whenever the token changes.
   useEffect(() => {
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
@@ -40,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     setToken(null);
     localStorage.removeItem(TOKEN_KEY);
-    // Hard-navigate so all in-memory state is wiped.
     window.location.replace("/login");
   }, []);
 
