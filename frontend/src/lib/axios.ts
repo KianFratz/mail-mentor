@@ -42,7 +42,10 @@ api.interceptors.response.use(
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           refreshQueue.push((newToken) => {
-            if (!newToken) reject(error);
+            if (!newToken) {
+              reject(error);
+              return;
+            }
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             resolve(api(originalRequest));
           })
@@ -70,10 +73,6 @@ api.interceptors.response.use(
       }
     }
 
-    if (error.response?.status === 401) {
-      hardLogout();
-    }
-    
     return Promise.reject(error);
   },
 );

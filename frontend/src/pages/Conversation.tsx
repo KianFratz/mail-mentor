@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import type { WritingSession } from "@/types/conversation.type";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import { getUserInitials } from "@/lib/utils";
 
@@ -22,14 +22,16 @@ function Conversation() {
     }
   };
 
+  const userInitials = useMemo(() => {
+    const token = localStorage.getItem("access_token");
+    return getUserInitials(token);
+  }, []);
+
   useEffect(() => {
     fetchConversation();
   }, [])
 
   if (selectedConversation && selectedConversation.scenario) {
-    const token = localStorage.getItem("access_token");
-    const userInitials = getUserInitials(token);
-
     return (
       <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
         <div className="max-w-5xl mx-auto py-8 px-2">

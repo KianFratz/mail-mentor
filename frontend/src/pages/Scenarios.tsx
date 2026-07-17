@@ -47,8 +47,12 @@ function Scenarios() {
     }
   };
 
-  const visibleScenarios = scenarios.filter(
-    (s) => activeCategory === "All Scenarios" || s.category === activeCategory,
+  const visibleScenarios = useMemo(
+    () =>
+      scenarios.filter(
+        (s) => activeCategory === "All Scenarios" || s.category === activeCategory,
+      ),
+    [scenarios, activeCategory],
   );
 
   return (
@@ -77,21 +81,27 @@ function Scenarios() {
               ))}
             </div>
 
-            <div
-              className="grid gap-6"
-              style={{
-                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              }}
-            >
-              {visibleScenarios.map((scenario) => (
-                <ScenarioCard
-                  key={scenario.id}
-                  scenario={scenario}
-                  onSelect={setSelectedScenario}
-                />
-              ))}
-              {activeCategory === "All Scenarios" && <FeaturedScenario />}
-            </div>
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+              </div>
+            ) : (
+              <div
+                className="grid gap-6"
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                }}
+              >
+                {visibleScenarios.map((scenario) => (
+                  <ScenarioCard
+                    key={scenario.id}
+                    scenario={scenario}
+                    onSelect={setSelectedScenario}
+                  />
+                ))}
+                {activeCategory === "All Scenarios" && <FeaturedScenario />}
+              </div>
+            )}
           </>
         ) : (
           <CreateCompose scenario={selectedScenario} />

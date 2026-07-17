@@ -26,10 +26,11 @@ export class AuthController {
   ) {}
 
   private setRefreshTokenCookie(res: Response, refreshToken: string): void {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   }
@@ -84,10 +85,11 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res() res: Response) {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
     });
     return res.json({
       message: 'Logged out successfully',
