@@ -251,8 +251,15 @@ export default function ReplyEditor({
               <EditorProvider
                 key={editorKey}
                 className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
-                placeholder="Write your reply…"
+                placeholder={
+                  writingSessionStatus === "graded"
+                    ? ""
+                    : "Write your reply..."
+                }
                 content={editorKey === 0 ? initialTextBody : ""}
+                editable={
+                  !(writingSessionStatus === "graded")
+                }
                 editorProps={{
                   handlePaste(view, event) {
                     const text = event.clipboardData?.getData("text/plain");
