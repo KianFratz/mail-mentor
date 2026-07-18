@@ -16,13 +16,12 @@ export default function SideNavbar({
 
     try {
       await api.post("/auth/logout", {}, { withCredentials: true });
-
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("user");
-
-      logout();
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
+      logout();
     }
   };
 

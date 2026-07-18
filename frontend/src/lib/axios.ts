@@ -31,8 +31,9 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const isLoginRequest = error.config?.url?.includes("auth/login");
     const isRefreshRequest = error.config?.url?.includes("auth/refresh");
+    const isLogoutRequest = error.config?.url?.includes("auth/logout");
 
-    if (isLoginRequest || isRefreshRequest) {
+    if (isLoginRequest || isRefreshRequest || isLogoutRequest) {
       return Promise.reject(error);
     }
 

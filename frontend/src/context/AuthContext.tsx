@@ -41,9 +41,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (initAttempted.current) return;
     initAttempted.current = true;
 
-    let cancelled = false;
     const initAuth = async () => {
       const existingToken = localStorage.getItem(TOKEN_KEY);
+
+      if (!existingToken) {
+        setIsInitializing(false);
+        return;
+      }
 
       if (existingToken && !isTokenExpired(existingToken)) {
         setIsInitializing(false);
@@ -52,34 +56,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const { data } = await api.post("/auth/refresh");
-        if (!cancelled) {
-          setToken(data.access_token);
-        }
+        setToken(data.access_token);
       } catch {
-        if (!cancelled) {
-          setToken(null);
-        }
+        setToken(null);
       } finally {
-        if (!cancelled) {
-          setIsInitializing(false);
-        }
+        setIsInitializing(false);
       }
     };
 
     initAuth();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const saveToken = useCallback((newToken: string) => {
     setToken(newToken);
+    setIsInitializing(false);
   }, []);
 
   const logout = useCallback(() => {
     setToken(null);
     localStorage.removeItem(TOKEN_KEY);
+    setIsInitializing(false);
     window.location.replace("/login");
   }, []);
 
