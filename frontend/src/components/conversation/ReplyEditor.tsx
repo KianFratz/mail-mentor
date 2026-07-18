@@ -149,7 +149,7 @@ export default function ReplyEditor({
       const response = await api.post(
         `/writing-sessions/${currentSessionId}/reply`,
         {
-          message: stripped,
+          message: currentBody,
         },
       );
 
