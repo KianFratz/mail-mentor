@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { isTokenExpired } from "@/lib/jwt";
 import { onTokenChange } from "@/lib/tokenEvents";
 import type { AuthContextValue } from "@/types/auth.type";
 import React, {
@@ -13,15 +14,6 @@ import React, {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 const TOKEN_KEY = "access_token";
-
-function isTokenExpired(token: string): boolean {
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.exp * 1000 <= Date.now() + 30_000;
-  } catch {
-    return true;
-  }
-}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
