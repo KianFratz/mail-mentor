@@ -65,15 +65,11 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop overflow-hidden bg-background relative z-0">
-      {/* Decorative Background Elements */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-primary opacity-20 blur-[100px] rounded-full"></div>
         <div className="absolute bottom-[-10%] left-[-5%] w-[30vw] h-[30vw] bg-accent opacity-30 blur-[100px] rounded-full"></div>
       </div>
-
-      {/* Login Container */}
       <main className="w-full max-w-[440px] flex flex-col items-center">
-        {/* Branding */}
         <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary mb-6 shadow-lg">
             <span className="material-symbols-outlined text-primary-foreground text-[32px]">
@@ -88,7 +84,6 @@ export const Login: React.FC = () => {
           </p>
         </div>
 
-        {/* Login Card */}
         <div className="w-full bg-card p-8 md:p-10 rounded-2xl writing-canvas-shadow animate-in fade-in zoom-in-95 duration-1000 delay-150 glass-effect">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <TextInput
@@ -133,7 +128,6 @@ export const Login: React.FC = () => {
             </div>
           </form>
 
-          {/* Social Login Divider */}
           <div className="relative my-8">
             <div
               aria-hidden="true"
@@ -165,7 +159,6 @@ export const Login: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer Call to Action */}
         <p className="mt-8 font-body-sm text-body-sm text-muted-foreground text-center animate-in fade-in slide-in-from-top-2 duration-700 delay-300">
           New to Mail Mentor?
           <Link
@@ -176,7 +169,6 @@ export const Login: React.FC = () => {
           </Link>
         </p>
 
-        {/* Terms & Privacy */}
         <div className="mt-auto pt-16 flex gap-6 font-label-sm text-label-sm text-muted-foreground">
           <a href="#" className="hover:text-foreground transition-colors">
             Privacy Policy
