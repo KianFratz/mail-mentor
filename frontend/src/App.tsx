@@ -28,7 +28,7 @@ function App() {
             <Route element={<AppShell />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/scenarios" element={<Scenarios />} />
-              <Route path="/conversation" element={<Conversation />} />
+              <Route path="/conversation/:sessionId" element={<Conversation />} />
               <Route path="/progress" element={<Progress />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
