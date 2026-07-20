@@ -13,7 +13,7 @@ export const DashboardData: DashboardDataProps = {
   sideNavItems: [
     { label: "Dashboard", icon: "home", href: "/dashboard" },
     { label: "Scenarios", icon: "library_books", href: "/scenarios" },
-    { label: "Conversation", icon: "chat", href: "/conversation" },
+    { label: "Conversation", icon: "chat", href: "/conversations" },
     { label: "Progress", icon: "area_chart", href: "/progress" },
     { label: "Settings", icon: "settings", href: "/settings" },
   ],

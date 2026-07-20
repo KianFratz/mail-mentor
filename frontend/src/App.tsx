@@ -11,30 +11,35 @@ import OAuthSuccess from "./pages/OAuthSuccess";
 import { Landing } from "./pages/Landing";
 import Scenarios from "./pages/Scenarios";
 import Progress from "./pages/Progress";
-import Conversation from "./pages/Conversation";
+import { Conversation } from "./components/conversation/Conversation";
+import ConversationList from "./pages/ConversationList";
 
 function App() {
   return (
     <ToastProvider position="top-right">
       <AuthProvider>
         <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AppShell />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/scenarios" element={<Scenarios />} />
-              <Route path="/conversation/:sessionId" element={<Conversation />} />
-              <Route path="/progress" element={<Progress />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppShell />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/scenarios" element={<Scenarios />} />
+                <Route path="/conversations" element={<ConversationList />} />
+                <Route
+                  path="/conversation/:sessionId?"
+                  element={<Conversation />}
+                />
+                <Route path="/progress" element={<Progress />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<Navigate to="/dashboard" />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
         </BrowserRouter>
       </AuthProvider>
     </ToastProvider>

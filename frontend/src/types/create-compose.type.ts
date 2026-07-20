@@ -7,4 +7,5 @@ export interface CreateComposeProps {
   sessionId?: string;
   userName?: string;
   writingSessionStatus?: string;
+  onSessionCreated?: (sessionId: string) => void;
 }

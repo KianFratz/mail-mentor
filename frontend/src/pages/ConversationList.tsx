@@ -1,70 +1,27 @@
 import api from "@/lib/axios";
 import type { WritingSession } from "@/types/conversation.type";
-import { useEffect, useMemo, useState } from "react";
-import CreateCompose from "@/components/conversation/CreateCompose";
-import { getUserInitials } from "@/lib/utils";
-import { useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
-function Conversation() {
+function ConversationList() {
   const [loading, setLoading] = useState(false);
   const [conversations, setConversations] = useState<WritingSession[]>([]);
-  const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
-  const [session, setSession] = useState<WritingSession | null>(null);
-
-  const fetchConversation = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get("/writing-session/me");
-      setConversations(response.data);
-    } catch (error) {
-      console.error("Failed fetching conversations ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const userInitials = useMemo(() => {
-    const token = localStorage.getItem("access_token");
-    return getUserInitials(token);
-  }, []);
 
   useEffect(() => {
-    if (sessionId) {
-      api
-        .get(`writing-session/${sessionId}`)
-        .then((res) => setSession(res.data))
-        .catch((err) => console.error("Failed to fetch session: ", err));
-    } else {
-      fetchConversation();
-    }
+    const fetchConversations = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/writing-session/me");
+        setConversations(response.data);
+      } catch (error) {
+        console.error("Failed fetching conversations", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchConversations();
   }, []);
-
-  if (sessionId && session && session.scenario) {
-    return (
-      <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
-        <div className="max-w-5xl mx-auto py-8 px-2">
-          <button
-            onClick={() => navigate("/conversation")}
-            className="flex items-center gap-2 px-4 py-2 mb-6 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80 transition-all text-sm font-medium"
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              arrow_back
-            </span>
-            Back to Conversations
-          </button>
-          <CreateCompose
-            scenario={session.scenario}
-            initialSubject={session.subjectLine}
-            initialTextBody=""
-            sessionId={session.id}
-            userName={userInitials}
-            writingSessionStatus={session.status}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
@@ -140,4 +97,4 @@ function Conversation() {
   );
 }
 
-export default Conversation;
+export default ConversationList;

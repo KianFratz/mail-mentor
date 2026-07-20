@@ -6,6 +6,7 @@ import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import api from "@/lib/axios";
 import type { Scenario } from "@/types/scenario.type";
+import { replace, useNavigate } from "react-router";
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<
@@ -20,18 +21,19 @@ function Scenarios() {
     () => ["All Scenarios", ...new Set(scenarios.map((s) => s.category))],
     [scenarios],
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadScenarios = async () => {
       try {
         setLoading(true);
-        setScenarios(await fetchScenarios()); 
-      } catch (error) { 
+        setScenarios(await fetchScenarios());
+      } catch (error) {
         console.error("Failed to fetch scenarios:", error);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     loadScenarios();
   }, []);
@@ -50,7 +52,8 @@ function Scenarios() {
   const visibleScenarios = useMemo(
     () =>
       scenarios.filter(
-        (s) => activeCategory === "All Scenarios" || s.category === activeCategory,
+        (s) =>
+          activeCategory === "All Scenarios" || s.category === activeCategory,
       ),
     [scenarios, activeCategory],
   );
@@ -104,7 +107,12 @@ function Scenarios() {
             )}
           </>
         ) : (
-          <CreateCompose scenario={selectedScenario} />
+          <CreateCompose
+            scenario={selectedScenario}
+            onSessionCreated={(id) =>
+              navigate(`/conversation/${id}`, { replace: true })
+            }
+          />
         )}
       </div>
       <AIPopover />

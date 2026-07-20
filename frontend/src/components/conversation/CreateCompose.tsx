@@ -15,6 +15,7 @@ const CreateCompose = ({
   sessionId,
   userName,
   writingSessionStatus,
+  onSessionCreated,
 }: CreateComposeProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [wordCount, setWordCount] = useState(0);
@@ -54,7 +55,7 @@ const CreateCompose = ({
         scenarioId: scenario.id,
       });
 
-      setActiveSessionId(response.data.id);
+      onSessionCreated?.(response.data.id);
       return response.data.id;
     } catch (error) {
       console.error(error);

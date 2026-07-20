@@ -288,6 +288,7 @@ export type ToastPosition =
 export interface ToastProviderProps extends Toast.Provider.Props {
   position?: ToastPosition;
   portalProps?: React.ComponentProps<typeof Toast.Portal>;
+  children?: React.ReactNode;
 }
 
 export function ToastProvider({
@@ -306,6 +307,7 @@ export function ToastProvider({
 
 export interface AnchoredToastProviderProps extends Toast.Provider.Props {
   portalProps?: React.ComponentProps<typeof Toast.Portal>;
+  children?: React.ReactNode;
 }
 
 export function AnchoredToastProvider({

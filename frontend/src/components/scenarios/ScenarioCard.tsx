@@ -1,5 +1,7 @@
 import { colorMap } from "@/constants/scenario.constant";
 import type { ScenarioCardProps } from "@/types/scenario.type";
+import { useNavigate } from "react-router";
+import { Button } from "../ui/button";
 
 export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   scenario,
@@ -11,6 +13,16 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
     Advanced: 3,
   };
   const activeDots = dotsMap[scenario.level];
+  const navigate = useNavigate();
+
+  const handleScenarioSelect = () => {
+    if (onSelect) {
+      onSelect(scenario);
+    }
+    navigate("/conversation", {
+      state: { scenario },
+    });
+  };
 
   return (
     <div className="bg-white rounded-2xl p-6 border border-gray-300 hover:shadow-lg transition-all group flex flex-col h-full hover:-translate-y-1">
@@ -41,9 +53,12 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
         <span className="text-xs font-medium text-muted-foreground uppercase">
           {scenario.level}
         </span>
-        <button onClick={() => onSelect(scenario)} className="p-3 pb-2 rounded-xl bg-primary text-primary-foreground group-hover:scale-110 transition-transform">
+        <Button
+          onClick={handleScenarioSelect}
+          className="p-3 pb-2 rounded-xl bg-primary text-primary-foreground group-hover:scale-110 transition-transform"
+        >
           <span className="material-symbols-outlined">arrow_forward</span>
-        </button>
+        </Button>
       </div>
     </div>
   );
