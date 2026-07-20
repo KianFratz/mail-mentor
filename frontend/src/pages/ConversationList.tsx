@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import api from "@/lib/axios";
 import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
@@ -76,7 +77,7 @@ function ConversationList() {
                       {conv.wordCount} words
                     </div>
                     {conv.scenario && (
-                      <button
+                      <Button
                         onClick={() => navigate(`/conversation/${conv.id}`)}
                         className="flex items-center gap-1.5 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
                       >
@@ -84,7 +85,7 @@ function ConversationList() {
                         <span className="material-symbols-outlined text-[16px]">
                           arrow_forward
                         </span>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>

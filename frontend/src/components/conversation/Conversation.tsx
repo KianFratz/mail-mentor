@@ -22,10 +22,11 @@ export function Conversation() {
   const newScenario = (location.state as { scenario?: Scenario } | null)
     ?.scenario;
 
+  // Fetch existing session when a sessionId is present in the URL
   useEffect(() => {
-    if (!session) return;
-    setLoading(true);
+    if (!sessionId) return;
 
+    setLoading(true);
     api
       .get(`/writing-session/${sessionId}`)
       .then((res) => setSession(res.data))
@@ -36,8 +37,23 @@ export function Conversation() {
       .finally(() => setLoading(false));
   }, [sessionId, navigate]);
 
+  // Redirect to conversations list if there's nothing to show
+  useEffect(() => {
+    if (!sessionId && !newScenario) {
+      navigate("/conversations", { replace: true });
+    }
+  }, [sessionId, newScenario, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex-grow flex items-center justify-center bg-[#F9FAFB]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
   if (sessionId) {
-    if (!session || !session.scenario) return null; // or a loading state
+    if (!session) return null;
 
     return (
       <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
@@ -61,16 +77,7 @@ export function Conversation() {
     );
   }
 
-  useEffect(() => {
-    if (!sessionId && !newScenario) {
-      navigate("/conversations", { replace: true });
-      return null;
-    }
-  }, [sessionId, newScenario, navigate]);
-
-  if (!sessionId && !newScenario) {
-    return null;
-  }
+  if (!newScenario) return null;
 
   return (
     <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
