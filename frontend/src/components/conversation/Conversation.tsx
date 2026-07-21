@@ -57,18 +57,14 @@ export function Conversation() {
     );
   }
 
-  
-
-return (
-  <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
-    <div className="max-w-5xl mx-auto py-8 px-2">
-      <Button onClick={() => navigate("/conversations")}>
-        Back to Conversations
-      </Button>
-      <CreateCompose
-      />
+  return (
+    <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
+      <div className="max-w-5xl mx-auto py-8 px-2">
+        <Button onClick={() => navigate("/conversations")}>
+          Back to Conversations
+        </Button>
+        <CreateCompose />
+      </div>
     </div>
-  </div>
-);
-  }
+  );
 }

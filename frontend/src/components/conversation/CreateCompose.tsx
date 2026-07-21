@@ -1,11 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
-import api from "@/lib/axios";
-import type { SessionFeedback } from "@/types/feedback.type";
-import type { ChatMessage } from "@/types/reply-editor.type";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
-import { toastManager } from "../ui/toast";
 import type { CreateComposeProps } from "@/types/create-compose.type";
 import { useConversationStore } from "@/store/conversation.store";
 
@@ -15,50 +11,14 @@ const CreateCompose = ({}: CreateComposeProps) => {
   const {
     scenario,
     subject,
-    textBody,
     wordCount,
     feedback,
     showFeedback,
-    sessionId,
     status: writingSessionStatus,
     messages,
     setSubject,
-    setTextBody,
-    setWordCount,
-    setFeedback,
     setShowFeedback,
-    setSession,
   } = useConversationStore();
-
-  const handleEndSession = (feedbackData: SessionFeedback) => {
-    setFeedback(feedbackData);
-    setShowFeedback(true);
-  };
-
-  const handleStartSession = async (): Promise<string> => {
-    if (!subject || !subject.trim()) {
-      toastManager.add({
-        title: "Input validation",
-        description: "Subject should not be empty",
-        type: "error",
-      });
-      return;
-    }
-
-    try {
-      const response = await api.post("/writing-session/create", {
-        subjectLine: subject,
-        textBody,
-        wordCount,
-        scenarioId: scenario.id,
-      });
-
-      setSession(response.data.id);
-      return response.data.id;
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   if (!scenario) return null;
 
@@ -135,17 +95,7 @@ const CreateCompose = ({}: CreateComposeProps) => {
                 </>
               ) : (
                 <>
-                  <ReplyEditor
-                    onWordCountChange={setWordCount}
-                    onBodyChange={setTextBody}
-                    editorRef={editorRef}
-                    aiName={scenario.aiPersona.name}
-                    writingSessionStatus={writingSessionStatus}
-                    setShowFeedback={setShowFeedback}
-                    onEndSession={handleEndSession}
-                    onStartSession={handleStartSession}
-                    disableSend={!subject.trim()}
-                  />
+                  <ReplyEditor editorRef={editorRef} />
                 </>
               )}
             </div>

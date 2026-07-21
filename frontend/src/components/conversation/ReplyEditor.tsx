@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   EditorProvider,
   EditorBubbleMenu,
@@ -30,65 +31,61 @@ import ConfirmDialog from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import DisplayMessage from "./DisplayMessage";
 import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
+import { ScenarioCard } from "../scenarios/ScenarioCard";
+import { useConversationStore } from "@/store/conversation.store";
 
 export default function ReplyEditor({
-  onWordCountChange,
-  onBodyChange,
-  initialTextBody,
   editorRef,
-  sessionId,
-  userName = "User",
-  aiName = "AI",
-  onEndSession,
-  onStartSession,
-  writingSessionStatus,
-  setShowFeedback,
-  disableSend,
 }: ReplyEditorProps) {
+  const navigate = useNavigate();
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
   const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [currentBody, setCurrentBody] = useState(initialTextBody ?? "");
-  const [isSending, setIsSending] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const [isEndingSession, setIsEndingSession] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const userInitials = getInitials(userName, "U");
-  const aiInitials = getInitials(aiName, "AI");
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      if (!sessionId) return;
-      try {
-        const response = await api.get(`/writing-session/${sessionId}`);
-        const session = response.data;
-        if (session.messages && session.messages.length > 0) {
-          const historyMessages: ChatMessage[] = session.messages.map(
-            (m: any) => ({
-              id: m.id,
-              role: m.role === "ASSISTANT" ? "ai" : "user",
-              content: m.content,
-              timestamp: new Date(m.createdAt),
-            }),
-          );
-          setMessages(historyMessages);
-        }
-      } catch (err) {
-        console.error("Failed to fetch session history:", err);
-      }
-    };
-    fetchHistory();
-  }, [sessionId]);
+  const {
+    scenario,
+    sessionId,
+    messages,
+    isStreaming,
+    status: writingSessionStatus,
+    subject,
+    addMessage,
+    setStreaming,
+    setFeedback,
+    setShowFeedback,
+    setWordCount,
+    setTextBody,
+    textBody,
+    setSession,
+  } = useConversationStore();
+
+  const [currentBody, setCurrentBody] = useState(textBody ?? "");
+
+  let userName = "User";
+  try {
+    const tokenStr = localStorage.getItem("access_token");
+    if (tokenStr) {
+      const payload = JSON.parse(atob(tokenStr.split(".")[1]));
+      userName = payload.name || `${payload.firstName || ""} ${payload.lastName || ""}`.trim() || "User";
+    }
+  } catch (e) {}
+
+  const userInitials = getInitials(userName, "U");
+  const aiName = scenario?.aiPersona?.name || "AI";
+  const aiInitials = getInitials(aiName);
+  const disableSend = !subject?.trim();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isSending]);
+  }, [messages, isStreaming]);
 
   const handleSend = async () => {
     const stripped = currentBody.replace(/<[^>]*>/g, "").trim();
-    if (isSending) return;
+    if (isStreaming) return;
 
     if (disableSend && !stripped) {
       toastManager.add({
@@ -124,12 +121,12 @@ export default function ReplyEditor({
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
-    setIsSending(true);
+    addMessage(userMsg);
+    setStreaming(true);
     setEditorKey((k) => k + 1);
     setCurrentBody("");
-    onBodyChange("");
-    onWordCountChange(0);
+    setTextBody("");
+    setWordCount(0);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -137,13 +134,15 @@ export default function ReplyEditor({
     try {
       let currentSessionId = sessionId;
       if (!currentSessionId) {
-        if (onStartSession) {
-          currentSessionId = await onStartSession();
-        } else {
-          throw new Error(
-            "No sessionId provided — cannot call reply endpoint.",
-          );
-        }
+        const { wordCount } = useConversationStore.getState();
+        const createRes = await api.post("/writing-session/create", {
+          subjectLine: subject,
+          textBody: currentBody,
+          wordCount,
+          scenarioId: scenario?.id,
+        });
+        currentSessionId = createRes.data.id;
+        setSession(currentSessionId);
       }
 
       const response = await api.post(
@@ -163,7 +162,9 @@ export default function ReplyEditor({
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, aiMsg]);
+      addMessage(aiMsg);
+      setStreaming(false);
+      navigate(`/conversation/${currentSessionId}`);
     } catch (err) {
       const isTimeout =
         axios.isCancel(err) ||
@@ -178,10 +179,13 @@ export default function ReplyEditor({
           : "Sorry, something went wrong while fetching a response. Please try again.",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errMsg]);
+      addMessage(errMsg);
+      setStreaming(false);
     } finally {
       clearTimeout(timeoutId);
-      setIsSending(false);
+      if (useConversationStore.getState().isStreaming) {
+        setStreaming(false);
+      }
     }
   };
 
@@ -200,7 +204,8 @@ export default function ReplyEditor({
 
     try {
       const response = await api.post(`writing-sessions/${sessionId}/feedback`);
-      onEndSession?.(response.data, messages);
+      setFeedback(response.data);
+      setShowFeedback(true);
     } catch (err) {
       console.error("Failed to generate feedback:", err);
       let message = "Something went wrong, please try again later.";
@@ -237,7 +242,7 @@ export default function ReplyEditor({
             messages={messages}
             userInitials={userInitials}
             aiInitials={aiInitials}
-            isSending={isSending}
+            isSending={isStreaming}
             messagesEndRef={messagesEndRef}
           />
 
@@ -252,14 +257,10 @@ export default function ReplyEditor({
                 key={editorKey}
                 className="writing-canvas w-full min-h-[100px] text-base text-foreground focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:rounded-full pl-6 py-3 pr-4"
                 placeholder={
-                  writingSessionStatus === "graded"
-                    ? ""
-                    : "Write your reply..."
+                  writingSessionStatus === "graded" ? "" : "Write your reply..."
                 }
-                content={editorKey === 0 ? initialTextBody : ""}
-                editable={
-                  !(writingSessionStatus === "graded")
-                }
+                content={editorKey === 0 ? textBody : ""}
+                editable={!(writingSessionStatus === "graded")}
                 editorProps={{
                   handlePaste(view, event) {
                     const text = event.clipboardData?.getData("text/plain");
@@ -279,9 +280,9 @@ export default function ReplyEditor({
                   },
                 }}
                 onUpdate={({ editor }) => {
-                  onWordCountChange(editor.storage.characterCount.words());
+                  setWordCount(editor.storage.characterCount.words());
                   const html = editor.getHTML();
-                  onBodyChange(html);
+                  setTextBody(html);
                   setCurrentBody(html);
                 }}
               >
@@ -369,7 +370,7 @@ export default function ReplyEditor({
                         }
                         setShowEndDialog(true);
                       }}
-                      disabled={isSending || isEndingSession}
+                      disabled={isStreaming || isEndingSession}
                       className="
               flex items-center gap-2 px-5 py-2.5
         bg-gradient-to-r from-rose-500 to-orange-500
@@ -398,7 +399,7 @@ export default function ReplyEditor({
                   <Button
                     type="button"
                     onClick={handleSend}
-                    disabled={isSending}
+                    disabled={isStreaming}
                     className="
                   flex items-center gap-2 px-5 py-2.5
                   bg-gradient-to-r from-violet-600 to-indigo-600
@@ -408,7 +409,7 @@ export default function ReplyEditor({
                   disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
                 "
                   >
-                    {isSending ? (
+                    {isStreaming ? (
                       <>
                         <span className="material-symbols-outlined text-[16px] animate-spin">
                           sync
