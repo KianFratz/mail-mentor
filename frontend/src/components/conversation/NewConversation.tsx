@@ -23,13 +23,7 @@ function NewConversation() {
   return (
     <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
       <div className="max-w-5xl mx-auto py-8 px-2">
-        <CreateCompose
-          userName={userInitials}
-          writingSessionStatus={undefined}
-          onSessionCreated={(id) =>
-            navigate(`/conversation/${id}`, { replace: true })
-          }
-        />
+        <CreateCompose />
       </div>
     </div>
   );

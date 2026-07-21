@@ -31,12 +31,9 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/scenarios" element={<Scenarios />} />
                 <Route path="/conversations" element={<ConversationList />} />
+                <Route path="/conversation/new" element={<NewConversation />} />
                 <Route
-                  path="/conversation/new?"
-                  element={<NewConversation />}
-                />
-                <Route
-                  path="/conversation/:sessionId?"
+                  path="/conversation/:sessionId"
                   element={<Conversation />}
                 />
                 <Route path="/progress" element={<Progress />} />
