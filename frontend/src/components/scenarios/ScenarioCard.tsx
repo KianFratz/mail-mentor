@@ -19,7 +19,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
     if (onSelect) {
       onSelect(scenario);
     }
-    navigate("/conversation", {
+    navigate("/conversation/new", {
       state: { scenario },
     });
   };

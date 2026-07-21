@@ -110,7 +110,9 @@ function Scenarios() {
           <CreateCompose
             scenario={selectedScenario}
             onSessionCreated={(id) =>
-              navigate(`/conversation/${id}`, { replace: true })
+              navigate(`/conversation/new`, {
+                state: { scenario: selectedScenario },
+              })
             }
           />
         )}
