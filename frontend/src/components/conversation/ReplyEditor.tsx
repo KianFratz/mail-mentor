@@ -34,9 +34,7 @@ import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
 import { ScenarioCard } from "../scenarios/ScenarioCard";
 import { useConversationStore } from "@/store/conversation.store";
 
-export default function ReplyEditor({
-  editorRef,
-}: ReplyEditorProps) {
+export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const navigate = useNavigate();
   const [textSelectorOpen, setTextSelectorOpen] = useState(false);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
@@ -70,7 +68,10 @@ export default function ReplyEditor({
     const tokenStr = localStorage.getItem("access_token");
     if (tokenStr) {
       const payload = JSON.parse(atob(tokenStr.split(".")[1]));
-      userName = payload.name || `${payload.firstName || ""} ${payload.lastName || ""}`.trim() || "User";
+      userName =
+        payload.name ||
+        `${payload.firstName || ""} ${payload.lastName || ""}`.trim() ||
+        "User";
     }
   } catch (e) {}
 
@@ -131,6 +132,8 @@ export default function ReplyEditor({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+    let shouldNavigate = false;
+
     try {
       let currentSessionId = sessionId;
       if (!currentSessionId) {
@@ -143,6 +146,7 @@ export default function ReplyEditor({
         });
         currentSessionId = createRes.data.id;
         setSession(currentSessionId);
+        shouldNavigate = true;
       }
 
       const response = await api.post(
@@ -164,7 +168,10 @@ export default function ReplyEditor({
 
       addMessage(aiMsg);
       setStreaming(false);
-      navigate(`/conversation/${currentSessionId}`);
+
+      if (shouldNavigate) {
+        navigate(`/conversation/${currentSessionId}`, { replace: true });
+      }
     } catch (err) {
       const isTimeout =
         axios.isCancel(err) ||
