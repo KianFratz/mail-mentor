@@ -5,23 +5,27 @@ import { ScoreCard } from "./Scorecard";
 import { CategoryBreakdown } from "./CategoryBreakdown";
 import { StrengthsAndImprovements } from "./StrengthsAndImprovements";
 import { RevisionDiff } from "./Revisiondiff";
+import { useConversationStore } from "@/store/conversation.store";
 
 interface FeedbackPanelProps {
   feedback: SessionFeedback;
-  messages: ChatMessage[];
   onBack: () => void;
   className?: string;
 }
 
-export function FeedbackPanel({
-  feedback,
-  messages,
-  onBack,
-  className,
-}: FeedbackPanelProps): JSX.Element {
+export function FeedbackPanel(): JSX.Element {
+  const { feedback } = useConversationStore();
+
+  if (!feedback) {
+    return <FeedbackPanelEmpty />;
+  }
+
   return (
-    <div className={className ?? "space-y-6 max-w-3xl mx-auto"}>
-      <ScoreCard score={feedback.overallScore} overallScore={feedback.overallScore} />
+    <div className={"space-y-6 max-w-3xl mx-auto"}>
+      <ScoreCard
+        score={feedback.overallScore}
+        overallScore={feedback.overallScore}
+      />
       <CategoryBreakdown categories={feedback.categoryScores} />
       <StrengthsAndImprovements
         strengths={feedback.strengths}

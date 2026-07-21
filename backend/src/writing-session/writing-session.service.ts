@@ -49,6 +49,7 @@ export class WritingSessionService {
       include: {
         scenario: true,
         messages: { orderBy: { createdAt: 'asc' } },
+        sessionFeedback: true,
       },
     });
 

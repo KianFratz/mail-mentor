@@ -30,7 +30,10 @@ import { toastManager } from "../ui/toast";
 import ConfirmDialog from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import DisplayMessage from "./DisplayMessage";
-import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
+import {
+  FeedbackPanel,
+  FeedbackPanelSkeleton,
+} from "../feedback/FeedbackPanel";
 import { ScenarioCard } from "../scenarios/ScenarioCard";
 import { useConversationStore } from "@/store/conversation.store";
 
@@ -59,6 +62,8 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     setTextBody,
     textBody,
     setSession,
+    showFeedback,
+    feedback,
   } = useConversationStore();
 
   const [currentBody, setCurrentBody] = useState(textBody ?? "");
@@ -354,54 +359,63 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
             </div>
 
             <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
-              {writingSessionStatus === "graded" ? (
-                <>
-                  <Button type="button" onClick={() => setShowFeedback(true)}>
-                    View Feedback
-                  </Button>
-                </>
+              {showFeedback ? (
+                <FeedbackPanel />
               ) : (
                 <>
-                  {messages.length > 0 && (
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        if (messages.length < 4) {
-                          toastManager.add({
-                            title: "Session validation",
-                            description:
-                              "Messages should be at least 4 or greater than.",
-                            type: "error",
-                          });
-                          return;
-                        }
-                        setShowEndDialog(true);
-                      }}
-                      disabled={isStreaming || isEndingSession}
-                      className="
+                  {writingSessionStatus === "graded" ? (
+                    <>
+                      <Button
+                        type="button"
+                        onClick={() => setShowFeedback(true)}
+                      >
+                        View Feedback
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      {messages.length > 0 && (
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            if (messages.length < 4) {
+                              toastManager.add({
+                                title: "Session validation",
+                                description:
+                                  "Messages should be at least 4 or greater than.",
+                                type: "error",
+                              });
+                              return;
+                            }
+                            setShowEndDialog(true);
+                          }}
+                          disabled={isStreaming || isEndingSession}
+                          className="
               flex items-center gap-2 px-5 py-2.5
         bg-gradient-to-r from-rose-500 to-orange-500
         text-white rounded-lg text-sm font-semibold
         hover:from-rose-600 hover:to-orange-600
         active:scale-95 transition-all shadow-md shadow-rose-200
         disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isEndingSession && messages.length === 0 ? (
-                        <>
-                          <span className="material-symbols-outlined text-[16px] animate-spin">
-                            sync
-                          </span>
-                          Generating Feedback...
-                        </>
-                      ) : (
-                        <>
-                          <span className="material-symbols-outlined text-[16px]">
-                            rate_review
-                          </span>
-                          End Session
-                        </>
+                        >
+                          {isEndingSession && messages.length === 0 ? (
+                            <>
+                              <span className="material-symbols-outlined text-[16px] animate-spin">
+                                sync
+                              </span>
+                              Generating Feedback...
+                            </>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-[16px]">
+                                rate_review
+                              </span>
+                              End Session
+                            </>
+                          )}
+                        </Button>
                       )}
-                    </Button>
+                    </>
                   )}
                   <Button
                     type="button"

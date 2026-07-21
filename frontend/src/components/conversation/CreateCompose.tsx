@@ -2,10 +2,9 @@ import { useRef } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
-import type { CreateComposeProps } from "@/types/create-compose.type";
 import { useConversationStore } from "@/store/conversation.store";
 
-const CreateCompose = ({}: CreateComposeProps) => {
+const CreateCompose = () => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const {

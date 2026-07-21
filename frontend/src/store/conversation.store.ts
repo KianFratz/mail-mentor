@@ -34,6 +34,13 @@ export const useConversationStore = create<ConversationStore>((set) => ({
   messages: [],
   feedback: null,
   isStreaming: false,
+  scenario: null,
+  subject: "",
+  textBody: "",
+  wordCount: 0,
+  showFeedback: false,
+  status: null,
+
   setSession: (id) =>
     set({
       sessionId: id,
@@ -58,6 +65,30 @@ export const useConversationStore = create<ConversationStore>((set) => ({
     set({
       isStreaming,
     }),
+  setScenario: (scenario) =>
+    set({
+      scenario,
+    }),
+  setSubject: (subject) =>
+    set({
+      subject,
+    }),
+  setTextBody: (textBody) =>
+    set({
+      textBody,
+    }),
+  setWordCount: (wordCount) =>
+    set({
+      wordCount,
+    }),
+  setShowFeedback: (showFeedback) =>
+    set({
+      showFeedback,
+    }),
+  setStatus: (status) =>
+    set({
+      status,
+    }),
 
   clear: () =>
     set({
@@ -66,8 +97,8 @@ export const useConversationStore = create<ConversationStore>((set) => ({
       feedback: null,
       isStreaming: false,
       scenario: null,
-      subject: undefined,
-      textBody: undefined,
+      subject: "",
+      textBody: "",
       wordCount: 0,
       showFeedback: false,
       status: null,

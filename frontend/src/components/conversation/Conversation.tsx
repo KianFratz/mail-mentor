@@ -3,18 +3,16 @@ import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useMemo, useState } from "react";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import { getUserInitials } from "@/lib/utils";
-import { useNavigate, useParams } from "react-router";
+import { replace, useNavigate, useParams } from "react-router";
 import { Button } from "../ui/button";
 import { useConversationStore } from "@/store/conversation.store";
 
 export function Conversation() {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const [session, setSession] = useState<WritingSession | null>(null);
+  const [session, setSessionState] = useState<WritingSession | null>(null);
   const [loading, setLoading] = useState(!!sessionId);
   const navigate = useNavigate();
-  const setScenario = useConversationStore((state) => state.setScenario);
-  const setSubject = useConversationStore((state) => state.setSubject);
-  const setStatus = useConversationStore((state) => state.setStatus);
+  const { setScenario, setSubject, setStatus, setSession, setMessages, setWordCount, setTextBody, setFeedback } = useConversationStore();
 
   const userInitials = useMemo(() => {
     const token = localStorage.getItem("access_token");
@@ -22,18 +20,35 @@ export function Conversation() {
   }, []);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId) {
+      navigate("/conversations", { replace: true });
+      return;
+    }
 
     setLoading(true);
     api
       .get(`/writing-session/${sessionId}`)
       .then((res) => {
         const data = res.data;
-        setSession(data);
+        setSessionState(data);
 
+        // Hydrating the Zustand store from fetched session
+        setSession(data.id);
         setScenario(data.scenario);
-        setSubject(data.subject);
+        setSubject(data.subjectLine);
+        setTextBody(data.textBody);
+        setWordCount(data.wordCount);
         setStatus(data.status);
+        setFeedback(data.sessionFeedback || data.feedback);
+        if (data.messages) {
+          const mappedMessages = data.messages.map((m: any) => ({
+            id: m.id,
+            role: m.role.toLowerCase() === 'user' ? 'user' : 'ai',
+            content: m.content,
+            timestamp: m.createdAt ? new Date(m.createdAt) : new Date(),
+          }));
+          setMessages(mappedMessages);
+        }
       })
       .catch((err) => {
         console.error("Failed to fetch session:", err);
@@ -44,9 +59,12 @@ export function Conversation() {
     sessionId,
     navigate,
     setSession,
-    useConversationStore.setScenario,
-    useConversationStore.setSubject,
-    useConversationStore.setStatus,
+    setScenario,
+    setSubject,
+    setTextBody,
+    setWordCount,
+    setStatus,
+    setMessages,
   ]);
 
   if (loading) {
