@@ -13,6 +13,7 @@ import Scenarios from "./pages/Scenarios";
 import Progress from "./pages/Progress";
 import { Conversation } from "./components/conversation/Conversation";
 import ConversationList from "./pages/ConversationList";
+import NewConversation from "./components/conversation/NewConversation";
 
 function App() {
   return (
@@ -30,6 +31,10 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/scenarios" element={<Scenarios />} />
                 <Route path="/conversations" element={<ConversationList />} />
+                <Route
+                  path="/conversation/new?"
+                  element={<NewConversation />}
+                />
                 <Route
                   path="/conversation/:sessionId?"
                   element={<Conversation />}

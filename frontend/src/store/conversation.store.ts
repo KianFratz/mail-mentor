@@ -1,0 +1,75 @@
+import type { SessionStatus } from "@/types/conversation.type";
+import type { SessionFeedback } from "@/types/feedback.type";
+import type { ChatMessage } from "@/types/reply-editor.type";
+import type { Scenario } from "@/types/scenario.type";
+import { create } from "zustand";
+
+interface ConversationStore {
+  sessionId?: string;
+  messages: ChatMessage[];
+  feedback: SessionFeedback | null;
+  isStreaming: boolean;
+  setSession: (id: string) => void;
+  setMessages: (messages: ChatMessage[]) => void;
+  addMessage: (message: ChatMessage) => void;
+  setFeedback: (feedback: SessionFeedback) => void;
+  setStreaming: (streaming: boolean) => void;
+  clear: () => void;
+  scenario: Scenario | null;
+  subject: string;
+  textBody: string;
+  wordCount: number;
+  showFeedback: boolean;
+  status: SessionStatus | null;
+  setScenario: (s: Scenario) => void;
+  setSubject: (s: string) => void;
+  setTextBody: (b: string) => void;
+  setWordCount: (n: number) => void;
+  setShowFeedback: (v: boolean) => void;
+  setStatus: (s: SessionStatus) => void;
+}
+
+export const useConversationStore = create<ConversationStore>((set) => ({
+  sessionId: undefined,
+  messages: [],
+  feedback: null,
+  isStreaming: false,
+  setSession: (id) =>
+    set({
+      sessionId: id,
+    }),
+
+  setMessages: (messages) =>
+    set({
+      messages,
+    }),
+
+  addMessage: (message) =>
+    set((state) => ({
+      messages: [...state.messages, message],
+    })),
+
+  setFeedback: (feedback) =>
+    set({
+      feedback,
+    }),
+
+  setStreaming: (isStreaming) =>
+    set({
+      isStreaming,
+    }),
+
+  clear: () =>
+    set({
+      sessionId: undefined,
+      messages: [],
+      feedback: null,
+      isStreaming: false,
+      scenario: null,
+      subject: undefined,
+      textBody: undefined,
+      wordCount: 0,
+      showFeedback: false,
+      status: null,
+    }),
+}));

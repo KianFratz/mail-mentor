@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import api from "@/lib/axios";
@@ -7,38 +7,36 @@ import type { ChatMessage } from "@/types/reply-editor.type";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
 import { toastManager } from "../ui/toast";
 import type { CreateComposeProps } from "@/types/create-compose.type";
+import { useConversationStore } from "@/store/conversation.store";
 
-const CreateCompose = ({
-  scenario,
-  initialSubject = "",
-  initialTextBody = "",
-  sessionId,
-  userName,
-  writingSessionStatus,
-  onSessionCreated,
-}: CreateComposeProps) => {
+const CreateCompose = ({}: CreateComposeProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [wordCount, setWordCount] = useState(0);
-  const [subject, setSubject] = useState(initialSubject);
-  const [textBody, setTextBody] = useState(initialTextBody);
-  const [feedback, setFeedback] = useState<SessionFeedback | null>(null);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [activeSessionId, setActiveSessionId] = useState<string | undefined>(
-    sessionId,
-  );
 
-  const handleEndSession = (
-    feedbackData: SessionFeedback,
-    finalMessages: ChatMessage[],
-  ) => {
+  const {
+    scenario,
+    subject,
+    textBody,
+    wordCount,
+    feedback,
+    showFeedback,
+    sessionId,
+    status: writingSessionStatus,
+    messages,
+    setSubject,
+    setTextBody,
+    setWordCount,
+    setFeedback,
+    setShowFeedback,
+    setSession,
+  } = useConversationStore();
+
+  const handleEndSession = (feedbackData: SessionFeedback) => {
     setFeedback(feedbackData);
-    setMessages(finalMessages);
     setShowFeedback(true);
   };
 
   const handleStartSession = async (): Promise<string> => {
-    if (!subject.trim()) {
+    if (!subject || !subject.trim()) {
       toastManager.add({
         title: "Input validation",
         description: "Subject should not be empty",
@@ -55,44 +53,14 @@ const CreateCompose = ({
         scenarioId: scenario.id,
       });
 
-      onSessionCreated?.(response.data.id);
+      setSession(response.data.id);
       return response.data.id;
     } catch (error) {
       console.error(error);
     }
   };
 
-  React.useEffect(() => {
-    const initializeSessionData = async () => {
-      if (!sessionId || writingSessionStatus !== "graded") return;
-
-      try {
-        const historyRes = await api.get(`/writing-session/${sessionId}`);
-        const session = historyRes.data;
-
-        if (session.messages && session.messages.length > 0) {
-          const historyMessages: ChatMessage[] = session.messages.map(
-            (m: any) => ({
-              id: m.id,
-              role: m.role === "ASSISTANT" ? "ai" : "user",
-              content: m.content,
-              timestamp: new Date(m.createdAt),
-            }),
-          );
-          setMessages(historyMessages);
-        }
-
-        const feedbackRes = await api.get(
-          `/writing-session/${sessionId}/feedback`,
-        );
-        setFeedback(feedbackRes.data);
-      } catch (err) {
-        console.error("Failed to fetch session data: ", err);
-      }
-    };
-
-    initializeSessionData();
-  }, [sessionId, writingSessionStatus]);
+  if (!scenario) return null;
 
   return (
     <form action="" onSubmit={(e) => e.preventDefault()}>
@@ -147,7 +115,7 @@ const CreateCompose = ({
                 <input
                   id="subject"
                   type="text"
-                  value={subject}
+                  value={subject || ""}
                   onChange={(e) => setSubject(e.target.value)}
                   readOnly={
                     writingSessionStatus === "graded" ||
@@ -170,10 +138,7 @@ const CreateCompose = ({
                   <ReplyEditor
                     onWordCountChange={setWordCount}
                     onBodyChange={setTextBody}
-                    initialTextBody={initialTextBody}
                     editorRef={editorRef}
-                    sessionId={activeSessionId}
-                    userName={userName}
                     aiName={scenario.aiPersona.name}
                     writingSessionStatus={writingSessionStatus}
                     setShowFeedback={setShowFeedback}

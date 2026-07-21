@@ -3,46 +3,51 @@ import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useMemo, useState } from "react";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import { getUserInitials } from "@/lib/utils";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "../ui/button";
-import type { Scenario } from "@/types/scenario.type";
+import { useConversationStore } from "@/store/conversation.store";
 
 export function Conversation() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const [session, setSession] = useState<WritingSession | null>(null);
   const [loading, setLoading] = useState(!!sessionId);
-  const location = useLocation();
   const navigate = useNavigate();
+  const setScenario = useConversationStore((state) => state.setScenario);
+  const setSubject = useConversationStore((state) => state.setSubject);
+  const setStatus = useConversationStore((state) => state.setStatus);
 
   const userInitials = useMemo(() => {
     const token = localStorage.getItem("access_token");
     return getUserInitials(token);
   }, []);
 
-  const newScenario = (location.state as { scenario?: Scenario } | null)
-    ?.scenario;
-
-  // Fetch existing session when a sessionId is present in the URL
   useEffect(() => {
     if (!sessionId) return;
 
     setLoading(true);
     api
       .get(`/writing-session/${sessionId}`)
-      .then((res) => setSession(res.data))
+      .then((res) => {
+        const data = res.data;
+        setSession(data);
+
+        setScenario(data.scenario);
+        setSubject(data.subject);
+        setStatus(data.status);
+      })
       .catch((err) => {
         console.error("Failed to fetch session:", err);
         navigate("/conversations", { replace: true });
       })
       .finally(() => setLoading(false));
-  }, [sessionId, navigate]);
-
-  // Redirect to conversations list if there's nothing to show
-  useEffect(() => {
-    if (!sessionId && !newScenario) {
-      navigate("/conversations", { replace: true });
-    }
-  }, [sessionId, newScenario, navigate]);
+  }, [
+    sessionId,
+    navigate,
+    setSession,
+    useConversationStore.setScenario,
+    useConversationStore.setSubject,
+    useConversationStore.setStatus,
+  ]);
 
   if (loading) {
     return (
@@ -52,48 +57,18 @@ export function Conversation() {
     );
   }
 
-  if (sessionId) {
-    if (!session) return null;
+  
 
-    return (
-      <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
-        <div className="max-w-5xl mx-auto py-8 px-2">
-          <Button onClick={() => navigate("/conversations")}>
-            Back to Conversations
-          </Button>
-          <CreateCompose
-            scenario={session.scenario}
-            initialSubject={session.subjectLine}
-            initialTextBody=""
-            sessionId={session.id}
-            userName={userInitials}
-            writingSessionStatus={session.status}
-            onSessionCreated={(id) =>
-              navigate(`/conversation/${id}`, { replace: true })
-            }
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (!newScenario) return null;
-
-  return (
-    <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
-      <div className="max-w-5xl mx-auto py-8 px-2">
-        <CreateCompose
-          scenario={newScenario}
-          initialSubject=""
-          initialTextBody=""
-          sessionId={undefined}
-          userName={userInitials}
-          writingSessionStatus={undefined}
-          onSessionCreated={(id) =>
-            navigate(`/conversation/${id}`, { replace: true })
-          }
-        />
-      </div>
+return (
+  <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
+    <div className="max-w-5xl mx-auto py-8 px-2">
+      <Button onClick={() => navigate("/conversations")}>
+        Back to Conversations
+      </Button>
+      <CreateCompose
+      />
     </div>
-  );
+  </div>
+);
+  }
 }
