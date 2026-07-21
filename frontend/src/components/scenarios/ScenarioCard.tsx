@@ -2,6 +2,7 @@ import { colorMap } from "@/constants/scenario.constant";
 import type { ScenarioCardProps } from "@/types/scenario.type";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
+import { useConversationStore } from "@/store/conversation.store";
 
 export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   scenario,
@@ -19,7 +20,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
     if (onSelect) {
       onSelect(scenario);
     }
-    navigate("/conversation/new", {
+    navigate("/conversation", {
       state: { scenario },
     });
   };

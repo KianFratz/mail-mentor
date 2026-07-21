@@ -34,7 +34,6 @@ import {
   FeedbackPanel,
   FeedbackPanelSkeleton,
 } from "../feedback/FeedbackPanel";
-import { ScenarioCard } from "../scenarios/ScenarioCard";
 import { useConversationStore } from "@/store/conversation.store";
 
 export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
