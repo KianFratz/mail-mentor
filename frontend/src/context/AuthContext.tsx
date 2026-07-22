@@ -72,11 +72,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsInitializing(false);
   }, []);
 
-  const logout = useCallback(() => {
-    setToken(null);
-    localStorage.removeItem(TOKEN_KEY);
-    setIsInitializing(false);
-    window.location.replace("/login");
+  const logout = useCallback(async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      localStorage.removeItem(TOKEN_KEY);
+    } finally {
+      setToken(null);
+      setIsInitializing(false);
+      window.location.replace("/login");
+    }
   }, []);
 
   const value = useMemo<AuthContextValue>(
