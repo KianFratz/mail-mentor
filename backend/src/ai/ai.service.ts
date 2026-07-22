@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
-import { JsonNullValueInput } from 'src/generated/prisma/internal/prismaNamespaceBrowser';
 
 @Injectable()
 export class AiService {
@@ -97,15 +96,16 @@ export class AiService {
     const cleanedContent = content
       .replace(/```json/g, '')
       .replace(/```/g, '')
+      .replace(/<\/?p\/?>/g, '')
       .trim();
 
     const parsed = JSON.parse(cleanedContent);
 
     const feedback = {
       overallScore: parsed.overallScore,
-      categoryScores: parsed.categories, 
+      categoryScores: parsed.categories,
       strengths: parsed.strengths,
-      improvements: parsed.areasForImprovement, 
+      improvements: parsed.areasForImprovement,
       suggestedRevision: parsed.suggestedRevision,
     };
 

@@ -7,12 +7,6 @@ import { StrengthsAndImprovements } from "./StrengthsAndImprovements";
 import { RevisionDiff } from "./Revisiondiff";
 import { useConversationStore } from "@/store/conversation.store";
 
-interface FeedbackPanelProps {
-  feedback: SessionFeedback;
-  onBack: () => void;
-  className?: string;
-}
-
 export function FeedbackPanel(): JSX.Element {
   const { feedback } = useConversationStore();
 

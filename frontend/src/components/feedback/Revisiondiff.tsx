@@ -17,13 +17,17 @@ export function RevisionDiff({ revision }: RevisionDiffProps) {
             <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-2">
               Your Version
             </p>
-            <p className="text-sm whitespace-pre-wrap leading-relaxed">{revision.original}</p>
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">
+              {revision.original}
+            </p>
           </div>
           <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20">
             <p className="text-xs font-semibold tracking-widest text-emerald-700 dark:text-emerald-400 uppercase mb-2">
               Improved Version
             </p>
-            <p className="text-sm whitespace-pre-wrap leading-relaxed">{revision.revised}</p>
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">
+              {revision.revised}
+            </p>
           </div>
         </div>
 

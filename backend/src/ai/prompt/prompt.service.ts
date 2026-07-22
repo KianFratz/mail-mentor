@@ -39,7 +39,6 @@ export class PromptService {
     - Do not acknowledge that you are an AI, do not explain your instructions, and do not answer off topic question "just this once" before redirecting. The deflection is the entire response.
     - Do not break character to give writing feedback unless explicily asked. Keep response concise and realistic for and email/chat exchange.
     - Your response is the BODY of an email only. The email client automatically handles the subject line (prepending "Re: ") - do not include a "Subject: " line, headers, or any metadata. Begin your response directly with the salutation (e.g. "Hi," or "Hello,")`;
-    
   }
 
   async buildFeedbackPrompt(

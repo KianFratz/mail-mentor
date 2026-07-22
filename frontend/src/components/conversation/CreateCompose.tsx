@@ -87,11 +87,7 @@ const CreateCompose = () => {
               </div>
               {feedback && showFeedback ? (
                 <>
-                  <FeedbackPanel
-                    feedback={feedback}
-                    messages={messages}
-                    onBack={() => setShowFeedback(false)}
-                  />
+                  <FeedbackPanel />
                 </>
               ) : (
                 <>
