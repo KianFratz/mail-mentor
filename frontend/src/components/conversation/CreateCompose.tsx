@@ -80,8 +80,9 @@ const CreateCompose = () => {
                     writingSessionStatus === "graded" ||
                     writingSessionStatus === "draft"
                   }
+                  autoComplete="off"
                   placeholder="Example..."
-                  className="flex-1 bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none focus:outline-none"
+                  className="flex-1 bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none focus:outline-none [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[-webkit-text-fill-color:inherit] [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s]"
                 />
               </div>
               {feedback && showFeedback ? (
