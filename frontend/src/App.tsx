@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { ToastProvider } from "@/components/ui/toast";
 import AppShell from "./layouts/AppShell";
@@ -13,7 +13,6 @@ import Scenarios from "./pages/Scenarios";
 import Progress from "./pages/Progress";
 import { Conversation } from "./components/conversation/Conversation";
 import ConversationList from "./pages/ConversationList";
-import NewConversation from "./components/conversation/NewConversation";
 
 function App() {
   return (

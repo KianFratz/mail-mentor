@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router";
 import { TextInput } from "../components/TextInput";
 import { Button } from "../components/ui/button";
 import api from "../lib/axios";
-import { useAuth } from "@/context/AuthContext";
-import googleIcon from "../assets/google.png"
+import { useAuth } from "@/context/AuthProvider";
+import googleIcon from "../assets/google.png";
 import { toastManager } from "@/components/ui/toast";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { saveToken } = useAuth();
-  const [ success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,10 +37,11 @@ export const Login: React.FC = () => {
         navigate("/dashboard");
       }, 1000);
     } catch (error) {
-      let message = "Something went wrong. Please try again later."
+      let message = "Something went wrong. Please try again later.";
 
       if (axios.isAxiosError(error)) {
-        message = error.response?.data?.message || error.response?.data || message;
+        message =
+          error.response?.data?.message || error.response?.data || message;
 
         if (Array.isArray(message)) {
           message = message.join(", ");

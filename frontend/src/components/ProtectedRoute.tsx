@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthProvider";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEffect, useState } from "react";
 

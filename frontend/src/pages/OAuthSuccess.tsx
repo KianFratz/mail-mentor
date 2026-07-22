@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
-import { useAuth } from '@/context/AuthContext';
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function OAuthSuccess() {
   const [searchParams] = useSearchParams();
@@ -8,14 +8,14 @@ export default function OAuthSuccess() {
   const { saveToken } = useAuth();
 
   useEffect(() => {
-    const token = searchParams.get('token');
+    const token = searchParams.get("token");
 
     if (token) {
       saveToken(token);
-      navigate('/dashboard', { replace: true });
+      navigate("/dashboard", { replace: true });
     } else {
       // No token found — send back to login
-      navigate('/login', { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [searchParams, navigate, saveToken]);
 

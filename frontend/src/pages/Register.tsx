@@ -1,5 +1,5 @@
 import { toastManager } from "@/components/ui/toast";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthProvider";
 import api from "@/lib/axios";
 import axios from "axios";
 import React, { useState } from "react";
@@ -14,7 +14,6 @@ export const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { saveToken } = useAuth();
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -47,12 +46,12 @@ export const Register: React.FC = () => {
 
       saveToken(response.data.access_token);
       navigate("/dashboard");
-      
     } catch (error) {
-      let message = "Something went wrong. Please try again."
+      let message = "Something went wrong. Please try again.";
 
       if (axios.isAxiosError(error)) {
-        message = error.response?.data?.message || error.response?.data || message;
+        message =
+          error.response?.data?.message || error.response?.data || message;
       } else if (error instanceof Error) {
         message = error.message;
       }

@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import type { SideNavBarProps } from "@/types/side-bar.type";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function SideNavbar({
   title,

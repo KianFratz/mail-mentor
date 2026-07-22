@@ -1,7 +1,10 @@
 import axios from "axios";
-import { emitTokenChange } from "./tokenEvents";
+import { emitTokenChange, performLogout } from "./tokenEvents";
+import { TOKEN_KEY } from "@/constants/auth.constant";
 
-const TOKEN_KEY = "access_token";
+interface RefreshResponse {
+  access_token: string;
+}
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
@@ -23,7 +26,10 @@ api.interceptors.request.use(
 );
 
 let isRefreshing = false;
-let refreshQueue: Array<(token: string | null) => void> = [];
+let refreshQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
 
 api.interceptors.response.use(
   (response) => response,
@@ -39,35 +45,38 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      originalRequest.headers = originalRequest.headers ?? {};
 
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          refreshQueue.push((newToken) => {
-            if (!newToken) {
-              reject(error);
-              return;
-            }
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(api(originalRequest));
-          })
-        })
+        return new Promise((resolve, reject) =>
+          refreshQueue.push({
+            resolve: (newToken) => {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(api(originalRequest));
+            },
+            reject,
+          }),
+        );
       }
 
       isRefreshing = true;
       try {
-        const data = await api.post("/auth/refresh");
-        localStorage.setItem(TOKEN_KEY, data.data.access_token);
-        emitTokenChange(data.data.access_token);
+        const data = await api.post<RefreshResponse>("/auth/refresh");
+        const newToken = data.data.access_token;
 
-        refreshQueue.forEach((cb) => cb(data.data.access_token));
+        localStorage.setItem(TOKEN_KEY, newToken);
+        emitTokenChange(newToken);
+
+        refreshQueue.forEach(({ resolve }) => resolve(newToken));
         refreshQueue = [];
 
-        originalRequest.headers.Authorization = `Bearer ${data.data.access_token}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (refreshError){
-        refreshQueue.forEach((cb) => cb(null));
+      } catch (refreshError) {
+        refreshQueue.forEach(({ reject }) => reject(refreshError));
         refreshQueue = [];
-        hardLogout();
+
+        await performLogout();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -77,10 +86,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-function hardLogout() {
-  localStorage.removeItem(TOKEN_KEY);
-  window.location.replace("/login");
-}
 
 export default api;
