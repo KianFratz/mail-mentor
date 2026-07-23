@@ -45,7 +45,6 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const [isEndingSession, setIsEndingSession] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const {
     scenario,
     sessionId,
@@ -63,6 +62,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     setSession,
     showFeedback,
     feedback,
+    clearTextBody,
   } = useConversationStore();
 
   const [currentBody, setCurrentBody] = useState(textBody ?? "");
@@ -131,6 +131,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     setEditorKey((k) => k + 1);
     setCurrentBody("");
     setTextBody("");
+    clearTextBody();
     setWordCount(0);
 
     const controller = new AbortController();

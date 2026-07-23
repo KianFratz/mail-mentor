@@ -27,6 +27,7 @@ interface ConversationStore {
   setWordCount: (n: number) => void;
   setShowFeedback: (v: boolean) => void;
   setStatus: (s: SessionStatus) => void;
+  clearTextBody: () => void;
 }
 
 export const useConversationStore = create<ConversationStore>((set) => ({
@@ -88,6 +89,11 @@ export const useConversationStore = create<ConversationStore>((set) => ({
   setStatus: (status) =>
     set({
       status,
+    }),
+
+  clearTextBody: () =>
+    set({
+      textBody: "",
     }),
 
   clear: () =>

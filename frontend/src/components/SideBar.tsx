@@ -1,6 +1,7 @@
 import api from "@/lib/axios";
 import type { SideNavBarProps } from "@/types/side-bar.type";
 import { useAuth } from "@/context/AuthProvider";
+import { useConversationStore } from "@/store/conversation.store";
 
 export default function SideNavbar({
   title,
@@ -10,6 +11,7 @@ export default function SideNavbar({
   ctaLabel,
 }: SideNavBarProps) {
   const { logout } = useAuth();
+  const { clear } = useConversationStore();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ export default function SideNavbar({
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
       logout();
+      clear();
     }
   };
 
@@ -41,6 +44,7 @@ export default function SideNavbar({
             <a
               key={item.href}
               href={item.href}
+              onClick={() => clear()}
               className={
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 " +
                 (isActive

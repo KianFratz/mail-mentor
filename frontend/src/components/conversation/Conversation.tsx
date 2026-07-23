@@ -39,12 +39,10 @@ export function Conversation() {
           setSession(data.id);
           setScenario(data.scenario);
           setSubject(data.subjectLine);
-          setTextBody(data.textBody);
-          setWordCount(data.wordCount);
           setStatus(data.status);
           setFeedback(data.sessionFeedback || data.feedback);
 
-          if (data.messages) {
+          if (data.messages && data.messages.length > 0) {
             const mappedMessages = data.messages.map((m: any) => ({
               id: m.id,
               role: m.role.toLowerCase() === "user" ? "user" : "ai",
@@ -52,6 +50,11 @@ export function Conversation() {
               timestamp: m.createdAt ? new Date(m.createdAt) : new Date(),
             }));
             setMessages(mappedMessages);
+            setTextBody("");
+            setWordCount(0);
+          } else {
+            setTextBody(data.textBody || "");
+            setWordCount(data.wordCount || 0);
           }
         })
         .catch((err) => {
