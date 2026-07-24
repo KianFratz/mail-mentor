@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button";
 import api from "@/lib/axios";
-import type { WritingSession } from "@/types/conversation.type";
+import type { SessionStatus, WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+
+const statusStyles: Record<SessionStatus, string> = {
+  draft: "bg-amber-50 text-amber-700 border border-amber-200",
+  submitted: "bg-blue-50 text-blue-700 border border-blue-200",
+  graded: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  abandoned: "bg-slate-100 text-slate-600 border border-slate-200",
+};
 
 function ConversationList() {
   const [loading, setLoading] = useState(false);
@@ -52,7 +59,9 @@ function ConversationList() {
               >
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full uppercase tracking-wider">
+                    <span
+                      className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${statusStyles[conv.status]}`}
+                    >
                       {conv.status}
                     </span>
                     <span className="text-xs text-slate-400 font-medium">
