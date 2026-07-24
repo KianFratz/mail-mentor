@@ -1,5 +1,3 @@
-import type { SessionFeedback } from "@/types/feedback.type";
-import type { ChatMessage } from "@/types/reply-editor.type";
 import React, { type JSX } from "react";
 import { ScoreCard } from "./Scorecard";
 import { CategoryBreakdown } from "./CategoryBreakdown";

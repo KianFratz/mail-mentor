@@ -1,9 +1,7 @@
 import api from "@/lib/axios";
-import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useMemo, useState } from "react";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { Button } from "../ui/button";
 import { useConversationStore } from "@/store/conversation.store";
 import type { Scenario } from "@/types/scenario.type";
 
@@ -23,12 +21,15 @@ export function Conversation() {
     setWordCount,
     setTextBody,
     setFeedback,
+    setShowFeedback,
+    clear,
   } = useConversationStore();
 
   useEffect(() => {
     // Existing conversation
     if (sessionId) {
       setLoading(true);
+      setShowFeedback(false);
 
       api
         .get(`/writing-session/${sessionId}`)
@@ -41,6 +42,7 @@ export function Conversation() {
           setSubject(data.subjectLine);
           setStatus(data.status);
           setFeedback(data.sessionFeedback || data.feedback);
+          setShowFeedback(false);
 
           if (data.messages && data.messages.length > 0) {
             const mappedMessages = data.messages.map((m: any) => ({
@@ -75,6 +77,7 @@ export function Conversation() {
       return;
     }
 
+    clear();
     setScenario(newScenario);
   }, [
     sessionId,
@@ -82,13 +85,14 @@ export function Conversation() {
     navigate,
     setSession,
     setScenario,
-    setSession,
     setSubject,
     setStatus,
     setTextBody,
     setWordCount,
-    setStatus,
     setMessages,
+    setFeedback,
+    setShowFeedback,
+    clear,
   ]);
 
   if (loading) {
@@ -102,9 +106,6 @@ export function Conversation() {
   return (
     <div className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
       <div className="max-w-5xl mx-auto py-8 px-2">
-        <Button onClick={() => navigate("/conversations")}>
-          Back to Conversations
-        </Button>
         <CreateCompose />
       </div>
     </div>

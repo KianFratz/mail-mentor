@@ -31,7 +31,6 @@ import ConfirmDialog from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import DisplayMessage from "./DisplayMessage";
 import {
-  FeedbackPanel,
   FeedbackPanelSkeleton,
 } from "../feedback/FeedbackPanel";
 import { useConversationStore } from "@/store/conversation.store";
@@ -60,8 +59,6 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     setTextBody,
     textBody,
     setSession,
-    showFeedback,
-    feedback,
     clearTextBody,
   } = useConversationStore();
 
@@ -359,112 +356,105 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
             </div>
 
             <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
-              {showFeedback ? (
-                <FeedbackPanel />
+              {writingSessionStatus === "graded" ? (
+                <Button
+                  type="button"
+                  onClick={() => setShowFeedback(true)}
+                  className="text-sm"
+                >
+                  View Feedback
+                </Button>
               ) : (
                 <>
-                  {writingSessionStatus === "graded" ? (
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => setShowFeedback(true)}
-                      >
-                        View Feedback
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      {messages.length > 0 && (
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            if (messages.length < 4) {
-                              toastManager.add({
-                                title: "Session validation",
-                                description:
-                                  "Messages should be at least 4 or greater than.",
-                                type: "error",
-                              });
-                              return;
-                            }
-                            setShowEndDialog(true);
-                          }}
-                          disabled={isStreaming || isEndingSession}
-                          className="
-              flex items-center gap-2 px-5 py-2.5
-        bg-gradient-to-r from-rose-500 to-orange-500
-        text-white rounded-lg text-sm font-semibold
-        hover:from-rose-600 hover:to-orange-600
-        active:scale-95 transition-all shadow-md shadow-rose-200
-        disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {isEndingSession && messages.length === 0 ? (
-                            <>
-                              <span className="material-symbols-outlined text-[16px] animate-spin">
-                                sync
-                              </span>
-                              Generating Feedback...
-                            </>
-                          ) : (
-                            <>
-                              <span className="material-symbols-outlined text-[16px]">
-                                rate_review
-                              </span>
-                              End Session
-                            </>
-                          )}
-                        </Button>
-                      )}
-                    </>
-                  )}
-                  {writingSessionStatus !== "graded" && (
+                  {messages.length > 0 && (
                     <Button
                       type="button"
-                      onClick={handleSend}
-                      disabled={isStreaming}
+                      onClick={() => {
+                        if (messages.length < 4) {
+                          toastManager.add({
+                            title: "Session validation",
+                            description:
+                              "Messages should be at least 4 or greater than.",
+                            type: "error",
+                          });
+                          return;
+                        }
+                        setShowEndDialog(true);
+                      }}
+                      disabled={isStreaming || isEndingSession}
                       className="
-                  flex items-center gap-2 px-5 py-2.5
-                  bg-gradient-to-r from-violet-600 to-indigo-600
-                  text-white rounded-lg text-sm font-semibold
-                  hover:from-violet-700 hover:to-indigo-700
-                  active:scale-95 transition-all shadow-md shadow-violet-200
-                  disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
-                "
+          flex items-center gap-2 px-5 py-2.5
+    bg-gradient-to-r from-rose-500 to-orange-500
+    text-white rounded-lg text-sm font-semibold
+    hover:from-rose-600 hover:to-orange-600
+    active:scale-95 transition-all shadow-md shadow-rose-200
+    disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isStreaming ? (
+                      {isEndingSession && messages.length === 0 ? (
                         <>
                           <span className="material-symbols-outlined text-[16px] animate-spin">
                             sync
                           </span>
-                          Sending…
+                          Generating Feedback...
                         </>
                       ) : (
                         <>
-                          <>
-                            Send Reply
-                            <span className="material-symbols-outlined text-[16px]">
-                              send
-                            </span>
-                          </>
+                          <span className="material-symbols-outlined text-[16px]">
+                            rate_review
+                          </span>
+                          End Session
                         </>
                       )}
                     </Button>
                   )}
-                  <ConfirmDialog
-                    open={showEndDialog}
-                    title="End Writing Session?"
-                    message="The AI will analyze your writing and provide detailed feedback after ending this session."
-                    confirmText="End Session"
-                    cancelText="Continue Writing"
-                    loading={isEndingSession}
-                    onCancel={() => setShowEndDialog(false)}
-                    onConfirm={() => {
-                      setShowEndDialog(false);
-                      handleEndSession();
-                    }}
-                  />
                 </>
               )}
+              {writingSessionStatus !== "graded" && (
+                <Button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={isStreaming}
+                  className="
+              flex items-center gap-2 px-5 py-2.5
+              bg-gradient-to-r from-violet-600 to-indigo-600
+              text-white rounded-lg text-sm font-semibold
+              hover:from-violet-700 hover:to-indigo-700
+              active:scale-95 transition-all shadow-md shadow-violet-200
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+            "
+                >
+                  {isStreaming ? (
+                    <>
+                      <span className="material-symbols-outlined text-[16px] animate-spin">
+                        sync
+                      </span>
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      <>
+                        Send Reply
+                        <span className="material-symbols-outlined text-[16px]">
+                          send
+                        </span>
+                      </>
+                    </>
+                  )}
+                </Button>
+              )}
+              <ConfirmDialog
+                open={showEndDialog}
+                title="End Writing Session?"
+                message="The AI will analyze your writing and provide detailed feedback after ending this session."
+                confirmText="End Session"
+                cancelText="Continue Writing"
+                loading={isEndingSession}
+                onCancel={() => setShowEndDialog(false)}
+                onConfirm={() => {
+                  setShowEndDialog(false);
+                  handleEndSession();
+                }}
+              />
             </div>
           </div>
         </>

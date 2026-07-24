@@ -3,6 +3,7 @@ import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
 import { useConversationStore } from "@/store/conversation.store";
+import { Button } from "../ui/button";
 
 const CreateCompose = () => {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -14,7 +15,6 @@ const CreateCompose = () => {
     feedback,
     showFeedback,
     status: writingSessionStatus,
-    messages,
     setSubject,
     setShowFeedback,
   } = useConversationStore();
@@ -86,13 +86,21 @@ const CreateCompose = () => {
                 />
               </div>
               {feedback && showFeedback ? (
-                <>
+                <div className="p-6 space-y-6">
                   <FeedbackPanel />
-                </>
+                  <div className="flex items-center pb-4 border-b border-slate-100">
+                    <Button
+                      type="button"
+                      variant="default"
+                      onClick={() => setShowFeedback(false)}
+                      className="flex items-center gap-1.5 text-sm"
+                    >
+                      Back to Conversation
+                    </Button>
+                  </div>
+                </div>
               ) : (
-                <>
-                  <ReplyEditor editorRef={editorRef} />
-                </>
+                <ReplyEditor editorRef={editorRef} />
               )}
             </div>
           </div>
