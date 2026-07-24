@@ -1,4 +1,5 @@
 import type { NavItem } from "@/types/side-bar.type";
+import { Link } from "react-router";
 
 interface TopNavBarProps {
   navItems: NavItem[];
@@ -18,9 +19,9 @@ export default function TopBar({
           {navItems.map((item) => {
             const isActive = item.href === activeHref;
             return (
-              <a
+              <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className={
                   "relative px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-150 " +
                   (isActive
@@ -32,7 +33,7 @@ export default function TopBar({
                 {isActive && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 w-4/5 h-0.5 bg-primary rounded-full" />
                 )}
-              </a>
+              </Link>
             );
           })}
         </nav>

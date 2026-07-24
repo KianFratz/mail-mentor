@@ -6,17 +6,25 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'super-secret-key',
-      signOptions: { expiresIn: (process.env.JWT_ACCESS_TOKEN_EXPIRATION || '15m') as any },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET') || 'super-secret-key',
+        signOptions: {
+          expiresIn: (configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION') || '15m') as any,
+        },
+      }),
+      inject: [ConfigService],
     }),
   ],
   providers: [AuthService, JwtStrategy, GoogleStrategy],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}
+

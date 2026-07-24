@@ -10,6 +10,7 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
 import { SetPasswordDto } from './dto/set-password.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private configService: ConfigService,
   ) {}
 
   async loginWithGoolge(googleUser: any) {
@@ -43,18 +45,24 @@ export class AuthService {
   }
 
   private generateTokenPair(user: any) {
-    const payload = { sub: user.id, email: user.email, role: user.role, name: user.name };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
 
-    const access_token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: '15m',
-    });
+    const access_token = this.jwtService.sign(payload);
 
     const refresh_token = this.jwtService.sign(
       { sub: user.id },
       {
-        secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: '7d',
+        secret:
+          this.configService.get<string>('JWT_REFRESH_SECRET') ||
+          'super-refresh-secret',
+        expiresIn:
+          (this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION') ||
+            '7d') as any,
       },
     );
 
@@ -111,7 +119,9 @@ export class AuthService {
     let payload: any;
     try {
       payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
+        secret:
+          this.configService.get<string>('JWT_REFRESH_SECRET') ||
+          'super-refresh-secret',
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
@@ -125,12 +135,14 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const access_token = this.jwtService.sign(
-      { sub: user.id, email: user.email, role: user.role },
-      { expiresIn: '15m' },
-    );
+    const access_token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
 
-    return { access_token };
+    return { access_token };  
   }
 
   async setPassword(userId: string, dto: SetPasswordDto) {

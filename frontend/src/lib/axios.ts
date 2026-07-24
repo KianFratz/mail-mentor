@@ -61,16 +61,21 @@ api.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        const data = await api.post<RefreshResponse>("/auth/refresh");
-        const newToken = data.data.access_token;
+        const response = await api.post<RefreshResponse>("/auth/refresh");
+        const newToken = response.data.access_token;
+
+        if (!newToken) {
+          throw new Error("No access token is refresh response");
+        }
 
         localStorage.setItem(TOKEN_KEY, newToken);
         emitTokenChange(newToken);
 
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
         refreshQueue.forEach(({ resolve }) => resolve(newToken));
         refreshQueue = [];
 
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         refreshQueue.forEach(({ reject }) => reject(refreshError));

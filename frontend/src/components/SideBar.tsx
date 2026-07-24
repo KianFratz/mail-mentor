@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import type { SideNavBarProps } from "@/types/side-bar.type";
 import { useAuth } from "@/context/AuthProvider";
 import { useConversationStore } from "@/store/conversation.store";
+import { Link } from "react-router";
 
 export default function SideNavbar({
   title,
@@ -41,9 +42,9 @@ export default function SideNavbar({
         {navItems.map((item) => {
           const isActive = item.href === activeHref;
           return (
-            <a
+            <Link
               key={item.href}
-              href={item.href}
+              to={item.href}
               onClick={() => clear()}
               className={
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 " +
@@ -61,7 +62,7 @@ export default function SideNavbar({
                 {item.icon}
               </span>
               {item.label}
-            </a>
+            </Link>
           );
         })}
       </nav>
