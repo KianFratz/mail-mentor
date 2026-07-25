@@ -212,16 +212,39 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
       return;
     }
 
+    const timer = setTimeout(() => {
+      toastManager.add({
+        title: "Still generating...",
+        description:
+          "Your feedback is taking longer than usual. Please wait a little longer.",
+        type: "info",
+      });
+      return;
+    }, 30000);
+
     try {
-      const response = await api.post(`writing-sessions/${sessionId}/feedback`);
-      setFeedback(response.data);
+      const response = await api.post(
+        `writing-sessions/${sessionId}/feedback`,
+        {},
+        {
+          timeout: 60000,
+        },
+      );
+
+      clearTimeout(timer);
+
+      if (response) setFeedback(response.data);
       setShowFeedback(true);
     } catch (err) {
-      console.error("Failed to generate feedback:", err);
       let message = "Something went wrong, please try again later.";
 
       if (axios.isAxiosError(err)) {
-        message = err.response?.data?.message || err.response?.data || message;
+        if (err.code === "ECONNABORTED") {
+          message =
+            "Generating feedback is taking longer than expected. Please try again.";
+        } else {
+          err.response?.data?.message || err.response?.data || message;
+        }
 
         if (Array.isArray(message)) {
           message = message.join(", ");
