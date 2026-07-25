@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import ReplyEditor from "./ReplyEditor";
 import ReviewPanel from "./ReviewPanel";
 import { FeedbackPanel } from "../feedback/FeedbackPanel";
 import { useConversationStore } from "@/store/conversation.store";
 import { Button } from "../ui/button";
+import { countWords } from "@/lib/reply-editor";
 
 const CreateCompose = () => {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -12,12 +13,20 @@ const CreateCompose = () => {
     scenario,
     subject,
     wordCount,
+    messages,
     feedback,
     showFeedback,
     status: writingSessionStatus,
     setSubject,
     setShowFeedback,
   } = useConversationStore();
+
+  const totalWordCount = useMemo(() => {
+    const messagesWords = messages
+      .filter((m) => m.role === "user")
+      .reduce((sum, m) => sum + countWords(m.content), 0);
+    return messagesWords + wordCount;
+  }, [messages, wordCount]);
 
   if (!scenario) return null;
 
@@ -48,7 +57,7 @@ const CreateCompose = () => {
                   Words:
                 </span>
                 <span className="font-bold text-slate-800 tabular-nums">
-                  {wordCount}
+                  {totalWordCount}
                 </span>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
+import { text } from 'stream/consumers';
 
 @Injectable()
 export class AiService {
@@ -11,8 +12,16 @@ export class AiService {
     private ollama: OllamaService,
   ) {}
 
-  async reply(sessionId: string, userMessage: string) {
+  async reply(
+    sessionId: string,
+    userMessage: string,
+    wordCount: number,
+  ) {
     await this.writingSessionService.saveUserMessage(sessionId, userMessage);
+    await this.writingSessionService.updateSessionContent(
+      sessionId,
+      wordCount,
+    );
 
     const session =
       await this.writingSessionService.getSessionWithHistory(sessionId);

@@ -13,7 +13,7 @@ export class AiController {
     @Param('sessionId') sessionId: string,
     @Body() dto: SendMessageDto,
   ) {
-    const reply = await this.aiService.reply(sessionId, dto.message);
+    const reply = await this.aiService.reply(sessionId, dto.message, dto.wordCount,);
 
     return { reply };
   }

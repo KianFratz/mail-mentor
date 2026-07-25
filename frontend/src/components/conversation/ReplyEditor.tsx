@@ -30,10 +30,9 @@ import { toastManager } from "../ui/toast";
 import ConfirmDialog from "../ConfirmDialog";
 import { Button } from "../ui/button";
 import DisplayMessage from "./DisplayMessage";
-import {
-  FeedbackPanelSkeleton,
-} from "../feedback/FeedbackPanel";
+import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
 import { useConversationStore } from "@/store/conversation.store";
+import { countWords } from "@/lib/reply-editor";
 
 export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const navigate = useNavigate();
@@ -123,6 +122,8 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
       timestamp: new Date(),
     };
 
+    const messageWordCount = countWords(currentBody);
+
     addMessage(userMsg);
     setStreaming(true);
     setEditorKey((k) => k + 1);
@@ -139,11 +140,10 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     try {
       let currentSessionId = sessionId;
       if (!currentSessionId) {
-        const { wordCount } = useConversationStore.getState();
         const createRes = await api.post("/writing-session/create", {
           subjectLine: subject,
           textBody: currentBody,
-          wordCount,
+          wordCount: 0,
           scenarioId: scenario?.id,
         });
         currentSessionId = createRes.data.id;
@@ -155,6 +155,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
         `/writing-sessions/${currentSessionId}/reply`,
         {
           message: currentBody,
+          wordCount: messageWordCount,
         },
       );
 
@@ -289,7 +290,8 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
                   },
                 }}
                 onUpdate={({ editor }) => {
-                  setWordCount(editor.storage.characterCount.words());
+                  const text = editor.getText();
+                  setWordCount(countWords(text));
                   const html = editor.getHTML();
                   setTextBody(html);
                   setCurrentBody(html);

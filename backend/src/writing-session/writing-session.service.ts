@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { SessionStatus, WritingSession } from 'src/generated/prisma/client';
@@ -116,11 +120,25 @@ export class WritingSessionService {
 
   private async isFeedbackExisting(sessionId: string) {
     const existingFeedback = await this.prisma.sessionFeedback.findUnique({
-      where: { writingSessionId: sessionId }
-    })
+      where: { writingSessionId: sessionId },
+    });
 
     if (existingFeedback) {
-      throw new BadRequestException("Feedback already exists for this session")
+      throw new BadRequestException('Feedback already exists for this session');
     }
+  }
+
+  async updateSessionContent(
+    sessionId: string,
+    wordCount: number,
+  ) {
+    return this.prisma.writingSession.update({
+      where: { id: sessionId },
+      data: {
+        wordCount: {
+          increment: wordCount,
+        },
+      },
+    });
   }
 }
