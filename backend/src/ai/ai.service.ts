@@ -28,23 +28,33 @@ export class AiService {
       session.messages,
     );
 
-    const ai = await this.ollama.chat(messages);
-    const content = ai?.message?.content || '';
-
-    if (!content) {
-      throw new Error(
-        'Failed to extract content from AI response: ' + JSON.stringify(ai),
+    try {
+      const ai = await this.aiResponseTimeOut(
+        this.ollama.chat(messages),
+        55000,
       );
+      const content = ai?.message?.content || '';
+
+      if (!content) {
+        throw new Error(
+          'Failed to extract content from AI response: ' + JSON.stringify(ai),
+        );
+      }
+
+      const cleanedResponse = this.sanitizeAIResponse(content);
+
+      await this.writingSessionService.saveAssistantMessage(
+        sessionId,
+        cleanedResponse,
+      );
+
+      return ai.message.content;
+    } catch (err) {
+      if (err instanceof Error && err.message === 'AI_TIMEOUT') {
+        throw new GatewayTimeoutException('The AI take too long to response.');
+      }
+      throw err;
     }
-
-    const cleanedResponse = this.sanitizeAIResponse(content);
-
-    await this.writingSessionService.saveAssistantMessage(
-      sessionId,
-      cleanedResponse,
-    );
-
-    return ai.message.content;
   }
 
   private sanitizeAIResponse(text: string): string {
