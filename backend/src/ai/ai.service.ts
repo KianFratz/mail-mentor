@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  GatewayTimeoutException,
+  Injectable,
+} from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
 import { text } from 'stream/consumers';
+import { error } from 'console';
 
 @Injectable()
 export class AiService {
@@ -12,16 +17,9 @@ export class AiService {
     private ollama: OllamaService,
   ) {}
 
-  async reply(
-    sessionId: string,
-    userMessage: string,
-    wordCount: number,
-  ) {
+  async reply(sessionId: string, userMessage: string, wordCount: number) {
     await this.writingSessionService.saveUserMessage(sessionId, userMessage);
-    await this.writingSessionService.updateSessionContent(
-      sessionId,
-      wordCount,
-    );
+    await this.writingSessionService.updateSessionContent(sessionId, wordCount);
 
     const session =
       await this.writingSessionService.getSessionWithHistory(sessionId);
@@ -95,36 +93,61 @@ export class AiService {
       session.messages,
     );
 
-    const ai = await this.ollama.chat(messages);
-    const content = ai?.message?.content || '';
+    try {
+      const ai = await this.aiResponseTimeOut(
+        this.ollama.chat(messages),
+        55000,
+      );
 
-    if (!content) {
-      throw new Error('Failed to get feedback from AI:' + JSON.stringify(ai));
+      const content = ai?.message?.content || '';
+
+      if (!content) {
+        throw new Error('Failed to get feedback from AI:' + JSON.stringify(ai));
+      }
+
+      const cleanedContent = content
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .replace(/<\/?p\/?>/g, '')
+        .trim();
+
+      const parsed = JSON.parse(cleanedContent);
+
+      const feedback = {
+        overallScore: parsed.overallScore,
+        categoryScores: parsed.categories,
+        strengths: parsed.strengths,
+        improvements: parsed.areasForImprovement,
+        suggestedRevision: parsed.suggestedRevision,
+      };
+
+      const saved = await this.writingSessionService.saveFeedback(
+        sessionId,
+        feedback,
+      );
+
+      await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
+
+      return saved;
+    } catch (err) {
+      if (err instanceof Error && err.message === 'AI_TIMEOUT') {
+        throw new GatewayTimeoutException(
+          'The AI take too long to generate feedback.',
+        );
+      }
+      throw err;
     }
+  }
 
-    const cleanedContent = content
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .replace(/<\/?p\/?>/g, '')
-      .trim();
-
-    const parsed = JSON.parse(cleanedContent);
-
-    const feedback = {
-      overallScore: parsed.overallScore,
-      categoryScores: parsed.categories,
-      strengths: parsed.strengths,
-      improvements: parsed.areasForImprovement,
-      suggestedRevision: parsed.suggestedRevision,
-    };
-
-    const saved = await this.writingSessionService.saveFeedback(
-      sessionId,
-      feedback,
-    );
-
-    await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
-
-    return saved;
+  private async aiResponseTimeOut<T>(
+    promise: Promise<T>,
+    timeoutMs: number,
+  ): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error('AI_TIMEOUT')), timeoutMs),
+      ),
+    ]);
   }
 }
