@@ -9,6 +9,7 @@ import { WritingSessionModule } from './writing-session/writing-session.module';
 import { ScenariosModule } from './scenarios/scenarios.module';
 import { AiModule } from './ai/ai.module';
 import { AiController } from './ai/ai.controller';
+import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AiController } from './ai/ai.controller';
     WritingSessionModule,
     ScenariosModule,
     AiModule,
+    SkillProficiencyModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService],

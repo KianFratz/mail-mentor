@@ -6,8 +6,6 @@ import {
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { SessionStatus, WritingSession } from 'src/generated/prisma/client';
-import { error } from 'console';
-import { exit } from 'process';
 
 @Injectable()
 export class WritingSessionService {
@@ -128,10 +126,7 @@ export class WritingSessionService {
     }
   }
 
-  async updateSessionContent(
-    sessionId: string,
-    wordCount: number,
-  ) {
+  async updateSessionContent(sessionId: string, wordCount: number) {
     return this.prisma.writingSession.update({
       where: { id: sessionId },
       data: {
