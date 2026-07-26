@@ -1,17 +1,16 @@
-import type { SkillProficiency } from "@/types/dashboard.type";
 import SkillBar from "./SkillBar";
+import { useSkillProficiencyStore } from "@/store/skill-proficiency.store";
 
 interface SkillProficiencyCardProps {
   title?: string;
-  overallScore: number;
-  skills: SkillProficiency[];
 }
 
 export default function SkillProficiencyCard({
   title = "Skill Proficiency",
-  overallScore,
-  skills,
 }: SkillProficiencyCardProps) {
+  const skills = useSkillProficiencyStore((state) => state.skills);
+  const overallScore = useSkillProficiencyStore((state) => state.overallScore);
+
   return (
     <div className="md:col-span-8 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col gap-5">
       <div className="flex justify-between items-center">

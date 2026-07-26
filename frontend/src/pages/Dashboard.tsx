@@ -4,9 +4,19 @@ import PracticeStreakCard from "@/components/PracticeStreakCard";
 import RecentScoresCard from "@/components/RecentScoreCard";
 import SkillProficiencyCard from "@/components/SkillProficiencyCard";
 import { DashboardData } from "@/constants/dashboard-layout.constant";
+import { useSkillProficiencyStore } from "@/store/skill-proficiency.store";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const props = DashboardData;
+
+  const response = useSkillProficiencyStore(
+    (state) => state.fetchSkillProficiency,
+  );
+
+  useEffect(() => {
+    response();
+  }, []);
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2">
@@ -18,10 +28,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        <SkillProficiencyCard
-          overallScore={props.overallScore}
-          skills={props.skills}
-        />
+        <SkillProficiencyCard />
         <PracticeStreakCard
           days={props.streakDays}
           message={props.streakMessage}
