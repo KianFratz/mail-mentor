@@ -30,6 +30,9 @@ export class SkillProficiencyService {
       Conciseness: { score: 0, max: 0 },
     };
 
+    let overallScore = 0;
+    let overallMaxScore = 0;
+
     for (const session of sessions) {
       const categories = session.sessionFeedback?.categoryScores as any[];
 
@@ -40,6 +43,9 @@ export class SkillProficiencyService {
 
         totals[category.name].score += category.score;
         totals[category.name].max += category.maxScore;
+
+        overallScore += category.score;
+        overallMaxScore += category.maxScore;
       }
     }
 
@@ -51,6 +57,18 @@ export class SkillProficiencyService {
           : Number(((value.score / value.max) * 100).toFixed(1)),
     }));
 
-    return { progress };
+    const overallPercentage =
+      overallMaxScore === 0
+        ? 0
+        : Number(((overallScore / overallMaxScore) * 100).toFixed(1));
+
+    return {
+      overall: {
+        score: overallScore,
+        maxScore: overallMaxScore,
+        percentage: overallPercentage,
+      },
+      progress,
+    };
   }
 }

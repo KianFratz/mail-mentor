@@ -27,6 +27,7 @@ export const DashboardData: DashboardDataProps = {
     { name: "Clarity", percentage: 88 },
     { name: "Structure", percentage: 80 },
     { name: "Etiquette", percentage: 69 },
+    { name: "Conciseness", percentage: 69 },
   ],
 
   streakDays: 12,

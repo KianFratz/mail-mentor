@@ -2,7 +2,7 @@ import type { NavItem } from "./side-bar.type";
 
 export interface SkillProficiency {
   name: string;
-  percentage: number; // 0-100
+  percentage: number;
 }
 
 export interface RecentScore {
