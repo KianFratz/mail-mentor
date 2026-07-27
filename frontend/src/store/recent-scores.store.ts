@@ -7,7 +7,6 @@ interface RecentScoresStore {
   loading: boolean;
 
   fetchRecentScores: () => Promise<void>;
-  onViewAll?: () => void;
 }
 
 export const useRecentScoresStore = create<RecentScoresStore>((set) => ({

@@ -1,37 +1,25 @@
-import ScoreItem from "./ScoreItem";
+import ScoreItem from "@/components/ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
 
-export default function RecentScoresCard({}) {
+export default function AllScoresPage() {
   const { scores, loading, fetchRecentScores } = useRecentScoresStore();
-  const recentScores = scores.slice(0, 3);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchRecentScores(3);
+    fetchRecentScores(10, 1);
   }, [fetchRecentScores]);
 
   if (loading) {
     return <p>Loading...</p>;
   }
-
   return (
     <div className="md:col-span-6 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-base font-semibold text-foreground">
-          Recent Scores
-        </h3>
-        <button
-          onClick={() => navigate("/scores")}
-          className="text-xs font-semibold text-primary hover:underline underline-offset-2 transition-colors"
-        >
-          View All
-        </button>
+        <h3 className="text-base font-semibold text-foreground">All Scores</h3>
       </div>
 
       <div className="flex flex-col gap-1">
-        {recentScores.map((score) => (
+        {scores.map((score) => (
           <ScoreItem key={score.id} {...score} />
         ))}
       </div>

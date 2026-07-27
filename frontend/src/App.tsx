@@ -13,6 +13,7 @@ import Scenarios from "./pages/Scenarios";
 import Progress from "./pages/Progress";
 import { Conversation } from "./components/conversation/Conversation";
 import ConversationList from "./pages/ConversationList";
+import AllScoresPage from "./pages/AllScores";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                 />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/scores" element={<AllScoresPage />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
             </Route>
