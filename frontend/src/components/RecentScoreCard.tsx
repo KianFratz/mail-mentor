@@ -8,10 +8,8 @@ export default function RecentScoresCard({}) {
   const recentScores = scores.slice(0, 3);
 
   useEffect(() => {
-    fetchRecentScores();
+    fetchRecentScores(3);
   }, [fetchRecentScores]);
-
-  console.log(scores);
 
   if (loading) {
     return <p>Loading...</p>;

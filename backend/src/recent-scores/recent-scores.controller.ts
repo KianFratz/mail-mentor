@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { RecentScoresService } from './recent-scores.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
@@ -9,7 +9,15 @@ export class RecentScoresController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getAllSessionWithFeedback(@CurrentUser('userId') userId: string) {
-    return this.recentScoresService.getAllSessionWithFeedback(userId);
+  async getAllSessionWithFeedback(
+    @CurrentUser('userId') userId: string,
+    @Query('limit') limit?: string,
+    @Query('page') page?: string,
+  ) {
+    return this.recentScoresService.getAllSessionWithFeedback(
+      userId,
+      Number(limit),
+      Number(page),
+    );
   }
 }

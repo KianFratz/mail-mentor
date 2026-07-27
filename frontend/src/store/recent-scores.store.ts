@@ -14,11 +14,16 @@ export const useRecentScoresStore = create<RecentScoresStore>((set) => ({
   scores: [],
   loading: false,
 
-  fetchRecentScores: async () => {
+  fetchRecentScores: async (limit?: number, page = 1) => {
     set({ loading: true });
 
     try {
-      const { data } = await api.get("/recent-scores/me");
+      const { data } = await api.get("/recent-scores/me", {
+        params: {
+          limit,
+          page,
+        },
+      });
 
       set({
         scores: data.map((session: any) => ({
