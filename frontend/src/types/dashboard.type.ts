@@ -7,7 +7,6 @@ export interface SkillProficiency {
 
 export interface RecentScore {
   id: string;
-  icon: string;
   title: string;
   date: string;
   score: number;
