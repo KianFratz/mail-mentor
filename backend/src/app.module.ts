@@ -10,6 +10,7 @@ import { ScenariosModule } from './scenarios/scenarios.module';
 import { AiModule } from './ai/ai.module';
 import { AiController } from './ai/ai.controller';
 import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.module';
+import { RecentScoresModule } from './recent-scores/recent-scores.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.mo
     ScenariosModule,
     AiModule,
     SkillProficiencyModule,
+    RecentScoresModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService],
