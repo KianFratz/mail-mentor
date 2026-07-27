@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { TopNavBar } from "../components/landing/TopNavBar";
 import { HeroSection } from "../components/landing/HeroSection";
-import { SocialProof } from "../components/landing/SocialProof";
 import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
 import { AnalyticsPreview } from "../components/landing/AnalyticsPreview";
@@ -46,7 +45,6 @@ export function Landing() {
       <TopNavBar />
       <main className="pt-16">
         <HeroSection />
-        <SocialProof />
         <FeaturesSection />
         <HowItWorks />
         <AnalyticsPreview />
