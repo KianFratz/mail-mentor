@@ -2,6 +2,7 @@ import ScoreItem from "./ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { Button } from "./ui/button";
 
 export default function RecentScoresCard({}) {
   const { scores, loading, fetchRecentScores } = useRecentScoresStore();
@@ -22,12 +23,12 @@ export default function RecentScoresCard({}) {
         <h3 className="text-base font-semibold text-foreground">
           Recent Scores
         </h3>
-        <button
+        <Button
           onClick={() => navigate("/scores")}
-          className="text-xs font-semibold text-primary hover:underline underline-offset-2 transition-colors"
+          className="text-xs font-semibold"
         >
           View All
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col gap-1">
