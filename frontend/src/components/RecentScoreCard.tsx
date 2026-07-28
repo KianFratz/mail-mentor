@@ -24,7 +24,7 @@ export default function RecentScoresCard({}) {
           Recent Scores
         </h3>
         <Button
-          onClick={() => navigate("/scores")}
+          onClick={() => navigate(`/scores/me?page=$1&limit=10`)}
           className="text-xs font-semibold"
         >
           View All

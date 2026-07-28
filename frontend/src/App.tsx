@@ -37,7 +37,7 @@ function App() {
                 />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/scores" element={<AllScoresPage />} />
+                <Route path="/scores/me" element={<AllScoresPage />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
             </Route>

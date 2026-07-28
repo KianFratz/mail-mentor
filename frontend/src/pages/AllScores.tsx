@@ -2,6 +2,7 @@ import ScoreItem from "@/components/ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
 import { Sparkles, Inbox, TrendingUp } from "lucide-react";
+import { useSearchParams } from "react-router";
 import {
   Pagination,
   PaginationContent,
@@ -12,12 +13,23 @@ import {
 } from "@/components/ui/pagination";
 
 export default function AllScoresPage() {
-  const { scores, loading, fetchRecentScores, page, totalPages, setPage } =
+  const { scores, loading, fetchRecentScores, totalPages } =
     useRecentScoresStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const limit = Math.max(1, Number(searchParams.get("limit")) || 10);
 
   useEffect(() => {
-    fetchRecentScores(10, page);
-  }, [page]);
+    fetchRecentScores(limit, page);
+  }, [page, limit]);
+
+  const goToPage = (nextPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(nextPage));
+    params.set("limit", String(limit));
+    setSearchParams(params);
+  };
 
   const scoreValues = scores
     .map((s: any) => s.overallScore ?? s.score)
@@ -99,7 +111,7 @@ export default function AllScoresPage() {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                if (page > 1) setPage(page - 1);
+                if (page > 1) goToPage(page - 1);
               }}
             />
           </PaginationItem>
@@ -114,7 +126,7 @@ export default function AllScoresPage() {
                   isActive={page === pageNumber}
                   onClick={(e) => {
                     e.preventDefault();
-                    setPage(pageNumber);
+                    goToPage(pageNumber);
                   }}
                 >
                   {pageNumber}
@@ -127,7 +139,7 @@ export default function AllScoresPage() {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                if (page < totalPages) setPage(page + 1);
+                if (page < totalPages) goToPage(page + 1);
               }}
             />
           </PaginationItem>
