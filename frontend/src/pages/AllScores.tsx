@@ -2,13 +2,22 @@ import ScoreItem from "@/components/ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
 import { Sparkles, Inbox, TrendingUp } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function AllScoresPage() {
-  const { scores, loading, fetchRecentScores } = useRecentScoresStore();
+  const { scores, loading, fetchRecentScores, page, totalPages, setPage } =
+    useRecentScoresStore();
 
   useEffect(() => {
-    fetchRecentScores(10, 1);
-  }, [fetchRecentScores]);
+    fetchRecentScores(10, page);
+  }, [page]);
 
   const scoreValues = scores
     .map((s: any) => s.overallScore ?? s.score)
@@ -28,9 +37,6 @@ export default function AllScoresPage() {
             <h3 className="text-base font-semibold text-foreground leading-tight">
               All Scores
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {scores.length} recent session{scores.length === 1 ? "" : "s"}
-            </p>
           </div>
         </div>
 
@@ -57,7 +63,10 @@ export default function AllScoresPage() {
       {!loading && scores.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center py-10 gap-3">
           <div className="w-11 h-11 rounded-full bg-muted flex items-center justify-center">
-            <Inbox className="w-5 h-5 text-muted-foreground" strokeWidth={1.75} />
+            <Inbox
+              className="w-5 h-5 text-muted-foreground"
+              strokeWidth={1.75}
+            />
           </div>
           <div>
             <p className="text-sm font-medium text-foreground">
@@ -71,7 +80,7 @@ export default function AllScoresPage() {
       )}
 
       {!loading && scores.length > 0 && (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-h-[610px]">
           {scores.map((score, i) => (
             <div
               key={score.id}
@@ -83,6 +92,47 @@ export default function AllScoresPage() {
           ))}
         </div>
       )}
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (page > 1) setPage(page - 1);
+              }}
+            />
+          </PaginationItem>
+
+          {Array.from({ length: totalPages }, (_, i) => {
+            const pageNumber = i + 1;
+
+            return (
+              <PaginationItem key={pageNumber}>
+                <PaginationLink
+                  href="#"
+                  isActive={page === pageNumber}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage(pageNumber);
+                  }}
+                >
+                  {pageNumber}
+                </PaginationLink>
+              </PaginationItem>
+            );
+          })}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (page < totalPages) setPage(page + 1);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
