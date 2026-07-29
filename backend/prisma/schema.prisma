@@ -90,7 +90,7 @@ model SessionFeedback {
 
 model PracticeLog {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      DateTime @db.Date // day-only, in user's local timezone
   createdAt DateTime @default(now())
@@ -101,7 +101,8 @@ model PracticeLog {
 }
 
 model UserStreak {
-  userId         String    @id
+  id             String    @id @default(cuid())
+  userId         String    @db.Uuid
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   currentSreak   Int       @default(0)
   longestStreak  Int       @default(0)
