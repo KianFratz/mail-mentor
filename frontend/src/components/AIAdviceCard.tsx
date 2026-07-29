@@ -7,7 +7,7 @@ export default function AIAdviceCard({
   onCtaClick,
 }: AISuggestion) {
   return (
-    <div className="mt-6 relative overflow-hidden rounded-2xl bg-primary p-5 flex items-center gap-5 shadow-md">
+    <div className="mt-6 relative overflow-hidden rounded-2xl bg-primary p-5 flex items-center gap-5 shadow-md mb-4">
       <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
 
       <div className="hidden sm:flex w-10 h-10 rounded-full bg-white/15 items-center justify-center shrink-0">
