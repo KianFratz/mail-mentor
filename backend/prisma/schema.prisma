@@ -18,12 +18,13 @@ model User {
   role               UserRole         @default(student)
   currentLevel       SkillLevel       @default(beginner)
   xpTotal            Int              @default(0)
-  practice_streak    Int              @default(0)
   lastActiveAt       DateTime?        @db.Timestamptz(6)
   createdAt          DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime         @default(now()) @updatedAt @db.Timestamptz(6)
   authProviders      AuthProvider[]
   writingSession     WritingSession[]
+  userStreak         UserStreak[]
+  practiceLog        PracticeLog[]
 
   @@map("users")
 }
@@ -85,6 +86,29 @@ model SessionFeedback {
   writingSession    WritingSession @relation(fields: [writingSessionId], references: [id], onDelete: Cascade)
 
   @@map("session_feedbacks")
+}
+
+model PracticeLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date // day-only, in user's local timezone
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date]) // one row per user per day
+  @@index([userId, date])
+  @@map("practice_logs")
+}
+
+model UserStreak {
+  userId         String    @id
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentSreak   Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActiveDate DateTime? @db.Date
+  updateAt       DateTime  @updatedAt
+
+  @@map("user_streaks")
 }
 
 enum UserRole {
