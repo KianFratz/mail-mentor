@@ -5,7 +5,7 @@ import { PrismaService } from 'prisma/prisma.service';
 export class RecentScoresService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllSessionWithFeedback(userId: string, limit?: number, page = 1) {
+  async getAllSessionWithFeedback(userId: string, limit: number, page = 1) {
     const where = { userId, status: 'graded' as const };
 
     const [data, total] = await this.prisma.$transaction([
