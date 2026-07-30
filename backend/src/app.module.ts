@@ -11,6 +11,7 @@ import { AiModule } from './ai/ai.module';
 import { AiController } from './ai/ai.controller';
 import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.module';
 import { RecentScoresModule } from './recent-scores/recent-scores.module';
+import { StreakModule } from './streak/streak.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RecentScoresModule } from './recent-scores/recent-scores.module';
     AiModule,
     SkillProficiencyModule,
     RecentScoresModule,
+    StreakModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService],

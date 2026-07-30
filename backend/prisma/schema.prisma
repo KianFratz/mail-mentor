@@ -101,13 +101,13 @@ model PracticeLog {
 }
 
 model UserStreak {
-  id             String    @id @default(cuid())
-  userId         String    @db.Uuid
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  currentSreak   Int       @default(0)
-  longestStreak  Int       @default(0)
-  lastActiveDate DateTime? @db.Date
-  updateAt       DateTime  @updatedAt
+  userId              String    @id @db.Uuid
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak       Int       @default(0)
+  longestStreak       Int       @default(0)
+  lastActiveDate      DateTime? @db.Date
+  updateAt            DateTime  @updatedAt
+  graceUsedThisStreak Boolean   @default(false)
 
   @@map("user_streaks")
 }
