@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   EditorProvider,
   EditorBubbleMenu,
@@ -223,11 +223,13 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     }, 30000);
 
     try {
+      const localDate = new Date().toLocaleDateString("en-CA");
       const response = await api.post(
         `writing-sessions/${sessionId}/feedback`,
         {},
         {
           timeout: 60000,
+          params: { localDate },
         },
       );
 
