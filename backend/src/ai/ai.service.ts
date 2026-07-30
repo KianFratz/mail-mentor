@@ -6,8 +6,8 @@ import {
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
-import { text } from 'stream/consumers';
-import { error } from 'console';
+import { StreakService } from 'src/streak/streak.service';
+import { UserScalarFieldEnum } from 'src/generated/prisma/internal/prismaNamespace';
 
 @Injectable()
 export class AiService {
@@ -15,6 +15,7 @@ export class AiService {
     private writingSessionService: WritingSessionService,
     private prompt: PromptService,
     private ollama: OllamaService,
+    private streakService: StreakService,
   ) {}
 
   async reply(sessionId: string, userMessage: string, wordCount: number) {
@@ -87,7 +88,7 @@ export class AiService {
     );
   }
 
-  async generateFeedback(sessionId: string) {
+  async generateFeedback(sessionId: string, userId, localDate) {
     const session =
       await this.writingSessionService.getSessionWithHistory(sessionId);
 
@@ -137,6 +138,7 @@ export class AiService {
       );
 
       await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
+      await this.streakService.recordPractice(userId, localDate);
 
       return saved;
     } catch (err) {
