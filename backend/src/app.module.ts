@@ -12,6 +12,7 @@ import { AiController } from './ai/ai.controller';
 import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.module';
 import { RecentScoresModule } from './recent-scores/recent-scores.module';
 import { StreakModule } from './streak/streak.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StreakModule } from './streak/streak.module';
     SkillProficiencyModule,
     RecentScoresModule,
     StreakModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController, AiController],
   providers: [AppService],

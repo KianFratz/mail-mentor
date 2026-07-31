@@ -108,6 +108,8 @@ model UserStreak {
   lastActiveDate      DateTime? @db.Date
   updateAt            DateTime  @updatedAt
   graceUsedThisStreak Boolean   @default(false)
+  monthlyPercentile   Float?
+  percentileUpdateAt  DateTime?
 
   @@map("user_streaks")
 }
