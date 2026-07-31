@@ -4,7 +4,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { LogPracticeDto } from './dto/create-streak.dto';
 
-@Controller('streak')
+@Controller('streaks')
 export class StreakController {
   constructor(private readonly streakService: StreakService) {}
 
