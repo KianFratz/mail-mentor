@@ -3,8 +3,13 @@ import { useStreakStore } from "@/store/streak.store";
 import { useEffect } from "react";
 
 export default function PracticeStreakCard() {
-  const { fetchWeeklyStreak, weeklyStreak, fetchLongestStreak, longestStreak } =
-    useStreakStore();
+  const {
+    fetchWeeklyStreak,
+    weeklyStreak,
+    fetchLongestStreak,
+    longestStreak,
+    monthlyPercentile,
+  } = useStreakStore();
 
   useEffect(() => {
     fetchWeeklyStreak();
@@ -23,7 +28,7 @@ export default function PracticeStreakCard() {
           {longestStreak} <span className="text-2xl font-bold">Days</span>
         </p>
         <p className="mt-2 text-xs text-primary-foreground/75 leading-snug max-w-[180px]">
-          You're in the top 5% of active learners this month!
+          You're in the top {monthlyPercentile} of active learners this month!
         </p>
       </div>
 

@@ -4,6 +4,7 @@ import { create } from "zustand";
 
 interface StreakStore {
   longestStreak: number;
+  monthlyPercentile: number;
   weeklyStreak: StreakProps[];
   loading: boolean;
 
@@ -23,6 +24,7 @@ export const useStreakStore = create<StreakStore>((set) => ({
 
       set({
         longestStreak: data.longestStreak,
+        monthlyPercentile: data.monthlyPercentile,
       });
     } catch (error) {
       console.error(error);
