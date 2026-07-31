@@ -1,18 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useStreakStore } from "@/store/streak.store";
-import type { WeekDay } from "@/types/dashboard.type";
 import { useEffect } from "react";
 
-interface PracticeStreakCardProps {
-  title?: string;
-  days: number;
-  message: string;
-  weekDays: WeekDay[];
-}
-
-export default function PracticeStreakCard({
-  message,
-}: PracticeStreakCardProps) {
+export default function PracticeStreakCard() {
   const { fetchWeeklyStreak, weeklyStreak, fetchLongestStreak, longestStreak } =
     useStreakStore();
 
@@ -20,7 +10,6 @@ export default function PracticeStreakCard({
     fetchWeeklyStreak();
     fetchLongestStreak();
   }, [fetchWeeklyStreak, fetchLongestStreak]);
-
 
   return (
     <div className="md:col-span-4 relative overflow-hidden rounded-2xl p-6 flex flex-col justify-between gap-4 bg-primary text-primary-foreground shadow-md">
@@ -34,7 +23,7 @@ export default function PracticeStreakCard({
           {longestStreak} <span className="text-2xl font-bold">Days</span>
         </p>
         <p className="mt-2 text-xs text-primary-foreground/75 leading-snug max-w-[180px]">
-          {message}
+          You're in the top 5% of active learners this month!
         </p>
       </div>
 

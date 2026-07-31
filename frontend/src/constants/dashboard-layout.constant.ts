@@ -20,49 +20,6 @@ export const DashboardData: DashboardDataProps = {
   activeSideNavHref: "/drafting",
   sideNavCtaLabel: "Logout",
 
-  overallScore: 79,
-  skills: [
-    { name: "Grammar", percentage: 85 },
-    { name: "Tone", percentage: 72 },
-    { name: "Clarity", percentage: 88 },
-    { name: "Structure", percentage: 80 },
-    { name: "Etiquette", percentage: 69 },
-    { name: "Conciseness", percentage: 69 },
-  ],
-
-  streakDays: 12,
-  streakMessage: "You're in the top 5% of active learners this month!",
-  weekDays: [
-    { label: "", completed: true },
-    { label: "", completed: true },
-    { label: "", completed: true },
-    { label: "M", completed: false },
-    { label: "T", completed: false },
-  ],
-
-  recentScores: [
-    {
-      id: "1",
-      icon: "mail",
-      title: "Negotiation Email",
-      date: "Oct 24, 2023",
-      score: 92,
-    },
-    {
-      id: "2",
-      icon: "campaign",
-      title: "Crisis Response",
-      date: "Oct 22, 2023",
-      score: 88,
-    },
-    {
-      id: "3",
-      icon: "groups",
-      title: "Meeting Follow-up",
-      date: "Oct 20, 2023",
-      score: 76,
-    },
-  ],
   onViewAllScores: () => console.log("View All clicked"),
 
   earnedBadges: [
