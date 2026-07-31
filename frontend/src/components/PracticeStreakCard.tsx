@@ -11,16 +11,16 @@ interface PracticeStreakCardProps {
 }
 
 export default function PracticeStreakCard({
-  days,
   message,
 }: PracticeStreakCardProps) {
-  const { fetchWeeklyStreak, weeklyStreak } = useStreakStore();
+  const { fetchWeeklyStreak, weeklyStreak, fetchLongestStreak, longestStreak } =
+    useStreakStore();
 
   useEffect(() => {
     fetchWeeklyStreak();
-  }, [fetchWeeklyStreak]);
+    fetchLongestStreak();
+  }, [fetchWeeklyStreak, fetchLongestStreak]);
 
-  console.log("Weekly Streak", weeklyStreak);
 
   return (
     <div className="md:col-span-4 relative overflow-hidden rounded-2xl p-6 flex flex-col justify-between gap-4 bg-primary text-primary-foreground shadow-md">
@@ -31,7 +31,7 @@ export default function PracticeStreakCard({
           Practice Streak
         </p>
         <p className="text-5xl font-extrabold leading-none tracking-tight">
-          {days} <span className="text-2xl font-bold">Days</span>
+          {longestStreak} <span className="text-2xl font-bold">Days</span>
         </p>
         <p className="mt-2 text-xs text-primary-foreground/75 leading-snug max-w-[180px]">
           {message}
