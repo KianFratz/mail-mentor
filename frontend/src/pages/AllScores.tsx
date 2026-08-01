@@ -1,8 +1,9 @@
 import ScoreItem from "@/components/ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
-import { Sparkles, Inbox, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp } from "lucide-react";
 import { useSearchParams } from "react-router";
+import emptyStateImage from "@/assets/undraw_no-data_ig65.png";
 import {
   Pagination,
   PaginationContent,
@@ -39,7 +40,7 @@ export default function AllScoresPage() {
     : null;
 
   return (
-    <div className="md:col-span-6 bg-card border border-border rounded-2xl p-6 shadow-xs flex flex-col">
+    <div className="md:col-span-6 bg-card border border-border rounded-2xl p-8 pt-6 mt-6 shadow-xs flex flex-col h-[90vh]">
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
@@ -73,13 +74,12 @@ export default function AllScoresPage() {
       )}
 
       {!loading && scores.length === 0 && (
-        <div className="flex flex-col items-center justify-center text-center py-10 gap-3">
-          <div className="w-11 h-11 rounded-full bg-muted flex items-center justify-center">
-            <Inbox
-              className="w-5 h-5 text-muted-foreground"
-              strokeWidth={1.75}
-            />
-          </div>
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
+          <img
+            src={emptyStateImage}
+            alt="No sessions yet"
+            className="w-48 h-auto opacity-80"
+          />
           <div>
             <p className="text-sm font-medium text-foreground">
               No sessions yet
@@ -92,7 +92,7 @@ export default function AllScoresPage() {
       )}
 
       {!loading && scores.length > 0 && (
-        <div className="flex flex-col gap-1 min-h-[610px]">
+        <div className="flex flex-col gap-1 flex-1 overflow-y-auto pr-2">
           {scores.map((score, i) => (
             <div
               key={score.id}
@@ -104,8 +104,9 @@ export default function AllScoresPage() {
           ))}
         </div>
       )}
-      <Pagination>
-        <PaginationContent>
+      <div className="mt-auto pt-4">
+        <Pagination>
+          <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
               href="#"
@@ -144,7 +145,8 @@ export default function AllScoresPage() {
             />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+        </Pagination>
+      </div>
     </div>
   );
 }
