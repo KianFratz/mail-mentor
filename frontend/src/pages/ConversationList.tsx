@@ -38,13 +38,13 @@ function ConversationList() {
           </div>
         ) : conversations.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-border shadow-sm min-h-[75vh]">
-            <p className="text-lg text-muted-foreground">
+            <img src={emptyState} alt="" className="w-48 h-auto mx-auto mt-6 py-4" />
+            <p className="text-sm text-foreground font-medium">
               No conversations found.
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-1">
               Start a new scenario to see your conversations here.
             </p>
-            <img src={emptyState} alt="" className="w-48 h-auto mx-auto mt-6" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

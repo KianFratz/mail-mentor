@@ -85,7 +85,7 @@ export default function AllScoresPage() {
               No sessions yet
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Finish a scenario to see your feedback here.
+              Finish a scenario to see all your scores here
             </p>
           </div>
         </div>
