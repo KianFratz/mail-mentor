@@ -3,6 +3,7 @@ import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "./ui/button";
+import emptyState from "../assets/undraw_books_wxzz.png";
 
 export default function RecentScoresCard({}) {
   const { scores, loading, fetchRecentScores } = useRecentScoresStore();
@@ -32,9 +33,19 @@ export default function RecentScoresCard({}) {
       </div>
 
       <div className="flex flex-col gap-1">
-        {recentScores.map((score) => (
-          <ScoreItem key={score.id} {...score} />
-        ))}
+        {recentScores.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[200px]">
+            <img
+              src={emptyState}
+              alt="No recent scores"
+              className="w-32 h-auto object-contain py-4"
+            />
+            <p className="text-sm font-medium text-foreground">No recent scores yet</p>
+            <p className="text-xs text-muted-foreground mt-1">Finish a scenario to see your recent scores here</p>
+          </div>
+        ) : (
+          recentScores.map((score) => <ScoreItem key={score.id} {...score} />)
+        )}
       </div>
     </div>
   );
