@@ -1,11 +1,12 @@
 import { PrismaService } from './prisma.service';
 import { seedScenarios } from './seeders/scenario.seed';
+import { seedTestUser } from './seeders/test-user.seed';
 
 const prisma = new PrismaService();
 
 async function main() {
-  await seedScenarios(prisma);
-  await seedTestUser();
+  // await seedScenarios(prisma);
+  await seedTestUser(prisma);
 }
 
 main()

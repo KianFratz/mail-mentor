@@ -7,17 +7,10 @@ import {
   UserRole,
 } from 'src/generated/prisma/enums';
 
-const prisma = new PrismaService();
-
-// ---------------------------------------------------------------------------
-// NOTE: This seeder assumes you already have Scenarios seeded separately.
-// It will throw early if none exist, since WritingSession.scenarioId is required.
-// ---------------------------------------------------------------------------
-
 const TEST_USER_EMAIL = 'testuser@mailmentor.dev';
 const TEST_USER_PASSWORD = '123123123';
 
-export async function seedTestUser() {
+export async function seedTestUser(prisma: PrismaService) {
   const scenarios = await prisma.scenario.findMany();
   if (scenarios.length === 0) {
     throw new Error(
@@ -43,13 +36,9 @@ export async function seedTestUser() {
     },
   });
 
-  // Idempotency: wipe this user's existing sessions (cascades to messages/feedback)
-  // before re-seeding so you can re-run this freely during development.
   await prisma.writingSession.deleteMany({ where: { userId: testUser.id } });
 
-  // ---------------------------------------------------------------------
   // 1. DRAFT — user started writing, hasn't submitted. Minimal/no AI turns.
-  // ---------------------------------------------------------------------
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -71,9 +60,7 @@ export async function seedTestUser() {
     },
   });
 
-  // ---------------------------------------------------------------------
   // 2. SUBMITTED — user finished and sent it in, AI hasn't graded it yet.
-  // ---------------------------------------------------------------------
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -100,9 +87,7 @@ export async function seedTestUser() {
     },
   });
 
-  // ---------------------------------------------------------------------
   // 3. GRADED — strong performance, high score, few/no improvements.
-  // ---------------------------------------------------------------------
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -129,13 +114,14 @@ export async function seedTestUser() {
       sessionFeedback: {
         create: {
           overallScore: 92,
-          // Adjust this shape to match whatever AiService.buildFeedbackPrompt actually returns
-          categoryScores: {
-            clarity: 9,
-            tone: 10,
-            professionalism: 9,
-            structure: 9,
-          },
+          categoryScores: [
+            { name: 'Clarity', score: 90, maxScore: 100, feedback: 'Your message is very clear and easy to read.', issues: [] },
+            { name: 'Professional Tone', score: 100, maxScore: 100, feedback: 'You maintained a warm yet professional tone throughout.', issues: [] },
+            { name: 'Structure', score: 90, maxScore: 100, feedback: 'The structure of your email is logical and flows well.', issues: [] },
+            { name: 'Grammar', score: 90, maxScore: 100, feedback: 'No major grammatical errors were found.', issues: [] },
+            { name: 'Etiquette', score: 100, maxScore: 100, feedback: 'Excellent use of greetings and polite language.', issues: [] },
+            { name: 'Conciseness', score: 90, maxScore: 100, feedback: 'The length is appropriate for a thank-you note.', issues: [] },
+          ],
           strengths: [
             'Warm, genuine tone that still reads as professional',
             'Clear call-forward without being pushy',
@@ -143,18 +129,16 @@ export async function seedTestUser() {
           ],
           improvements: [],
           suggestedRevision: {
-            subjectLine: 'Thank you for the opportunity',
-            textBody:
-              'Hi Ms. Rivera,\n\nThank you so much for taking the time to interview me yesterday...',
+            original: "Hi Ms. Rivera,\n\nThank you so much for taking the time to interview me yesterday. I really enjoyed learning more about the team's roadmap and how the role contributes to it. I'm even more excited about the opportunity after our conversation.\n\nPlease let me know if there's anything else you need from me in the meantime.\n\nBest regards,\nTest User",
+            revised: "Hi Ms. Rivera,\n\nThank you for taking the time to interview me yesterday. I really enjoyed learning about the team's roadmap and how this role contributes to it. Our conversation left me even more excited about the opportunity.\n\nPlease let me know if there's anything else you need from me in the meantime.\n\nBest regards,\nTest User",
+            explanation: "I made a few minor tweaks to tighten the sentences and make them flow better, without losing your enthusiastic tone.",
           },
         },
       },
     },
   });
 
-  // ---------------------------------------------------------------------
   // 4. GRADED — weaker performance, lower score, real improvement notes.
-  // ---------------------------------------------------------------------
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -180,43 +164,91 @@ export async function seedTestUser() {
       sessionFeedback: {
         create: {
           overallScore: 48,
-          categoryScores: {
-            clarity: 5,
-            tone: 3,
-            professionalism: 3,
-            structure: 4,
-          },
-          strengths: ['Message is short and to the point'],
-          improvements: [
+          categoryScores: [
             {
-              issue: 'Missing greeting and sign-off',
-              suggestion:
-                'Open with "Hi Sam," and close with a sign-off like "Thanks, Test User" to keep it professional.',
+              name: 'Clarity',
+              score: 50,
+              maxScore: 100,
+              feedback: "Your message doesn't provide enough context for Sam to know which report you're talking about.",
+              issues: [
+                {
+                  messageIndex: 1,
+                  excerpt: "hey can u send me the report asap i need it for the meeting today",
+                  issue: "No context given for the request.",
+                  suggestion: "Mention which report and which meeting so the reader doesn't have to ask a follow-up question.",
+                  severity: "major"
+                }
+              ]
             },
             {
-              issue: 'Overly casual tone and abbreviations ("u", "asap")',
-              suggestion:
-                'Spell out words fully and soften the urgency, e.g. "Could you send it over when you get a chance today?"',
+              name: 'Professional Tone',
+              score: 30,
+              maxScore: 100,
+              feedback: "The tone is overly casual for a workplace exchange.",
+              issues: [
+                {
+                  messageIndex: 1,
+                  excerpt: "hey can u send me the report asap",
+                  issue: 'Overly casual tone and abbreviations ("u", "asap").',
+                  suggestion: 'Spell out words fully and soften the urgency, e.g. "Could you send it over when you get a chance today?"',
+                  severity: "moderate"
+                }
+              ]
             },
             {
-              issue: 'No context given for the request',
-              suggestion:
-                "Mention which report and which meeting so the reader doesn't have to ask a follow-up question.",
+              name: 'Structure',
+              score: 40,
+              maxScore: 100,
+              feedback: "The email is missing standard structural elements.",
+              issues: []
+            },
+            {
+              name: 'Grammar',
+              score: 60,
+              maxScore: 100,
+              feedback: "There is a lack of capitalization and punctuation.",
+              issues: []
+            },
+            {
+              name: 'Etiquette',
+              score: 30,
+              maxScore: 100,
+              feedback: "You forgot standard greetings and sign-offs.",
+              issues: [
+                {
+                  messageIndex: 1,
+                  excerpt: "hey can u send me the report asap i need it for the meeting today",
+                  issue: "Missing greeting and sign-off.",
+                  suggestion: 'Open with "Hi Sam," and close with a sign-off like "Thanks, Test User" to keep it professional.',
+                  severity: "major"
+                }
+              ]
+            },
+            {
+              name: 'Conciseness',
+              score: 50,
+              maxScore: 100,
+              feedback: "While short, it lacks necessary information.",
+              issues: []
             },
           ],
+          strengths: ['Message is short and to the point'],
+          improvements: [
+            'Add a professional greeting and sign-off',
+            'Spell out abbreviations like "u" and "asap"',
+            'Provide more context about which report and meeting you mean',
+          ],
           suggestedRevision: {
-            subjectLine: 'Could you send over the Q1 report?',
-            textBody:
-              "Hi Sam,\n\nCould you send over the Q1 report when you get a chance? I need it ahead of today's 3 PM meeting.\n\nThanks,\nTest User",
+            original: "hey can u send me the report asap i need it for the meeting today",
+            revised: "Hi Sam,\n\nCould you send over the Q1 report when you get a chance? I need it ahead of today's 3 PM meeting.\n\nThanks,\nTest User",
+            explanation: "I added a professional greeting and sign-off, spelled out your abbreviations, and included specific details about the report and meeting so Sam knows exactly what you need without having to ask."
           },
         },
       },
     },
   });
 
-  // ---------------------------------------------------------------------
   // 5. ABANDONED — user started, exchanged a couple messages, walked away.
-  // ---------------------------------------------------------------------
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -241,12 +273,3 @@ export async function seedTestUser() {
     'Created 5 writing sessions: draft, submitted, graded x2, abandoned.',
   );
 }
-
-seedTestUser()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
