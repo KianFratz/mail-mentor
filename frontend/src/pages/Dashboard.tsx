@@ -29,11 +29,7 @@ export default function Dashboard() {
       <AIAdviceCard {...props.aiSuggestion} />
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <SkillProficiencyCard />
-        <PracticeStreakCard
-          days={props.streakDays}
-          message={props.streakMessage}
-          weekDays={props.weekDays}
-        />
+        <PracticeStreakCard />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
         <RecentScoresCard />

@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { statusStyles } from "@/constants/conversation.constant";
 import api from "@/lib/axios";
-import type { SessionStatus, WritingSession } from "@/types/conversation.type";
+import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import emptyState from "../assets/undraw_empty_4zx0.png";
 
 function ConversationList() {
   const [loading, setLoading] = useState(false);
@@ -36,13 +37,14 @@ function ConversationList() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : conversations.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border border-border shadow-sm">
+          <div className="flex-1 flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-border shadow-sm min-h-[75vh]">
             <p className="text-lg text-muted-foreground">
               No conversations found.
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Start a new scenario to see your conversations here.
             </p>
+            <img src={emptyState} alt="" className="w-48 h-auto mx-auto mt-6" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
