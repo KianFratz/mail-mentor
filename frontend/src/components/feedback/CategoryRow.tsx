@@ -33,7 +33,7 @@ export function CategoryRow({
         disabled={!hasIssues}
         aria-expanded={expanded}
         className={cn(
-          "w-full flex items-center gap-3 py-3 px-1 text-left transition-colors",
+          "w-full flex items-center gap-3 py-3 px-1 text-left transition-colors bg-white text-foreground",
           hasIssues && "hover:bg-muted/50 cursor-pointer",
           !hasIssues && "cursor-default",
         )}
