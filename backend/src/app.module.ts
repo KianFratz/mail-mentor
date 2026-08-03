@@ -13,6 +13,7 @@ import { SkillProficiencyModule } from './skill-proficiency/skill-proficiency.mo
 import { RecentScoresModule } from './recent-scores/recent-scores.module';
 import { StreakModule } from './streak/streak.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BadgeModule } from './badge/badge.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     RecentScoresModule,
     StreakModule,
     ScheduleModule.forRoot(),
+    BadgeModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService],
