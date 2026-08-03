@@ -25,6 +25,7 @@ model User {
   writingSession     WritingSession[]
   userStreak         UserStreak[]
   practiceLog        PracticeLog[]
+  userBadges         UserBadge[]
 
   @@map("users")
 }
@@ -109,9 +110,38 @@ model UserStreak {
   updateAt            DateTime  @updatedAt
   graceUsedThisStreak Boolean   @default(false)
   monthlyPercentile   Float?
-  percentileUpdatedAt  DateTime?
+  percentileUpdatedAt DateTime?
 
   @@map("user_streaks")
+}
+
+model Badge {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  title          String
+  subTitle       String
+  icon           String
+  variant        String
+  criteriaType   String
+  criteriaConfig Json
+  createdAt      DateTime @default(now())
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String   @db.Uuid
+  badgeId  String
+  progress Float    @default(0)
+  earnedAt DateTime
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge?   @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@map("user_badges")
 }
 
 enum UserRole {

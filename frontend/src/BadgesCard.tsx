@@ -16,15 +16,13 @@ export default function BadgesCard({
   return (
     <div className="md:col-span-6 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col gap-4">
       <h3 className="text-base font-semibold text-foreground">{title}</h3>
-
-      {/* Badge grid */}
+      
       <div className="grid grid-cols-2 gap-3">
         {badges.map((badge) => (
           <BadgeItem key={badge.id} {...badge} />
         ))}
       </div>
 
-      {/* Locked badge */}
       {lockedBadge && (
         <div className="mt-1 p-3 border border-dashed border-border rounded-xl flex items-center gap-3 opacity-60">
           <div className="w-9 h-9 bg-muted rounded-full flex items-center justify-center shrink-0">
