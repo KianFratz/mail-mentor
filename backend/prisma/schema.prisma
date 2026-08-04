@@ -132,13 +132,13 @@ model Badge {
 }
 
 model UserBadge {
-  id       String   @id @default(cuid())
-  userId   String   @db.Uuid
+  id       String    @id @default(cuid())
+  userId   String    @db.Uuid
   badgeId  String
-  progress Float    @default(0)
-  earnedAt DateTime
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge    Badge?   @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  progress Float     @default(0)
+  earnedAt DateTime?
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge?    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
   @@map("user_badges")

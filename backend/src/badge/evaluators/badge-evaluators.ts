@@ -4,7 +4,7 @@ interface CategoryScoreEntry {
   maxScore;
 }
 
-function evaluateCategoryScore(
+export function evaluateCategoryScore(
   recentFeedbacks: { categoryScores: CategoryScoreEntry[] }[],
   config: { category: string; threshold: number; minSessions: number },
 ) {
