@@ -5,6 +5,7 @@ import { PromptService } from './prompt/prompt.service';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { WritingSessionModule } from 'src/writing-session/writing-session.module';
 import { StreakService } from 'src/streak/streak.service';
+import { BadgeService } from 'src/badge/badge.service';
 
 @Module({
   imports: [WritingSessionModule],
@@ -14,6 +15,7 @@ import { StreakService } from 'src/streak/streak.service';
     PromptService,
     WritingSessionService,
     StreakService,
+    BadgeService,
   ],
   exports: [AiService],
 })

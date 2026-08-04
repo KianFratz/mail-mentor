@@ -7,7 +7,7 @@ import { WritingSessionService } from 'src/writing-session/writing-session.servi
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
 import { StreakService } from 'src/streak/streak.service';
-import { UserScalarFieldEnum } from 'src/generated/prisma/internal/prismaNamespace';
+import { BadgeService } from 'src/badge/badge.service';
 
 @Injectable()
 export class AiService {
@@ -16,6 +16,7 @@ export class AiService {
     private prompt: PromptService,
     private ollama: OllamaService,
     private streakService: StreakService,
+    private badgeService: BadgeService,
   ) {}
 
   async reply(sessionId: string, userMessage: string, wordCount: number) {
@@ -139,6 +140,7 @@ export class AiService {
 
       await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
       await this.streakService.recordPractice(userId, localDate);
+      await this.badgeService.evaluateForUser(userId);
 
       return saved;
     } catch (err) {
