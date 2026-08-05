@@ -1,7 +1,7 @@
 interface CategoryScoreEntry {
   name: string;
   score: number;
-  maxScore;
+  maxScore: number;
 }
 
 export function evaluateCategoryScore(
