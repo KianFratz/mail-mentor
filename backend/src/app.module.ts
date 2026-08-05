@@ -14,6 +14,7 @@ import { RecentScoresModule } from './recent-scores/recent-scores.module';
 import { StreakModule } from './streak/streak.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BadgeModule } from './badge/badge.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [

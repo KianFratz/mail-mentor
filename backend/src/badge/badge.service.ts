@@ -6,10 +6,9 @@ import { Badge } from 'src/generated/prisma/client';
 
 @Injectable()
 export class BadgeService {
-  constructor(
-    private prisma: PrismaService,
-    private badgesCache: Badge[] | null = null,
-  ) {}
+  private badgesCache: Badge[] | null = null;
+
+  constructor(private prisma: PrismaService) {}
 
   async getBadges() {
     if (!this.badgesCache) {
@@ -17,6 +16,19 @@ export class BadgeService {
     }
 
     return this.badgesCache;
+  }
+
+  async getAllBadgesWithProgerss() {
+    return this.prisma.userBadge.findMany({
+      include: { badge: true },
+    });
+  }
+
+  async getUserBadge(userId: string) {
+    return this.prisma.userBadge.findMany({
+      where: { userId },
+      include: { badge: true },
+    });
   }
 
   private getMaxRequiredSessions(
