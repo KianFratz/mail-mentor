@@ -4,12 +4,12 @@ import { Prisma } from 'src/generated/prisma/client';
 const badges: Prisma.BadgeCreateManyInput[] = [
   {
     key: 'TONE_MASTER',
-    title: 'Professional Tone',
+    title: 'Tone Master',
     subTitle: 'Emotional Resonance',
     icon: 'psychology',
     variant: 'tertiary',
     criteriaType: 'category_score',
-    criteriaConfig: { category: 'Tone', threshold: 90, minSessions: 5 },
+    criteriaConfig: { category: 'Professional Tone', threshold: 90, minSessions: 5 },
   },
   {
     key: 'GRAMMAR_EXPERT',
