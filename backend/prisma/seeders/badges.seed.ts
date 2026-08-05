@@ -4,7 +4,7 @@ import { Prisma } from 'src/generated/prisma/client';
 const badges: Prisma.BadgeCreateManyInput[] = [
   {
     key: 'TONE_MASTER',
-    title: 'Tone Master',
+    title: 'Professional Tone',
     subTitle: 'Emotional Resonance',
     icon: 'psychology',
     variant: 'tertiary',
