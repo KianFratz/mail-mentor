@@ -24,7 +24,7 @@ export function evaluateCategoryScore(
   const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
 
   return {
-    progress: Math.min(100, Math.round((avg / config.threshold) * 100)),
+    progress: Math.round((scores.length / config.minSessions) * 100),
     earned: avg >= config.threshold,
   };
 }

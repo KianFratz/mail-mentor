@@ -89,7 +89,7 @@ export class AiService {
     );
   }
 
-  async generateFeedback(sessionId: string, userId, localDate) {
+  async generateFeedback(sessionId: string, userId: string, localDate: string) {
     const session =
       await this.writingSessionService.getSessionWithHistory(sessionId);
 
