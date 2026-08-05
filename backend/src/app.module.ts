@@ -29,6 +29,7 @@ import { BadgeModule } from './badge/badge.module';
     StreakModule,
     ScheduleModule.forRoot(),
     BadgeModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController, AiController],
   providers: [AppService],

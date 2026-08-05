@@ -8,6 +8,7 @@ import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
 import { StreakService } from 'src/streak/streak.service';
 import { BadgeService } from 'src/badge/badge.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AiService {
@@ -16,7 +17,7 @@ export class AiService {
     private prompt: PromptService,
     private ollama: OllamaService,
     private streakService: StreakService,
-    private badgeService: BadgeService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async reply(sessionId: string, userMessage: string, wordCount: number) {
@@ -140,7 +141,10 @@ export class AiService {
 
       await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
       await this.streakService.recordPractice(userId, localDate);
-      await this.badgeService.evaluateForUser(userId);
+      this.eventEmitter.emit('feedback created', {
+        userId,
+        sessionId,
+      });
 
       return saved;
     } catch (err) {
