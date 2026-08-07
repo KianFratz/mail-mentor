@@ -20,7 +20,7 @@ export function evaluateCategoryScore(
     };
   }
 
-  const recent = scores.slice(-config.minSessions);
+  const recent = scores.slice(0, config.minSessions);
   const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
 
   return {
