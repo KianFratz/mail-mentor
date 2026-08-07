@@ -7,11 +7,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class BadgeController {
   constructor(private readonly badgeService: BadgeService) {}
 
-  @Get('')
-  async getAllBadgesWithProgerss() {
-    return await this.badgeService.getAllBadgesWithProgerss();
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('user')
   async getUserBadge(@CurrentUser('userId') userId: string) {

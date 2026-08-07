@@ -1,28 +1,18 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { evaluateCategoryScore } from './evaluators/badge-evaluators';
+import {
+  evaluateCategoryScore,
+  evaluateOverallScore,
+  evaluateSessionCount,
+  evaluateStreak,
+} from './evaluators/badge-evaluators';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Badge } from 'src/generated/prisma/client';
+import { Prisma } from 'src/generated/prisma/client';
+import { EvaluationResult } from './evaluators/badge-evaluators';
 
 @Injectable()
 export class BadgeService {
-  private badgesCache: Badge[] | null = null;
-
   constructor(private prisma: PrismaService) {}
-
-  async getBadges() {
-    if (!this.badgesCache) {
-      this.badgesCache = await this.prisma.badge.findMany();
-    }
-
-    return this.badgesCache;
-  }
-
-  async getAllBadgesWithProgerss() {
-    return this.prisma.userBadge.findMany({
-      include: { badge: true },
-    });
-  }
 
   async getUserBadge(userId: string) {
     return this.prisma.userBadge.findMany({
@@ -31,27 +21,16 @@ export class BadgeService {
     });
   }
 
-  private getMaxRequiredSessions(
-    badges: Pick<Badge, 'criteriaConfig'>[],
-  ): number {
-    return Math.max(
-      1,
-      ...badges.map((badge) => {
-        const config = badge.criteriaConfig as {
-          minSessions?: number;
-        };
-
-        return config.minSessions ?? 1;
-      }),
-    );
-  }
-
   async evaluateForUser(userId: string) {
-    const badges = await this.getBadges();
-
-    const maxSessions = this.getMaxRequiredSessions(badges);
-
-    const [recentFeedbacks, existingUserBadges] = await Promise.all([
+    const [
+      badges,
+      existingUserBadges,
+      recentFeedbacks,
+      userStreak,
+      totalSessionsCount,
+    ] = await Promise.all([
+      this.prisma.badge.findMany(),
+      this.prisma.userBadge.findMany({ where: { userId } }),
       this.prisma.sessionFeedback.findMany({
         where: {
           writingSession: {
@@ -61,10 +40,13 @@ export class BadgeService {
         orderBy: {
           createdAt: 'desc',
         },
-        take: maxSessions,
+        take: 50,
       }),
-      this.prisma.userBadge.findMany({
+      this.prisma.userStreak.findUnique({
         where: { userId },
+      }),
+      this.prisma.writingSession.count({
+        where: { userId, status: 'graded' },
       }),
     ]);
 
@@ -72,30 +54,37 @@ export class BadgeService {
       existingUserBadges.map((badge) => [badge.badgeId, badge]),
     );
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const badge of badges) {
-        let result: {
-          progress: number;
-          earned: boolean;
-        };
+    const upsertOperations: Prisma.PrismaPromise<any>[] = [];
 
-        switch (badge.criteriaType) {
-          case 'category_score':
-            result = evaluateCategoryScore(
-              recentFeedbacks as any,
-              badge.criteriaConfig as any,
-            );
-            break;
-          default:
-            continue;
-        }
+    for (const badge of badges) {
+      let result: EvaluationResult | null = null;
+      const config = badge.criteriaConfig as any;
+      switch (badge.criteriaType) {
+        case 'category_score':
+          result = evaluateCategoryScore(recentFeedbacks as any, config);
+          break;
+        case 'overall_score':
+          result = evaluateOverallScore(recentFeedbacks, config);
+          break;
+        case 'session_count':
+          result = evaluateSessionCount(totalSessionsCount, config);
+          break;
+        case 'streak':
+          result = evaluateStreak(userStreak?.currentStreak ?? 0, config);
+          break;
+        default:
+          continue;
+      }
 
-        const existing = existingBadgesMap.get(badge.id);
+      if (!result) {
+        continue;
+      }
 
-        await tx.userBadge.upsert({
-          where: {
-            userId_badgeId: { userId, badgeId: badge.id },
-          },
+      const existing = existingBadgesMap.get(badge.id);
+
+      upsertOperations.push(
+        this.prisma.userBadge.upsert({
+          where: { userId_badgeId: { userId, badgeId: badge.id } },
           update: {
             progress: result.progress,
             earnedAt: existing?.earnedAt ?? (result.earned ? new Date() : null),
@@ -106,9 +95,13 @@ export class BadgeService {
             progress: result.progress,
             earnedAt: result.earned ? new Date() : null,
           },
-        });
+        }),
+      );
+
+      if (upsertOperations.length > 0) {
+        await this.prisma.$transaction(upsertOperations);
       }
-    });
+    }
   }
 
   @OnEvent('feedback.created', { async: true })

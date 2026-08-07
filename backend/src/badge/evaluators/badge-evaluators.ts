@@ -15,7 +15,7 @@ interface OverallScoreConfig {
   minSessions: number;
 }
 
-interface EvaluationResult {
+export interface EvaluationResult {
   progress: number;
   earned: boolean;
 }
@@ -81,17 +81,16 @@ export function evaluateOverallScore(
 }
 
 export function evaluateSessionCount(
-  totalSession: number,
+  totalSessions: number,
   config: SessionCountConfig,
 ): EvaluationResult {
   const progress = Math.min(
     100,
-    Math.round((totalSession / config.sessions) * 100),
+    Math.round((totalSessions / config.sessions) * 100),
   );
-
   return {
     progress,
-    earned: totalSession >= config.sessions,
+    earned: totalSessions >= config.sessions,
   };
 }
 
