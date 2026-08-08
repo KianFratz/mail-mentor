@@ -28,6 +28,14 @@ interface StreakConfig {
   days: number;
 }
 
+interface ImprovementConfig {
+  increase: number;
+}
+
+interface PerfectScoreConfig {
+  score: number;
+}
+
 export function evaluateCategoryScore(
   recentFeedbacks: { categoryScores: CategoryScoreEntry[] }[],
   config: CategoryScoreConfig,
@@ -108,3 +116,45 @@ export function evaluateStreak(
     earned: currentStreak >= config.days,
   };
 }
+
+export function evaluateImprovement(
+  recentFeedbacks: { overallScore: number }[],
+  config: ImprovementConfig,
+): EvaluationResult {
+  if (recentFeedbacks.length < 2) {
+    return { progress: 0, earned: false };
+  }
+
+  const latestScore = recentFeedbacks[0].overallScore;
+  const pastScores = recentFeedbacks.slice(1).map((f) => f.overallScore);
+  const minPastScore = Math.min(...pastScores);
+  const diff = latestScore - minPastScore;
+
+  if (diff <= 0) {
+    return { progress: 0, earned: false };
+  }
+
+  const progress = Math.min(100, Math.round((diff / config.increase) * 100));
+  return {
+    progress,
+    earned: diff >= config.increase,
+  };
+}
+
+export function evaluatePerfectScore(
+  recentFeedbacks: { overallScore: number }[],
+  config: PerfectScoreConfig,
+): EvaluationResult {
+  if (recentFeedbacks.length === 0) {
+    return { progress: 0, earned: false };
+  }
+
+  const maxScore = Math.max(...recentFeedbacks.map((f) => f.overallScore));
+  const progress = Math.min(100, Math.round((maxScore / config.score) * 100));
+
+  return {
+    progress,
+    earned: maxScore >= config.score,
+  };
+}
+

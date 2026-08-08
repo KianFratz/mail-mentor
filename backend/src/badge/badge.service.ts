@@ -2,7 +2,9 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import {
   evaluateCategoryScore,
+  evaluateImprovement,
   evaluateOverallScore,
+  evaluatePerfectScore,
   evaluateSessionCount,
   evaluateStreak,
 } from './evaluators/badge-evaluators';
@@ -72,6 +74,12 @@ export class BadgeService {
         case 'streak':
           result = evaluateStreak(userStreak?.currentStreak ?? 0, config);
           break;
+        case 'improvement':
+          result = evaluateImprovement(recentFeedbacks, config);
+          break;
+        case 'perfect_score':
+          result = evaluatePerfectScore(recentFeedbacks, config);
+          break;
         default:
           continue;
       }
@@ -97,10 +105,10 @@ export class BadgeService {
           },
         }),
       );
+    }
 
-      if (upsertOperations.length > 0) {
-        await this.prisma.$transaction(upsertOperations);
-      }
+    if (upsertOperations.length > 0) {
+      await this.prisma.$transaction(upsertOperations);
     }
   }
 

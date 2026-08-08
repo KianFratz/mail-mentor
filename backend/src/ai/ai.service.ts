@@ -141,7 +141,7 @@ export class AiService {
 
       await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
       await this.streakService.recordPractice(userId, localDate);
-      this.eventEmitter.emit('feedback created', {
+      this.eventEmitter.emit('feedback.created', {
         userId,
         sessionId,
       });
