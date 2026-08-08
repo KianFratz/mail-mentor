@@ -1,9 +1,10 @@
-import ScoreItem from "./ScoreItem";
+import ScoreItem from "../ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Button } from "./ui/button";
-import emptyState from "../assets/undraw_books_wxzz.png";
+import { Button } from "../ui/button";
+import emptyState from "../../assets/undraw_books_wxzz.png";
+import RecentScoreCardSkeleton from "./RecentScoreCardSkeleton";
 
 export default function RecentScoresCard({}) {
   const { scores, loading, fetchRecentScores } = useRecentScoresStore();
@@ -15,7 +16,7 @@ export default function RecentScoresCard({}) {
   }, [fetchRecentScores]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <RecentScoreCardSkeleton />;
   }
 
   return (
@@ -40,8 +41,12 @@ export default function RecentScoresCard({}) {
               alt="No recent scores"
               className="w-32 h-auto object-contain py-4"
             />
-            <p className="text-sm font-medium text-foreground">No recent scores yet</p>
-            <p className="text-xs text-muted-foreground mt-1">Finish a scenario to see your recent scores here</p>
+            <p className="text-sm font-medium text-foreground">
+              No recent scores yet
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Finish a scenario to see your recent scores here
+            </p>
           </div>
         ) : (
           recentScores.map((score) => <ScoreItem key={score.id} {...score} />)

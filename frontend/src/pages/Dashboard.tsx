@@ -1,7 +1,7 @@
 import BadgesCard from "@/BadgesCard";
 import AIAdviceCard from "@/components/AIAdviceCard";
 import PracticeStreakCard from "@/components/PracticeStreakCard";
-import RecentScoresCard from "@/components/RecentScoreCard";
+import RecentScoresCard from "@/components/recent-score/RecentScoreCard";
 import SkillProficiencyCard from "@/components/SkillProficiencyCard";
 import { DashboardData } from "@/constants/dashboard-layout.constant";
 import { useSkillProficiencyStore } from "@/store/skill-proficiency.store";

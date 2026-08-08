@@ -16,7 +16,6 @@ export function FeedbackPanel(): JSX.Element {
     <div className={"space-y-6 max-w-3xl mx-auto"}>
       <ScoreCard
         score={feedback.overallScore}
-        overallScore={feedback.overallScore}
       />
       <CategoryBreakdown categories={feedback.categoryScores} />
       <StrengthsAndImprovements
