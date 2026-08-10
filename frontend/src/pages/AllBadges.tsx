@@ -151,7 +151,7 @@ export default function AllBadgesPage() {
                   </div>
                 </div>
 
-                <div className="bg-muted/30 rounded-lg p-3 mt-1">
+                <div className="bg-muted/30 rounded-lg p-3 mt-1 h-[95px]">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs font-medium text-foreground">Progress</span>
                     <span className="text-xs font-bold text-foreground">{Math.round(progress)}%</span>
