@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import type {
   BadgeVariant,
   EarnedBadge,
@@ -6,6 +7,7 @@ import type {
 } from "./types/dashboard.type";
 import BadgeItem from "./components/BadgeItem";
 import { useBadgeStore } from "./store/badge.store";
+import { Button } from "./components/ui/button";
 
 interface BadgesCardProps {
   title?: string;
@@ -18,6 +20,7 @@ export default function BadgesCard({
   badges: fallbackBadges = [],
   lockedBadge: fallbackLockedBadge,
 }: BadgesCardProps) {
+  const navigate = useNavigate();
   const { userBadges, fetchUserBadge, loading } = useBadgeStore();
 
   useEffect(() => {
@@ -26,6 +29,8 @@ export default function BadgesCard({
 
   const earnedUserBadges: EarnedBadge[] = userBadges
     .filter((record) => record.earnedAt !== null)
+    .sort((a, b) => new Date(b.earnedAt!).getTime() - new Date(a.earnedAt!).getTime())
+    .slice(0, 2)
     .map((record) => ({
       id: record.id,
       icon: record.badge.icon || "military_tech",
@@ -55,7 +60,15 @@ export default function BadgesCard({
 
   return (
     <div className="md:col-span-6 bg-white border border-border rounded-2xl p-6 shadow-xs flex flex-col gap-4">
-      <h3 className="text-base font-semibold text-foreground">{title}</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-base font-semibold text-foreground">{title}</h3>
+        <Button
+          onClick={() => navigate("/badges/me")}
+          className="text-xs font-semibold h-8"
+        >
+          View All
+        </Button>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         {badgesToDisplay.map((badge) => (
