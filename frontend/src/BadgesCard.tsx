@@ -48,8 +48,6 @@ export default function BadgesCard({
   const badgesToDisplay =
     earnedUserBadges.length > 0 ? earnedUserBadges : fallbackBadges;
 
-  console.log("badges to display", badgesToDisplay);
-
   const lockedRecords = userBadges
     .filter((record) => record.earnedAt === null)
     .sort((a, b) => b.progress - a.progress);

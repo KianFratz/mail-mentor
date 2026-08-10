@@ -16,8 +16,6 @@ export function CategoryBreakdown({
     defaultExpandedId ?? null,
   );
 
-  console.log(categories);
-
   return (
     <Card>
       <CardHeader>
