@@ -33,10 +33,7 @@ export default function Dashboard() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
         <RecentScoresCard />
-        <BadgesCard
-          badges={props.earnedBadges}
-          lockedBadge={props.lockedBadge}
-        />
+        <BadgesCard />
       </div>
     </div>
   );

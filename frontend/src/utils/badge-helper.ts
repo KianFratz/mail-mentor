@@ -39,6 +39,5 @@ export function getBadgeRequirementNote(badge: Badge): string {
       return `Achieve a perfect score of 100 on any writing session.`;
   }
 
-  // Fallback to subtitle if no config matches
   return subTitle || "Complete the requirement to accomplish this badge.";
 }
