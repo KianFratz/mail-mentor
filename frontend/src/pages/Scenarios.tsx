@@ -107,14 +107,7 @@ function Scenarios() {
             )}
           </>
         ) : (
-          <CreateCompose
-            scenario={selectedScenario}
-            onSessionCreated={(id) =>
-              navigate(`/conversation/new`, {
-                state: { scenario: selectedScenario },
-              })
-            }
-          />
+          <CreateCompose />
         )}
       </div>
       <AIPopover />
