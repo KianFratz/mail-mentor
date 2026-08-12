@@ -1,0 +1,62 @@
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { UsersService } from './users.service';
+import { UpdateUsernameDto } from './dto/changeUserName.dto';
+import { UpdatePasswordDto } from './dto/changePassword.dto';
+import { UpdateEmailDto } from './dto/changeEmail.dto';
+
+@Controller('users')
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/name')
+  async updateUserName(
+    @CurrentUser('id') id: string,
+    @Body() dto: UpdateUsernameDto,
+  ) {
+    return this.usersService.updateUserName(id, dto.newUserName);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  async updatePassword(
+    @CurrentUser('id') id: string,
+    @Body() dto: UpdatePasswordDto,
+  ) {
+    return this.usersService.updatePassword(
+      id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/email')
+  async requestEmailChange(
+    @CurrentUser('userId') userId: string,
+    @Body() dto: UpdateEmailDto,
+  ) {
+    return this.usersService.requestEmailChange(
+      userId,
+      dto.newEmail,
+      dto.currentPassword,
+    );
+  }
+
+  @Get('me/email/verify')
+  async confirmEmailChange(@Query('token') token: string) {
+    if (!token) throw new BadRequestException('Token is required');
+    return this.usersService.confirmEmailChange(token);
+  }
+}

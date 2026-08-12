@@ -15,6 +15,7 @@ import { StreakModule } from './streak/streak.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BadgeModule } from './badge/badge.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ScheduleModule.forRoot(),
     BadgeModule,
     EventEmitterModule.forRoot(),
+    MailModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService],

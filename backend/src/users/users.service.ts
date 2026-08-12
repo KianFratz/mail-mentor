@@ -1,10 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { Prisma, User } from '../generated/prisma/client';
+import * as bcrypt from 'bcrypt';
+import { createHash, randomBytes } from 'crypto';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -21,6 +33,119 @@ export class UsersService {
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({
       data,
+    });
+  }
+
+  async updateUserName(id: string, newUserName: string) {
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        name: newUserName,
+      },
+    });
+  }
+
+  async updatePassword(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    if (currentPassword !== newPassword) {
+      throw 'Passowrd does not match';
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        password: newPassword,
+      },
+    });
+  }
+
+  async requestEmailChange(
+    id: string,
+    newEmail: string,
+    currentPassword: string,
+  ) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (!user.password) {
+      throw new BadRequestException(
+        'Email change not available for OAuth accounts',
+      );
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    const normalizedEmail = newEmail.toLowerCase().trim();
+
+    const existing = await this.prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+    if (existing) throw new ConflictException('Email already in use');
+
+    const rawToken = randomBytes(32).toString('hex');
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 30);
+
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        pendingEmail: normalizedEmail,
+        emailVerifyTokenHash: tokenHash,
+        emailVerifyExpiresAt: expiresAt,
+      },
+    });
+
+    // fire both — don't let one failure block the other
+    await Promise.allSettled([
+      this.mailService.sendEmailChangeVerification(normalizedEmail, rawToken),
+      this.mailService.sendEmailChangeNotice(user.email),
+    ]);
+
+    return { message: 'Verification email sent to your new address' };
+  }
+
+  async confirmEmailChange(rawToken: string) {
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+    const user = await this.prisma.user.findFirst({
+      where: { emailVerifyTokenHash: tokenHash },
+    });
+
+    if (
+      !user ||
+      !user.emailVerifyExpiresAt ||
+      user.emailVerifyExpiresAt < new Date()
+    ) {
+      throw new BadRequestException('Invalid or expired verification link');
+    }
+
+    if (!user.pendingEmail) {
+      throw new BadRequestException('No pending email change found');
+    }
+
+    // race-condition guard: someone else may have claimed this email in the meantime
+    const conflict = await this.prisma.user.findUnique({
+      where: { email: user.pendingEmail },
+    });
+    if (conflict && conflict.id !== user.id) {
+      throw new ConflictException('Email already in use');
+    }
+
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        email: user.pendingEmail,
+        pendingEmail: null,
+        emailVerifyTokenHash: null,
+        emailVerifyExpiresAt: null,
+      },
+      select: { id: true, email: true, name: true },
     });
   }
 }
