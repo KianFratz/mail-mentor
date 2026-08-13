@@ -6,7 +6,7 @@ import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
 
 function SettingsAccountProfile() {
-  const { requestEmailChange, isLoading, error, verificationSent } =
+  const { requestEmailChange, isLoading, error, verificationSent, reset } =
     useSettingsStore();
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -42,10 +42,13 @@ function SettingsAccountProfile() {
     const formData = new FormData(e.currentTarget);
     const newEmail = formData.get("newEmail") as string;
     const currentPassword = formData.get("currentPassword") as string;
+    const resetForm = e.currentTarget;
 
-    const ok = await requestEmailChange({ newEmail, currentPassword });
+    const result = await requestEmailChange({ newEmail, currentPassword });
 
-    if (ok) {
+    if (result) {
+      resetForm.reset();
+      reset();
       toastManager.add({
         description: "Check your new email for a confirmation link",
         title: "Success!",
