@@ -14,6 +14,7 @@ import { Conversation } from "./components/conversation/Conversation";
 import ConversationList from "./pages/ConversationList";
 import AllScoresPage from "./pages/AllScores";
 import AllBadgesPage from "./pages/AllBadges";
+import VerifyEmailChange from "./components/settings/VerifyEmailChange";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
+            <Route
+              path="/settings/verify-email"
+              element={<VerifyEmailChange />}
+            />
 
             <Route element={<ProtectedRoute />}>
               <Route element={<AppShell />}>

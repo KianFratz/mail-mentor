@@ -3,8 +3,8 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -54,7 +54,7 @@ export class UsersController {
     );
   }
 
-  @Get('me/email/verify')
+  @Post('me/email/verify')
   async confirmEmailChange(@Query('token') token: string) {
     if (!token) throw new BadRequestException('Token is required');
     return this.usersService.confirmEmailChange(token);
