@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { Prisma, User } from '../generated/prisma/client';
@@ -13,6 +14,8 @@ import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
@@ -102,10 +105,16 @@ export class UsersService {
     });
 
     // fire both — don't let one failure block the other
-    await Promise.allSettled([
+    const results = await Promise.allSettled([
       this.mailService.sendEmailChangeVerification(normalizedEmail, rawToken),
       this.mailService.sendEmailChangeNotice(user.email),
     ]);
+
+    results.forEach((result, idx) => {
+      if (result.status === 'rejected') {
+        this.logger.error(`Email send failed for index ${idx}:`, result.reason);
+      }
+    });
 
     return { message: 'Verification email sent to your new address' };
   }

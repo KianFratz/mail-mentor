@@ -22,20 +22,20 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Patch('me/name')
   async updateUserName(
-    @CurrentUser('id') id: string,
+    @CurrentUser('userId') userId: string,
     @Body() dto: UpdateUsernameDto,
   ) {
-    return this.usersService.updateUserName(id, dto.newUserName);
+    return this.usersService.updateUserName(userId, dto.newUserName);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/password')
   async updatePassword(
-    @CurrentUser('id') id: string,
+    @CurrentUser('userId') userId: string,
     @Body() dto: UpdatePasswordDto,
   ) {
     return this.usersService.updatePassword(
-      id,
+      userId,
       dto.currentPassword,
       dto.newPassword,
     );
