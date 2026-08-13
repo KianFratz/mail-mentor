@@ -44,9 +44,8 @@ export class MailService {
 
   async sendEmailChangeVerification(toEmail: string, rawToken: string) {
     const baseUrl =
-      this.configService.get<string>('FRONTEND_URL') ||
-      this.configService.get<string>('APP_URL');
-    const verifyUrl = `${baseUrl}/settings/email/verify?token=${rawToken}`;
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
+    const verifyUrl = `${baseUrl}/settings/verify-email?token=${rawToken}`;
 
     try {
       await this.transporter.sendMail({
