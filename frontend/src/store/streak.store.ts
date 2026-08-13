@@ -16,6 +16,7 @@ export const useStreakStore = create<StreakStore>((set) => ({
   longestStreak: 0,
   weeklyStreak: [],
   loading: false,
+  monthlyPercentile: 0,
 
   fetchLongestStreak: async () => {
     set({ loading: true });

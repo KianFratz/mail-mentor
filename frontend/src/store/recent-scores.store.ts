@@ -5,7 +5,6 @@ import { create } from "zustand";
 interface RecentScoresStore {
   scores: RecentScore[];
   loading: boolean;
-  page: number;
   totalPages: number;
   total: number;
 
