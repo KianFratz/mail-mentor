@@ -1,4 +1,4 @@
-import { Mail, RefreshCw, Save, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Save, User } from "lucide-react";
 import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -6,6 +6,7 @@ import { toastManager } from "../ui/toast";
 
 function SettingsAccountProfile() {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [profile, setProfile] = useState({
     name: "Alex Morgan",
     email: "alex.morgan@example.com",
@@ -31,6 +32,10 @@ function SettingsAccountProfile() {
     }, 600);
   };
 
+  const handleChangeName = () => {};
+
+  const handleChangeEmail = () => {};
+
   return (
     <section id="section-profile" className="space-y-6 scroll-mt-6">
       <div className="flex items-center justify-between">
@@ -53,9 +58,9 @@ function SettingsAccountProfile() {
 
       <form
         onSubmit={handleSaveProfile}
-        className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-6"
+        className="bg-card border border-border rounded-xl p-6 shadow-xs"
       >
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-6 border-b border-border">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
           <div className="relative group">
             <img
               src={profile.avatarUrl}
@@ -91,57 +96,84 @@ function SettingsAccountProfile() {
             </Button>
           </div>
         </div>
+      </form>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-muted-foreground" />
-              Full Name
-            </label>
-            <Input
-              type="text"
-              value={profile.name}
-              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-              placeholder="e.g. Alex Morgan"
-              className="bg-background"
-              required
-            />
+      <form action="" onSubmit={handleChangeName}>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-semibold text-foreground">
+              Change Full Name
+            </h3>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-foreground flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-muted-foreground" />
-                Email Address
-              </span>
-            </label>
-            <Input
-              type="email"
-              value={profile.email}
-              onChange={(e) =>
-                setProfile({ ...profile, email: e.target.value })
-              }
-              placeholder="alex@example.com"
-              className="bg-background"
-              required
-            />
-          </div>
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-xs font-medium text-muted-foreground">
+                New Name
+              </label>
+              <Input placeholder="Alan Turing" className="bg-background" />
+            </div>
+
+            <div className="md:col-span-2 flex justify-end pt-2">
+              <Button type="submit" variant="secondary" className="gap-2">
+                <Save className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                Update Name
+              </Button>
+            </div>
+          </form>
         </div>
+      </form>
 
-        <div className="flex justify-end pt-4 border-t border-border">
-          <Button type="submit" disabled={isSavingProfile} className="gap-2">
-            {isSavingProfile ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                Save Profile Changes
-              </>
-            )}
-          </Button>
+      <form action="" onSubmit={handleChangeEmail}>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center gap-2">
+            <Mail className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-semibold text-foreground">
+              Change Email
+            </h3>
+          </div>
+
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">
+                New Email
+              </label>
+              <Input
+                placeholder="example@company.com"
+                className="bg-background"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">
+                Current Password
+              </label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="bg-background pr-9"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-3.5 h-3.5" />
+                  ) : (
+                    <Eye className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="md:col-span-2 flex justify-end pt-2">
+              <Button type="submit" variant="secondary" className="gap-2">
+                <Save className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                Update Email
+              </Button>
+            </div>
+          </form>
         </div>
       </form>
     </section>
