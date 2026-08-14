@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -56,6 +57,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async refresh(@Req() req: Request, @Res() res: Response) {
     const rt = req.cookies['refresh_token'];
     const { access_token } = await this.authService.refreshAccessToken(rt);
@@ -64,6 +66,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async register(@Body() registerDto: RegisterDto, @Res() res) {
     const { access_token, refresh_token } =
       await this.authService.register(registerDto);
@@ -74,6 +77,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const { access_token, refresh_token } =
       await this.authService.login(loginDto);

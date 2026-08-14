@@ -56,6 +56,7 @@ export class UsersController {
   }
 
   @Post('me/email/verify')
+  @Throttle({ 'auth-sensetive': { ttl: 900000, limit: 10 } })
   async confirmEmailChange(@Query('token') token: string) {
     if (!token) throw new BadRequestException('Token is required');
     return this.usersService.confirmEmailChange(token);
