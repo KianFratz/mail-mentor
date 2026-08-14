@@ -111,6 +111,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('set-password')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async setPassword(
     @CurrentUser('userId') userId: string,
     @Body() dto: SetPasswordDto,
