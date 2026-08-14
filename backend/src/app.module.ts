@@ -16,6 +16,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BadgeModule } from './badge/badge.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './mail/mail.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -33,8 +35,20 @@ import { MailModule } from './mail/mail.module';
     BadgeModule,
     EventEmitterModule.forRoot(),
     MailModule,
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000,
+        limit: 100,
+      },
+      {
+        name: 'auth-sensitive',
+        ttl: 900000,
+        limit: 3,
+      },
+    ]),
   ],
   controllers: [AppController, AiController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

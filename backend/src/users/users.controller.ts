@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   Patch,
   Post,
   Query,
@@ -14,6 +13,7 @@ import { UsersService } from './users.service';
 import { UpdateUsernameDto } from './dto/changeUserName.dto';
 import { UpdatePasswordDto } from './dto/changePassword.dto';
 import { UpdateEmailDto } from './dto/changeEmail.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('users')
 export class UsersController {
@@ -43,6 +43,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/email')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 3 } })
   async requestEmailChange(
     @CurrentUser('userId') userId: string,
     @Body() dto: UpdateEmailDto,
