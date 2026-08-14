@@ -54,7 +54,7 @@ export class MailService {
         subject: 'Confrim your new email address',
         html: `
         <p>You requested to change your Mail Mentor email to this address.</p>
-        <p><a href="${verifyUrl}">Click here to confirm</a> (expires in 30 minutes).</p>
+        <p><a href="${verifyUrl}">Click here to confirm</a> (expires in 1 hour).</p>
         <p>If you didn't request this, you can safely ignore this email.</p>
         `,
       });
