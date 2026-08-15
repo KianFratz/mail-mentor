@@ -44,7 +44,7 @@ export class UsersService {
   async getUserProfile(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, name: true, email: true, createdAt: true},
+      select: { id: true, name: true, email: true, createdAt: true },
     });
   }
 
@@ -63,11 +63,6 @@ export class UsersService {
     currentPassword: string,
     newPassword: string,
   ) {
-    if (newPassword !== currentPassword)
-      throw new BadRequestException(
-        'New password and current password does not match',
-      );
-
     const user = await this.prisma.user.findUnique({
       where: { id },
     });

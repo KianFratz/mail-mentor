@@ -8,12 +8,12 @@ import { useSettingsStore } from "@/store/settings.store";
 function SettingsAccountProfile() {
   const {
     requestEmailChange,
-    error,
     reset,
     requestNameChange,
     fetchProfile,
     userProfile,
   } = useSettingsStore();
+  const { error: currentError } = useSettingsStore.getState();
 
   useEffect(() => {
     fetchProfile();
@@ -61,7 +61,7 @@ function SettingsAccountProfile() {
       });
     } else {
       toastManager.add({
-        description: error || "Something went wrong",
+        description: currentError || "Something went wrong",
         title: "Error!",
         type: "error",
       });
@@ -87,7 +87,7 @@ function SettingsAccountProfile() {
       });
     } else {
       toastManager.add({
-        description: error || "Something went wrong",
+        description: currentError || "Something went wrong",
         title: "Error!",
         type: "error",
       });
@@ -110,7 +110,10 @@ function SettingsAccountProfile() {
           </div>
         </div>
         <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
-          Member since {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : "Loading..."}
+          Member since{" "}
+          {userProfile?.createdAt
+            ? new Date(userProfile.createdAt).toLocaleDateString()
+            : "Loading..."}
         </span>
       </div>
 
@@ -133,7 +136,9 @@ function SettingsAccountProfile() {
             <h3 className="text-base font-semibold text-foreground">
               {userProfile?.name}
             </h3>
-            <p className="text-sm text-muted-foreground">{userProfile?.email}</p>
+            <p className="text-sm text-muted-foreground">
+              {userProfile?.email}
+            </p>
             <p className="text-xs text-primary font-medium flex items-center gap-1.5 mt-1"></p>
           </div>
           <div className="flex items-center gap-2">

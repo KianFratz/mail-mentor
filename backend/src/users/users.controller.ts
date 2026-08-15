@@ -14,7 +14,7 @@ import { UsersService } from './users.service';
 import { UpdateUsernameDto } from './dto/changeUserName.dto';
 import { UpdatePasswordDto } from './dto/changePassword.dto';
 import { UpdateEmailDto } from './dto/changeEmail.dto';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
 @Controller('users')
 export class UsersController {
@@ -32,7 +32,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/password')
-  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 3 } })
   async updatePassword(
     @CurrentUser('userId') userId: string,
     @Body() dto: UpdatePasswordDto,
@@ -66,8 +66,8 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('me')
-  @Throttle({ default: { ttl: 60000, limit: 100 } })
   async getUserProfile(@CurrentUser('userId') userId: string) {
     return this.usersService.getUserProfile(userId);
   }

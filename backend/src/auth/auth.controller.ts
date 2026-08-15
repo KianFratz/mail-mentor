@@ -17,7 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -101,6 +101,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   async getProfile(@CurrentUser('userId') userId: string) {
     const user = await this.usersService.findById(userId);
     return {

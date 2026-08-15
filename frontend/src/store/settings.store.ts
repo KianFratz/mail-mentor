@@ -17,6 +17,11 @@ interface UserProfile {
   email: string;
 }
 
+interface RequestPasswordChangePayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
 interface SettingsStore {
   isLoading: boolean;
   error: string | null;
@@ -25,6 +30,9 @@ interface SettingsStore {
 
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
   requestNameChange: (payload: RequestNameChangePayload) => Promise<boolean>;
+  requestPasswordChange: (
+    payload: RequestPasswordChangePayload,
+  ) => Promise<boolean>;
   fetchProfile: () => Promise<void>;
   reset: () => void;
 }
@@ -95,6 +103,27 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
         error.response?.data?.message ?? "Failed to fetch user profile data";
 
       set({ isLoading: false, error: message });
+    }
+  },
+
+  requestPasswordChange: async ({ currentPassword, newPassword }) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.patch("/users/me/password", {
+        currentPassword,
+        newPassword,
+      });
+
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ??
+        "Failed to update password. Please try again later";
+
+      set({ isLoading: false, error: message });
+      return false;
     }
   },
 

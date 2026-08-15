@@ -10,10 +10,11 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, type HtmlHTMLAttributes } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toastManager } from "../ui/toast";
+import { useSettingsStore } from "@/store/settings.store";
 
 interface ConnectedAccount {
   id: string;
@@ -26,12 +27,6 @@ interface ConnectedAccount {
 function SettingsSecurity() {
   const [exportFormat, setExportFormat] = useState<"json" | "csv">("json");
   const [isExporting, setIsExporting] = useState(false);
-
-  const [passwordState, setPasswordState] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -72,6 +67,62 @@ function SettingsSecurity() {
       provider: "github",
     },
   ]);
+
+  const { requestPasswordChange, reset } = useSettingsStore();
+  const { error: currentError } = useSettingsStore.getState();
+
+  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const currentPassword = formData.get("currentPassword") as string;
+    const newPassword = formData.get("newPassword") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    const resetForm = e.currentTarget;
+
+    if (
+      currentPassword === "" ||
+      newPassword === "" ||
+      confirmPassword === ""
+    ) {
+      toastManager.add({
+        description: "Please fill all the required fields",
+        title: "Error!",
+        type: "error",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toastManager.add({
+        description: "New password and confirm password doesn't match",
+        title: "Error!",
+        type: "error",
+      });
+      return;
+    }
+
+    const result = await requestPasswordChange({
+      currentPassword,
+      newPassword,
+    });
+
+    if (result) {
+      resetForm.reset();
+      reset();
+      toastManager.add({
+        description: "Password change successfully!",
+        title: "Success!",
+        type: "sucess",
+      });
+    } else {
+      toastManager.add({
+        description: currentError || "Something went wrong",
+        title: "Error!",
+        type: "error",
+      });
+      return;
+    }
+  };
 
   const handleExportData = () => {
     setIsExporting(true);
@@ -148,49 +199,6 @@ function SettingsSecurity() {
     );
   };
 
-  const handleUpdatePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!passwordState.currentPassword) {
-      toastManager.add({
-        title: "Missing Field",
-        description: "Please enter your current password.",
-        type: "error",
-      });
-      return;
-    }
-    if (passwordState.newPassword.length < 8) {
-      toastManager.add({
-        title: "Weak Password",
-        description: "New password must be at least 8 characters long.",
-        type: "warning",
-      });
-      return;
-    }
-    if (passwordState.newPassword !== passwordState.confirmPassword) {
-      toastManager.add({
-        title: "Password Mismatch",
-        description: "New password and confirmation do not match.",
-        type: "error",
-      });
-      return;
-    }
-
-    setIsUpdatingPassword(true);
-    setTimeout(() => {
-      setIsUpdatingPassword(false);
-      setPasswordState({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      toastManager.add({
-        title: "Password Changed",
-        description: "Your account password was updated successfully.",
-        type: "success",
-      });
-    }, 700);
-  };
-
   return (
     <section id="section-security" className="space-y-6 scroll-mt-6">
       <div className="flex items-center gap-3">
@@ -198,9 +206,7 @@ function SettingsSecurity() {
           <KeyRound className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-foreground">
-            Security
-          </h2>
+          <h2 className="text-lg font-semibold text-foreground">Security</h2>
           <p className="text-xs text-muted-foreground">
             Manage your password, connected auth providers, active sessions, and
             data exports.
@@ -226,14 +232,9 @@ function SettingsSecurity() {
             </label>
             <div className="relative">
               <Input
+                required
+                name="currentPassword"
                 type={showCurrentPassword ? "text" : "password"}
-                value={passwordState.currentPassword}
-                onChange={(e) =>
-                  setPasswordState({
-                    ...passwordState,
-                    currentPassword: e.target.value,
-                  })
-                }
                 placeholder="••••••••"
                 className="bg-background pr-9"
               />
@@ -257,14 +258,9 @@ function SettingsSecurity() {
             </label>
             <div className="relative">
               <Input
+                name="newPassword"
+                required
                 type={showNewPassword ? "text" : "password"}
-                value={passwordState.newPassword}
-                onChange={(e) =>
-                  setPasswordState({
-                    ...passwordState,
-                    newPassword: e.target.value,
-                  })
-                }
                 placeholder="At least 8 characters"
                 className="bg-background pr-9"
               />
@@ -287,14 +283,9 @@ function SettingsSecurity() {
               Confirm New Password
             </label>
             <Input
+              required
+              name="confirmPassword"
               type="password"
-              value={passwordState.confirmPassword}
-              onChange={(e) =>
-                setPasswordState({
-                  ...passwordState,
-                  confirmPassword: e.target.value,
-                })
-              }
               placeholder="••••••••"
               className="bg-background"
             />
