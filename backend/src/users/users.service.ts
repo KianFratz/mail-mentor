@@ -41,6 +41,13 @@ export class UsersService {
     });
   }
 
+  async getUserProfile(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: { id: true, name: true, email: true, createdAt: true},
+    });
+  }
+
   async updateUserName(id: string, newUserName: string) {
     return this.prisma.user.update({
       where: { id },

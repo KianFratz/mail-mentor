@@ -10,13 +10,22 @@ interface RequestNameChangePayload {
   newUserName: string;
 }
 
+interface UserProfile {
+  id: string;
+  name: string;
+  createdAt: string;
+  email: string;
+}
+
 interface SettingsStore {
   isLoading: boolean;
   error: string | null;
   verificationSent: boolean;
+  userProfile: UserProfile;
 
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
   requestNameChange: (payload: RequestNameChangePayload) => Promise<boolean>;
+  fetchProfile: () => Promise<void>;
   reset: () => void;
 }
 
@@ -24,6 +33,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   isLoading: false,
   error: null,
   verificationSent: false,
+  userProfile: undefined,
 
   requestEmailChange: async ({ newEmail, currentPassword }) => {
     set({ isLoading: true, error: null, verificationSent: false });
@@ -63,6 +73,28 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
 
       set({ isLoading: false, error: message });
       return false;
+    }
+  },
+
+  fetchProfile: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const { data } = await api.get("users/me");
+      set({
+        userProfile: {
+          id: data?.id ?? "",
+          name: data?.name ?? "",
+          createdAt: data?.createdAt ?? "",
+          email: data?.email ?? "",
+        },
+        isLoading: false,
+      });
+    } catch (error) {
+      const message =
+        error.response?.data?.message ?? "Failed to fetch user profile data";
+
+      set({ isLoading: false, error: message });
     }
   },
 

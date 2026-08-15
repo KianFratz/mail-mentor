@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Patch,
   Post,
   Query,
@@ -62,5 +63,12 @@ export class UsersController {
   async confirmEmailChange(@Query('token') token: string) {
     if (!token) throw new BadRequestException('Token is required');
     return this.usersService.confirmEmailChange(token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @Throttle({ default: { ttl: 60000, limit: 100 } })
+  async getUserProfile(@CurrentUser('userId') userId: string) {
+    return this.usersService.getUserProfile(userId);
   }
 }

@@ -1,21 +1,29 @@
 import { Eye, EyeOff, Mail, Save, User } from "lucide-react";
-import React, { useState, type HtmlHTMLAttributes } from "react";
+import React, { useEffect, useState, type HtmlHTMLAttributes } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
 
 function SettingsAccountProfile() {
-  const { requestEmailChange, error, reset, requestNameChange } =
-    useSettingsStore();
+  const {
+    requestEmailChange,
+    error,
+    reset,
+    requestNameChange,
+    fetchProfile,
+    userProfile,
+  } = useSettingsStore();
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [profile, setProfile] = useState({
     name: "Alex Morgan",
     email: "alex.morgan@example.com",
-    targetRole: "Executive Communication & Leadership",
-    bio: "Focused on refining high-stakes email communication, executive messaging tone, and persuasive outreach.",
-    preferredTone: "Professional & Direct",
     avatarUrl:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80",
     memberSince: "March 2025",
@@ -102,7 +110,7 @@ function SettingsAccountProfile() {
           </div>
         </div>
         <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
-          Member since {profile.memberSince}
+          Member since {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : "Loading..."}
         </span>
       </div>
 
@@ -114,7 +122,7 @@ function SettingsAccountProfile() {
           <div className="relative group">
             <img
               src={profile.avatarUrl}
-              alt={profile.name}
+              alt={userProfile?.name}
               className="w-20 h-20 rounded-full object-cover ring-2 ring-primary/20"
             />
             <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -123,9 +131,9 @@ function SettingsAccountProfile() {
           </div>
           <div className="space-y-1 flex-1">
             <h3 className="text-base font-semibold text-foreground">
-              {profile.name}
+              {userProfile?.name}
             </h3>
-            <p className="text-sm text-muted-foreground">{profile.email}</p>
+            <p className="text-sm text-muted-foreground">{userProfile?.email}</p>
             <p className="text-xs text-primary font-medium flex items-center gap-1.5 mt-1"></p>
           </div>
           <div className="flex items-center gap-2">
