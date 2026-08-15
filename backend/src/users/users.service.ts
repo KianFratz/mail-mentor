@@ -53,15 +53,33 @@ export class UsersService {
     currentPassword: string,
     newPassword: string,
   ) {
-    if (currentPassword !== newPassword) {
-      throw 'Passowrd does not match';
+    if (newPassword !== currentPassword)
+      throw new BadRequestException(
+        'New password and current password does not match',
+      );
+
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) throw new NotFoundException('User does not exist');
+
+    if (!user.password) {
+      throw new BadRequestException('User does not have a password set');
     }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      throw new UnauthorizedException('Current password is incorrect');
+
+    const salt = await bcrypt.genSalt();
+    const currentPasswordHash = await bcrypt.hash(currentPassword, salt);
 
     return this.prisma.user.update({
       where: { id },
       data: {
-        password: newPassword,
+        password: currentPasswordHash,
       },
+      select: { id: true, email: true, name: true },
     });
   }
 
@@ -71,7 +89,7 @@ export class UsersService {
     currentPassword: string,
   ) {
     const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('User does not exist');
 
     if (!user.password) {
       throw new BadRequestException(
