@@ -11,6 +11,8 @@ import { Prisma, User } from '../generated/prisma/client';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { MailService } from 'src/mail/mail.service';
+import { truncate } from 'fs/promises';
+import { threadCpuUsage } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -45,6 +47,7 @@ export class UsersService {
       data: {
         name: newUserName,
       },
+      select: { id: true, name: true },
     });
   }
 
