@@ -1,12 +1,12 @@
 import { Eye, EyeOff, Mail, Save, User } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, type HtmlHTMLAttributes } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
 
 function SettingsAccountProfile() {
-  const { requestEmailChange, isLoading, error, verificationSent, reset } =
+  const { requestEmailChange, error, reset, requestNameChange } =
     useSettingsStore();
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,30 @@ function SettingsAccountProfile() {
     }, 600);
   };
 
-  const handleChangeName = () => {};
+  const handleChangeName = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newUserName = formData.get("newName") as string;
+    const resetForm = e.currentTarget;
+
+    const result = await requestNameChange({ newUserName });
+
+    if (result) {
+      resetForm.reset();
+      reset();
+      toastManager.add({
+        description: "Name updated successfully",
+        title: "Success!",
+        type: "success",
+      });
+    } else {
+      toastManager.add({
+        description: error || "Something went wrong",
+        title: "Error!",
+        type: "error",
+      });
+    }
+  };
 
   const handleChangeEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -141,7 +164,11 @@ function SettingsAccountProfile() {
             <label className="text-xs font-medium text-muted-foreground">
               New Name
             </label>
-            <Input placeholder="Alan Turing" className="bg-background" />
+            <Input
+              name="newName"
+              placeholder="Alan Turing"
+              className="bg-background"
+            />
           </div>
 
           <div className="md:col-span-2 flex justify-end pt-2">

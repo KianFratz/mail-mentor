@@ -21,6 +21,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/name')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   async updateUserName(
     @CurrentUser('userId') userId: string,
     @Body() dto: UpdateUsernameDto,
@@ -30,6 +31,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me/password')
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async updatePassword(
     @CurrentUser('userId') userId: string,
     @Body() dto: UpdatePasswordDto,
