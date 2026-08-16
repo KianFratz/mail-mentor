@@ -24,6 +24,7 @@ interface RequestPasswordChangePayload {
 
 interface SettingsStore {
   isLoading: boolean;
+  isEmailSaving: boolean;
   error: string | null;
   verificationSent: boolean;
   userProfile: UserProfile;
@@ -39,12 +40,13 @@ interface SettingsStore {
 
 export const useSettingsStore = create<SettingsStore>((set) => ({
   isLoading: false,
+  isEmailSaving: false,
   error: null,
   verificationSent: false,
   userProfile: undefined,
 
   requestEmailChange: async ({ newEmail, currentPassword }) => {
-    set({ isLoading: true, error: null, verificationSent: false });
+    set({ isEmailSaving: true, error: null, verificationSent: false });
 
     try {
       await api.patch("/users/me/email", {
@@ -52,14 +54,14 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
         currentPassword,
       });
 
-      set({ isLoading: false, verificationSent: true });
+      set({ isEmailSaving: false, verificationSent: true });
       return true;
     } catch (err: any) {
       const message =
         err?.response?.data?.message ??
         "Failed to request email change. Please try again later.";
 
-      set({ isLoading: false, error: message, verificationSent: false });
+      set({ isEmailSaving: false, error: message, verificationSent: false });
       return false;
     }
   },

@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Mail, Save, User } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Save, User } from "lucide-react";
 import React, { useEffect, useState, type HtmlHTMLAttributes } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -12,6 +12,7 @@ function SettingsAccountProfile() {
     requestNameChange,
     fetchProfile,
     userProfile,
+    isEmailSaving,
   } = useSettingsStore();
   const { error: currentError } = useSettingsStore.getState();
 
@@ -76,7 +77,6 @@ function SettingsAccountProfile() {
     const resetForm = e.currentTarget;
 
     const result = await requestEmailChange({ newEmail, currentPassword });
-
     if (result) {
       resetForm.reset();
       reset();
@@ -240,8 +240,17 @@ function SettingsAccountProfile() {
             </div>
           </div>
           <div className="md:col-span-2 flex justify-end pt-2">
-            <Button type="submit" variant="secondary" className="gap-2">
-              <Save className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <Button
+              type="submit"
+              variant="secondary"
+              className="gap-2"
+              disabled={isEmailSaving}
+            >
+              {isEmailSaving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              )}
               Update Email
             </Button>
           </div>
