@@ -11,8 +11,6 @@ import { Prisma, User } from '../generated/prisma/client';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { MailService } from 'src/mail/mail.service';
-import { truncate } from 'fs/promises';
-import { threadCpuUsage } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -179,5 +177,30 @@ export class UsersService {
       },
       select: { id: true, email: true, name: true },
     });
+  }
+
+  async deleteAccount(id: string) {
+    this.logger.warn(`Account deletion initiated for user ${id}`);
+    try {
+      await this.prisma.user.delete({
+        where: { id },
+      });
+      this.logger.warn(`Account successfully deleted for user: ${id}`);
+      return {
+        message: 'Account deleted successfully',
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        this.logger.warn(`Delete failed - user not found: ${id}`);
+        throw new NotFoundException('User not found');
+      }
+      this.logger.warn(
+        `Unexpected error during account deletion for user: ${id}`,
+      );
+      throw error;
+    }
   }
 }

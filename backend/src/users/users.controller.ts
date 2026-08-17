@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -15,6 +16,7 @@ import { UpdateUsernameDto } from './dto/changeUserName.dto';
 import { UpdatePasswordDto } from './dto/changePassword.dto';
 import { UpdateEmailDto } from './dto/changeEmail.dto';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { DeleteAccountDto } from './dto/deleteAccount.dto';
 
 @Controller('users')
 export class UsersController {
@@ -59,7 +61,7 @@ export class UsersController {
   }
 
   @Post('me/email/verify')
-  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 10 } })
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
   async confirmEmailChange(@Query('token') token: string) {
     if (!token) throw new BadRequestException('Token is required');
     return this.usersService.confirmEmailChange(token);
@@ -70,5 +72,15 @@ export class UsersController {
   @Get('me')
   async getUserProfile(@CurrentUser('userId') userId: string) {
     return this.usersService.getUserProfile(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Delete('me')
+  async deleteAccount(
+    @CurrentUser('userId') userId: string,
+    @Body() dto: DeleteAccountDto,
+  ) {
+    return this.usersService.deleteAccount(userId);
   }
 }
