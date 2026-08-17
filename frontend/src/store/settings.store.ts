@@ -28,7 +28,9 @@ interface SettingsStore {
   error: string | null;
   verificationSent: boolean;
   userProfile: UserProfile;
+  isDeleting: boolean;
 
+  deleteAccount: () => Promise<boolean>;
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
   requestNameChange: (payload: RequestNameChangePayload) => Promise<boolean>;
   requestPasswordChange: (
@@ -44,6 +46,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   error: null,
   verificationSent: false,
   userProfile: undefined,
+  isDeleting: false,
 
   requestEmailChange: async ({ newEmail, currentPassword }) => {
     set({ isEmailSaving: true, error: null, verificationSent: false });
@@ -125,6 +128,24 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
         "Failed to update password. Please try again later";
 
       set({ isLoading: false, error: message });
+      return false;
+    }
+  },
+
+  deleteAccount: async () => {
+    set({ isDeleting: true, error: null });
+    try {
+      await api.delete("/users/me", {
+        data: { confirmation: "DELETE" },
+      });
+      set({ isDeleting: false });
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ??
+        "Failed to delete account. Please try again";
+
+      set({ isDeleting: false, error: message });
       return false;
     }
   },
