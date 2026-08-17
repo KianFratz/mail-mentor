@@ -1,16 +1,26 @@
-import { AlertTriangle, RefreshCw, ShieldAlert, Trash2, X } from "lucide-react";
 import React, { useState } from "react";
+import { AlertTriangle, RefreshCw, ShieldAlert, Trash2, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toastManager } from "../ui/toast";
+import { useSettingsStore } from "@/store/settings.store";
+import { performLogout } from "@/lib/tokenEvents";
 
 function SettingsDeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [confirmationInput, setConfirmationInput] = useState("");
+  const { deleteAccount, isDeleting, error, reset } = useSettingsStore();
 
-  const handleDeleteAccount = () => {
-    if (deleteConfirmationInput.trim() !== "DELETE") {
+  const handleCloseModal = () => {
+    setShowDeleteModal(false);
+    setConfirmationInput("");
+    reset();
+  };
+
+  const handleDeleteAccount = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (confirmationInput.trim() !== "DELETE") {
       toastManager.add({
         title: "Confirmation Failed",
         description: "Please type DELETE to confirm account deletion.",
@@ -18,18 +28,28 @@ function SettingsDeleteAccount() {
       });
       return;
     }
-    setIsDeletingAccount(true);
-    setTimeout(() => {
-      setIsDeletingAccount(false);
-      setShowDeleteModal(false);
+
+    const success = await deleteAccount();
+
+    if (success) {
       toastManager.add({
-        title: "Account Scheduled for Deletion",
-        description:
-          "Your account and associated data have been queued for removal.",
-        type: "warning",
+        title: "Account Deleted",
+        description: "Your account has been permanently removed.",
+        type: "success",
       });
-    }, 1200);
+      await performLogout();
+    } else {
+      toastManager.add({
+        title: "Deletion Failed",
+        description:
+          useSettingsStore.getState().error ||
+          "Failed to delete account. Please try again.",
+        type: "error",
+      });
+    }
   };
+
+  const isConfirmed = confirmationInput.trim() === "DELETE";
 
   return (
     <>
@@ -84,75 +104,81 @@ function SettingsDeleteAccount() {
                 <h3 className="text-base font-semibold">Delete Account</h3>
               </div>
               <button
-                onClick={() => setShowDeleteModal(false)}
+                type="button"
+                onClick={handleCloseModal}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-3">
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Are you absolutely sure you want to delete your account? All of
-                your saved data, scores, badges, and subscription details will
-                be{" "}
-                <strong className="text-foreground">permanently erased</strong>.
-              </p>
+            <form onSubmit={handleDeleteAccount} className="space-y-4">
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Are you absolutely sure you want to delete your account? All
+                  of your saved data, scores, badges, and subscription details
+                  will be{" "}
+                  <strong className="text-foreground">
+                    permanently erased
+                  </strong>
+                  .
+                </p>
 
-              <div className="p-3 bg-muted rounded-lg border border-border space-y-1.5">
-                <label className="text-xs font-medium text-foreground">
-                  To confirm, type{" "}
-                  <span className="font-mono font-bold text-destructive">
-                    DELETE
-                  </span>{" "}
-                  below:
-                </label>
-                <Input
-                  type="text"
-                  value={deleteConfirmationInput}
-                  onChange={(e) => setDeleteConfirmationInput(e.target.value)}
-                  placeholder="Type DELETE"
-                  className="bg-background text-xs font-mono"
-                />
+                <div className="p-3 bg-muted rounded-lg border border-border space-y-1.5">
+                  <label
+                    htmlFor="delete-confirmation-input"
+                    className="text-xs font-medium text-foreground block"
+                  >
+                    To confirm, type{" "}
+                    <span className="font-mono font-bold text-destructive">
+                      DELETE
+                    </span>{" "}
+                    below:
+                  </label>
+                  <Input
+                    id="delete-confirmation-input"
+                    name="deleteConfirmation"
+                    type="text"
+                    value={confirmationInput}
+                    onChange={(e) => setConfirmationInput(e.target.value)}
+                    placeholder="Type DELETE"
+                    className="bg-background text-xs font-mono"
+                    autoComplete="off"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setDeleteConfirmationInput("");
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                disabled={
-                  deleteConfirmationInput.trim() !== "DELETE" ||
-                  isDeletingAccount
-                }
-                onClick={handleDeleteAccount}
-                className="gap-2"
-              >
-                {isDeletingAccount ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-3.5 h-3.5" />
-                    Confirm Permanent Deletion
-                  </>
-                )}
-              </Button>
-            </div>
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isDeleting}
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  size="sm"
+                  disabled={!isConfirmed || isDeleting}
+                  className="gap-2"
+                >
+                  {isDeleting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Confirm Permanent Deletion
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}

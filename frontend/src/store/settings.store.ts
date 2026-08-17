@@ -140,10 +140,10 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
       });
       set({ isDeleting: false });
       return true;
-    } catch (error) {
+    } catch (error: any) {
       const message =
         error?.response?.data?.message ??
-        "Failed to delete account. Please try again";
+        "Failed to delete account. Please try again later.";
 
       set({ isDeleting: false, error: message });
       return false;
