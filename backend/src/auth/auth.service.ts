@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +22,7 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async loginWithGoolge(googleUser: any) {
+  async loginWithGoogle(googleUser: any) {
     let user = await this.prisma.user.findUnique({
       where: { email: googleUser.email },
     });
@@ -44,6 +45,41 @@ export class AuthService {
     return this.generateTokenPair(user);
   }
 
+  async disconnectGoogle(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) throw new BadRequestException('User not found');
+
+    const isGoogleConnected =
+      user.authProviders.includes('GOOGLE') || user.googleId;
+
+    if (!isGoogleConnected) {
+      throw new BadRequestException('Google account is not connected');
+    }
+
+    const hasPassword = !!user.password;
+    const otherProviders = user.authProviders.filter((p) => p !== 'GOOGLE');
+
+    if (!hasPassword && otherProviders.length === 0) {
+      throw new BadRequestException(
+        "Set a password before disconnecting Google. or you won't be able to log in.",
+      );
+    }
+
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        authProviders: otherProviders,
+        googleId: null,
+        googleRefreshToken: null,
+      },
+    });
+
+    return {
+      message: 'Google account disconnected successfully',
+    };
+  }
+
   private generateTokenPair(user: any) {
     const payload = {
       sub: user.id,
@@ -60,9 +96,9 @@ export class AuthService {
         secret:
           this.configService.get<string>('JWT_REFRESH_SECRET') ||
           'super-refresh-secret',
-        expiresIn:
-          (this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRATION') ||
-            '7d') as any,
+        expiresIn: (this.configService.get<string>(
+          'JWT_REFRESH_TOKEN_EXPIRATION',
+        ) || '7d') as any,
       },
     );
 
@@ -142,7 +178,7 @@ export class AuthService {
       name: user.name,
     });
 
-    return { access_token };  
+    return { access_token };
   }
 
   async setPassword(userId: string, dto: SetPasswordDto) {

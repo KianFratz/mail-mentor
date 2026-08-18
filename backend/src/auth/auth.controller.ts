@@ -7,6 +7,7 @@ import {
   Req,
   Res,
   ConflictException,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -46,7 +47,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async goolgeAuthRedirect(@Req() req, @Res() res) {
     const { access_token, refresh_token } =
-      await this.authService.loginWithGoolge(req.user);
+      await this.authService.loginWithGoogle(req.user);
 
     this.setRefreshTokenCookie(res, refresh_token);
 
@@ -54,6 +55,13 @@ export class AuthController {
     return res.redirect(
       `${process.env.FRONTEND_URL}/oauth-success?token=${access_token}`,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Post('disconnect-google')
+  async disconnectGoogle(@CurrentUser('userId') userId: string) {
+    return this.authService.disconnectGoogle(userId);
   }
 
   @Post('refresh')
