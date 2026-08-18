@@ -30,6 +30,7 @@ interface SettingsStore {
   userProfile: UserProfile;
   isDeleting: boolean;
 
+  disconnectGoogle: () => Promise<boolean>;
   deleteAccount: () => Promise<boolean>;
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
   requestNameChange: (payload: RequestNameChangePayload) => Promise<boolean>;
@@ -146,6 +147,24 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
         "Failed to delete account. Please try again later.";
 
       set({ isDeleting: false, error: message });
+      return false;
+    }
+  },
+
+  disconnectGoogle: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.post("/auth/disconnect-google");
+
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ??
+        "Failed to disconnect Google account. Please try again";
+
+      set({ isLoading: false, error: message });
       return false;
     }
   },
