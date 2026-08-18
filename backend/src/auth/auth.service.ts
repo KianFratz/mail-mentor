@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { ConfigService } from '@nestjs/config';
+import { AuthProvider } from 'src/generated/prisma/enums';
 
 @Injectable()
 export class AuthService {
@@ -33,13 +34,22 @@ export class AuthService {
           email: googleUser.email,
           name: googleUser.name,
           googleId: googleUser.googleId,
+          authProviders: [AuthProvider.GOOGLE],
         },
       });
     }
 
+    const updatedProviders: AuthProvider[] = Array.from(
+      new Set([...user.authProviders, AuthProvider.GOOGLE]),
+    );
+
     await this.prisma.user.update({
       where: { id: user.id },
-      data: { googleRefreshToken: googleUser.refreshToken ?? undefined },
+      data: {
+        googleId: googleUser.googleId,
+        googleRefreshToken: googleUser.refreshToken ?? undefined,
+        authProviders: updatedProviders,
+      },
     });
 
     return this.generateTokenPair(user);
