@@ -1,6 +1,6 @@
-import api from "@/lib/axios";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSettingsStore } from "@/store/settings.store";
+import { useSetPasswordStore } from "@/store/set-password.store";
 import { X } from "lucide-react";
 
 interface SetPasswordFormProps {
@@ -12,73 +12,40 @@ export const SetPasswordForm: React.FC<SetPasswordFormProps> = ({
   onSuccess,
   onClose,
 }) => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [hasPassword, setHasPassword] = useState<boolean | null>(null);
   const { fetchProfile } = useSettingsStore();
+  const {
+    password,
+    confirmPassword,
+    error,
+    success,
+    loading,
+    hasPassword,
+    setPassword,
+    setConfirmPassword,
+    checkPasswordStatus,
+    submitSetPassword,
+    reset,
+  } = useSetPasswordStore();
 
   useEffect(() => {
-    const checkPasswordStatus = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        setHasPassword(response.data.hasPassword);
-      } catch (err) {
-        console.error("Failed to fetch user profile", err);
-      }
-    };
     checkPasswordStatus();
-  }, []);
+    return () => {
+      reset();
+    };
+  }, [checkPasswordStatus, reset]);
 
-  if (hasPassword === null) {
-    return null;
-  }
-
-  if (hasPassword === true) {
+  if (hasPassword === null || hasPassword === true) {
     return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(false);
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Password do not match.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await api.post("/auth/set-password", {
-        password: password,
-      });
-
-      setSuccess(true);
-      setPassword("");
-      setConfirmPassword("");
+    const isSuccess = await submitSetPassword();
+    if (isSuccess) {
       await fetchProfile();
       if (onSuccess) {
         onSuccess();
       }
-    } catch (err: any) {
-      if (err.response?.status === 409) {
-        setError("Your account already has a password set.");
-      } else {
-        setError(
-          err.response?.data?.message ||
-            "Failed to set password. Please try again.",
-        );
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -187,3 +154,4 @@ export const SetPasswordForm: React.FC<SetPasswordFormProps> = ({
     </div>
   );
 };
+
