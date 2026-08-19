@@ -1,6 +1,8 @@
 import api from "@/lib/axios";
 import { create } from "zustand";
 
+type AuthProviders = "LOCAL" | "GOOGLE";
+
 interface RequestEmailChangePayload {
   newEmail: string;
   currentPassword: string;
@@ -15,6 +17,7 @@ interface UserProfile {
   name: string;
   createdAt: string;
   email: string;
+  authProviders: AuthProviders[];
 }
 
 interface RequestPasswordChangePayload {
@@ -27,7 +30,7 @@ interface SettingsStore {
   isEmailSaving: boolean;
   error: string | null;
   verificationSent: boolean;
-  userProfile: UserProfile;
+  userProfile?: UserProfile;
   isDeleting: boolean;
 
   disconnectGoogle: () => Promise<boolean>;
@@ -101,10 +104,11 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
           name: data?.name ?? "",
           createdAt: data?.createdAt ?? "",
           email: data?.email ?? "",
+          authProviders: data?.authProviders ?? [],
         },
         isLoading: false,
       });
-    } catch (error) {
+    } catch (error: any) {
       const message =
         error.response?.data?.message ?? "Failed to fetch user profile data";
 
@@ -123,7 +127,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
 
       set({ isLoading: false });
       return true;
-    } catch (error) {
+    } catch (error: any) {
       const message =
         error?.response?.data?.message ??
         "Failed to update password. Please try again later";
@@ -157,9 +161,19 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
     try {
       await api.post("/auth/disconnect-google");
 
-      set({ isLoading: false });
+      set((state) => ({
+        isLoading: false,
+        userProfile: state.userProfile
+          ? {
+              ...state.userProfile,
+              authProviders: state.userProfile.authProviders.filter(
+                (p) => p !== "GOOGLE",
+              ),
+            }
+          : undefined,
+      }));
       return true;
-    } catch (error) {
+    } catch (error: any) {
       const message =
         error?.response?.data?.message ??
         "Failed to disconnect Google account. Please try again";

@@ -10,7 +10,7 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import React, { useState, type HtmlHTMLAttributes } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toastManager } from "../ui/toast";
@@ -31,7 +31,7 @@ function SettingsSecurity() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
-  const [profile, setProfile] = useState({
+  const profile = {
     name: "Alex Morgan",
     email: "alex.morgan@example.com",
     targetRole: "Executive Communication & Leadership",
@@ -40,36 +40,49 @@ function SettingsSecurity() {
     avatarUrl:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80",
     memberSince: "March 2025",
-  });
+  };
 
-  const [connectedAccounts, setConnectedAccounts] = useState<
-    ConnectedAccount[]
-  >([
+  const {
+    requestPasswordChange,
+    reset,
+    fetchProfile,
+    userProfile,
+    disconnectGoogle,
+    isLoading,
+    error: currentError,
+  } = useSettingsStore();
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  const isGoogleConnected = Boolean(
+    userProfile?.authProviders?.includes("GOOGLE"),
+  );
+
+  const connectedAccounts: ConnectedAccount[] = [
     {
-      id: "1",
+      id: "google",
       name: "Google Workspace",
-      email: "alex.morgan@gmail.com",
-      connected: true,
+      email: isGoogleConnected ? userProfile?.email || "" : "",
+      connected: isGoogleConnected,
       provider: "google",
     },
     {
-      id: "2",
+      id: "microsoft",
       name: "Microsoft Outlook",
-      email: "alex.m@corporate.com",
-      connected: true,
+      email: "",
+      connected: false,
       provider: "microsoft",
     },
     {
-      id: "3",
+      id: "github",
       name: "GitHub",
       email: "",
       connected: false,
       provider: "github",
     },
-  ]);
-
-  const { requestPasswordChange, reset } = useSettingsStore();
-  const { error: currentError } = useSettingsStore.getState();
+  ];
 
   const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,10 +114,12 @@ function SettingsSecurity() {
       return;
     }
 
+    setIsUpdatingPassword(true);
     const result = await requestPasswordChange({
       currentPassword,
       newPassword,
     });
+    setIsUpdatingPassword(false);
 
     if (result) {
       resetForm.reset();
@@ -130,7 +145,11 @@ function SettingsSecurity() {
       setIsExporting(false);
       const dataPayload = {
         exportDate: new Date().toISOString(),
-        userProfile: profile,
+        userProfile: {
+          ...profile,
+          name: userProfile?.name || profile.name,
+          email: userProfile?.email || profile.email,
+        },
         securityInfo: {
           connectedAccounts: connectedAccounts
             .filter((a) => a.connected)
@@ -150,8 +169,8 @@ function SettingsSecurity() {
           : "data:text/csv;charset=utf-8," +
             encodeURIComponent(
               "Metric,Value\n" +
-                `Name,${profile.name}\n` +
-                `Email,${profile.email}\n` +
+                `Name,${userProfile?.name || profile.name}\n` +
+                `Email,${userProfile?.email || profile.email}\n` +
                 `Export Date,${new Date().toLocaleDateString()}\n`,
             );
 
@@ -173,30 +192,35 @@ function SettingsSecurity() {
     }, 1000);
   };
 
-  const handleToggleAccount = (id: string) => {
-    setConnectedAccounts((prev) =>
-      prev.map((acc) => {
-        if (acc.id === id) {
-          const nextState = !acc.connected;
+  const handleToggleAccount = async (account: ConnectedAccount) => {
+    if (account.provider === "google") {
+      if (account.connected) {
+        const success = await disconnectGoogle();
+        if (success) {
           toastManager.add({
-            title: nextState ? "Account Connected" : "Account Disconnected",
-            description: nextState
-              ? `Successfully linked ${acc.name} to your Mail Mentor account.`
-              : `Disconnected ${acc.name}.`,
-            type: nextState ? "success" : "info",
+            title: "Account Disconnected",
+            description: "Disconnected Google account.",
+            type: "info",
           });
-          return {
-            ...acc,
-            connected: nextState,
-            email: nextState
-              ? acc.email ||
-                `${profile.name.toLowerCase().replace(" ", ".")}@example.com`
-              : "",
-          };
+        } else {
+          toastManager.add({
+            title: "Error!",
+            description: currentError || "Failed to disconnect Google account.",
+            type: "error",
+          });
         }
-        return acc;
-      }),
-    );
+      } else {
+        const baseUrl =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+        window.location.href = `${baseUrl}/auth/google`;
+      }
+    } else {
+      toastManager.add({
+        title: "Not Supported",
+        description: `${account.name} authentication is not supported yet.`,
+        type: "info",
+      });
+    }
   };
 
   return (
@@ -348,7 +372,7 @@ function SettingsSecurity() {
                     {account.name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {account.connected ? account.email : "Not linked"}
+                    {account.connected ? account.email || "Linked" : "Not linked"}
                   </p>
                 </div>
               </div>
@@ -367,7 +391,8 @@ function SettingsSecurity() {
                   type="button"
                   variant={account.connected ? "outline" : "default"}
                   size="sm"
-                  onClick={() => handleToggleAccount(account.id)}
+                  disabled={isLoading}
+                  onClick={() => handleToggleAccount(account)}
                 >
                   {account.connected ? "Disconnect" : "Connect"}
                 </Button>
