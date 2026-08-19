@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
+import { SetPasswordForm } from "../SetPasswordForm";
 
 interface ConnectedAccount {
   id: string;
@@ -30,6 +31,7 @@ function SettingsSecurity() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [showSetPasswordForm, setShowSetPasswordForm] = useState(false);
 
   const profile = {
     name: "Alex Morgan",
@@ -51,6 +53,8 @@ function SettingsSecurity() {
     isLoading,
     error: currentError,
   } = useSettingsStore();
+
+  const hasPassword = userProfile?.authProviders.includes("LOCAL");
 
   useEffect(() => {
     fetchProfile();
@@ -195,7 +199,13 @@ function SettingsSecurity() {
   const handleToggleAccount = async (account: ConnectedAccount) => {
     if (account.provider === "google") {
       if (account.connected) {
+        if (!hasPassword) {
+          setShowSetPasswordForm(true);
+          return;
+        }
+
         const success = await disconnectGoogle();
+
         if (success) {
           toastManager.add({
             title: "Account Disconnected",
@@ -372,7 +382,9 @@ function SettingsSecurity() {
                     {account.name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {account.connected ? account.email || "Linked" : "Not linked"}
+                    {account.connected
+                      ? account.email || "Linked"
+                      : "Not linked"}
                   </p>
                 </div>
               </div>
@@ -396,6 +408,7 @@ function SettingsSecurity() {
                 >
                   {account.connected ? "Disconnect" : "Connect"}
                 </Button>
+                
               </div>
             </div>
           ))}
@@ -464,6 +477,19 @@ function SettingsSecurity() {
           </div>
         </div>
       </div>
+
+      {showSetPasswordForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="relative w-full max-w-md">
+            <SetPasswordForm
+              onSuccess={() => {
+                fetchProfile();
+              }}
+              onClose={() => setShowSetPasswordForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
