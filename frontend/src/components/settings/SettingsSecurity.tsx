@@ -27,7 +27,6 @@ interface ConnectedAccount {
 
 function SettingsSecurity() {
   const [exportFormat, setExportFormat] = useState<"json" | "csv">("json");
-  const [isExporting, setIsExporting] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -47,6 +46,8 @@ function SettingsSecurity() {
     disconnectGoogle,
     isLoading,
     error: currentError,
+    isExporting,
+    exportUserData,
   } = useSettingsStore();
 
   const hasPassword = userProfile?.authProviders.includes("LOCAL");
@@ -138,57 +139,24 @@ function SettingsSecurity() {
     }
   };
 
-  const handleExportData = () => {
-    setIsExporting(true);
-    setTimeout(() => {
-      setIsExporting(false);
-      const dataPayload = {
-        exportDate: new Date().toISOString(),
-        userProfile: {
-          ...profile,
-          name: userProfile?.name || "",
-          email: userProfile?.email || "",
-        },
-        securityInfo: {
-          connectedAccounts: connectedAccounts
-            .filter((a) => a.connected)
-            .map((a) => a.name),
-        },
-        mockData: {
-          writingSessionsCount: 42,
-          averageClarityScore: 94,
-          totalBadgesEarned: 12,
-        },
-      };
+  const handleExportData = async () => {
+    const success = await exportUserData(exportFormat);
 
-      const dataStr =
-        exportFormat === "json"
-          ? "data:text/json;charset=utf-8," +
-            encodeURIComponent(JSON.stringify(dataPayload, null, 2))
-          : "data:text/csv;charset=utf-8," +
-            encodeURIComponent(
-              "Metric,Value\n" +
-                `Name,${userProfile?.name || ""}\n` +
-                `Email,${userProfile?.email || ""}\n` +
-                `Export Date,${new Date().toLocaleDateString()}\n`,
-            );
-
-      const downloadAnchor = document.createElement("a");
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute(
-        "download",
-        `mail_mentor_data_export.${exportFormat}`,
-      );
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-
+    if (success) {
       toastManager.add({
         title: "Export Complete",
-        description: `Downloaded your Mail Mentor data as ${exportFormat.toUpperCase()}.`,
+        description: `Downloaded your Mail Mentor data archive as ${exportFormat.toUpperCase()}.`,
         type: "success",
       });
-    }, 1000);
+    } else {
+      toastManager.add({
+        title: "Export Failed",
+        description:
+          useSettingsStore.getState().error ||
+          "Failed to generate data export. Please try again.",
+        type: "error",
+      });
+    }
   };
 
   const handleToggleAccount = async (account: ConnectedAccount) => {
