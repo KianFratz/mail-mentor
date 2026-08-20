@@ -11,6 +11,7 @@ import { Prisma, User } from '../generated/prisma/client';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { MailService } from 'src/mail/mail.service';
+import { triggerAsyncId } from 'async_hooks';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,13 @@ export class UsersService {
   async getUserProfile(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, name: true, email: true, authProviders: true,createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        authProviders: true,
+        createdAt: true,
+      },
     });
   }
 
@@ -200,6 +207,75 @@ export class UsersService {
       this.logger.warn(
         `Unexpected error during account deletion for user: ${id}`,
       );
+      throw error;
+    }
+  }
+
+  async exportUserData(userId: string, format: 'json' | 'csv') {
+    try {
+      const userData = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          authProviders: true,
+          createdAt: true,
+
+          userStreak: {
+            select: {
+              currentStreak: true,
+              longestStreak: true,
+              lastActiveDate: true,
+            },
+          },
+          userBadges: {
+            select: {
+              progress: true,
+              earnedAt: true,
+              badge: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
+          writingSession: {
+            where: { status: 'graded' },
+            select: {
+              id: true,
+              createdAt: true,
+              messages: true,
+              scenario: {
+                select: {
+                  title: true,
+                  category: true,
+                },
+              },
+              sessionFeedback: {
+                select: {
+                  overallScore: true,
+                  categoryScores: true,
+                  strengths: true,
+                  improvements: true,
+                },
+              },
+            },
+          },
+          practiceLog: {
+            select: {
+              date: true,
+            },
+          },
+        },
+      });
+
+      if (!userData) {
+        throw new NotFoundException('User not found');
+      }
+
+      return userData;
+    } catch (error) {
       throw error;
     }
   }

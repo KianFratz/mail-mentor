@@ -34,11 +34,6 @@ function SettingsSecurity() {
   const [showSetPasswordForm, setShowSetPasswordForm] = useState(false);
 
   const profile = {
-    name: "Alex Morgan",
-    email: "alex.morgan@example.com",
-    targetRole: "Executive Communication & Leadership",
-    bio: "Focused on refining high-stakes email communication, executive messaging tone, and persuasive outreach.",
-    preferredTone: "Professional & Direct",
     avatarUrl:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80",
     memberSince: "March 2025",
@@ -151,8 +146,8 @@ function SettingsSecurity() {
         exportDate: new Date().toISOString(),
         userProfile: {
           ...profile,
-          name: userProfile?.name || profile.name,
-          email: userProfile?.email || profile.email,
+          name: userProfile?.name || "",
+          email: userProfile?.email || "",
         },
         securityInfo: {
           connectedAccounts: connectedAccounts
@@ -173,8 +168,8 @@ function SettingsSecurity() {
           : "data:text/csv;charset=utf-8," +
             encodeURIComponent(
               "Metric,Value\n" +
-                `Name,${userProfile?.name || profile.name}\n` +
-                `Email,${userProfile?.email || profile.email}\n` +
+                `Name,${userProfile?.name || ""}\n` +
+                `Email,${userProfile?.email || ""}\n` +
                 `Export Date,${new Date().toLocaleDateString()}\n`,
             );
 
@@ -408,7 +403,6 @@ function SettingsSecurity() {
                 >
                   {account.connected ? "Disconnect" : "Connect"}
                 </Button>
-                
               </div>
             </div>
           ))}
