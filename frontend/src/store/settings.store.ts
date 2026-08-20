@@ -32,7 +32,9 @@ interface SettingsStore {
   verificationSent: boolean;
   userProfile?: UserProfile;
   isDeleting: boolean;
+  isExporting: boolean;
 
+  exportUserData: (format: "json" | "csv") => Promise<boolean>;
   disconnectGoogle: () => Promise<boolean>;
   deleteAccount: () => Promise<boolean>;
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
@@ -51,6 +53,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   verificationSent: false,
   userProfile: undefined,
   isDeleting: false,
+  isExporting: false,
 
   requestEmailChange: async ({ newEmail, currentPassword }) => {
     set({ isEmailSaving: true, error: null, verificationSent: false });
@@ -182,6 +185,40 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
       return false;
     }
   },
+  exportUserData: async (format: "json" | "csv") => {
+    set({ isExporting: true, error: null });
 
+    try {
+      const response = await api.get("/users/me/export", {
+        params: { format },
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data], {
+        type: format === "json" ? "application/json" : "text/csv",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `mail_mentor_export_${Date.now()}.${format}`,
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      set({ isExporting: false });
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ??
+        "Failed to export data archive. Please try again later.";
+      set({ isExporting: false, error: message });
+      return false;
+    }
+  },
   reset: () => set({ isLoading: false, error: null }),
 }));
