@@ -274,9 +274,158 @@ export class UsersService {
         throw new NotFoundException('User not found');
       }
 
-      return userData;
+      return format === 'csv'
+        ? this.formatAsCsv(userData)
+        : this.formatAsJson(userData);
     } catch (error) {
       throw error;
+    }
+  }
+
+  private formatAsJson(userData: any) {
+    return {
+      exportedAt: new Date().toISOString(),
+      profile: {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        authProviders: userData.authProviders,
+        createdAt: userData.createdAt,
+      },
+      streak: userData.streak
+        ? {
+            currentStreak: userData.userStreak.currentStreak,
+            longestStreak: userData.userStreak.longestStreak,
+            lastActiveDate: userData.userStreak.lastActiveDate,
+          }
+        : null,
+      badges: userData.badges((ub: any) => ({
+        title: ub.badge.title,
+        progress: ub.progress,
+        earnedAt: ub.earnedAt,
+      })),
+      writingSessions: userData.writingSession.map((ws: any) => ({
+        id: ws.id,
+        date: ws.createdAt,
+        scenarioTitle: ws.scenario?.title,
+        scenarioCategory: ws.scenario?.category,
+        messages: ws.messages,
+        feedback: ws.sessionFeedback
+          ? {
+              overallScore: ws.sessionFeedback.overallScore,
+              categoryScores: ws.sessionFeedback.categoryScores,
+              strengths: ws.sessionFeedback.strengths,
+              improvements: ws.sessionFeedback.improvements,
+            }
+          : null,
+      })),
+      practiceLogs: userData.practiceLog.map((pl: any) => pl.date),
+    };
+  }
+
+  private escapeCsvField(value: any): string {
+    if (value === null || value === undefined) return '';
+    const str =
+      typeof value === 'object' ? JSON.stringify(value) : String(value);
+
+    return str;
+  }
+
+  private toCsvRow(fields: any[]): string {
+    return fields.map((f) => this.escapeCsvField(f)).join(',');
+  }
+
+  private formatAsCsv(userData: any): string {
+    const lines: string[] = [];
+
+    lines.push('Summary Metrics');
+    lines.push(this.toCsvRow(['Category', 'Key', 'Value']));
+
+    lines.push(this.toCsvRow(['Profile', 'Name', userData.name]));
+    lines.push(this.toCsvRow(['Profile', 'Email', userData.email]));
+    lines.push(this.toCsvRow(['Profile', 'Created At', userData.createdAt]));
+
+    if (userData.userStreak) {
+      lines.push(
+        this.toCsvRow([
+          'Streak',
+          'Current Streak',
+          userData.userStreak.currentStreak,
+        ]),
+      );
+      lines.push(
+        this.toCsvRow([
+          'Streak',
+          'Longest Streak',
+          userData.userStreak.longestStreak,
+        ]),
+      );
+      lines.push(
+        this.toCsvRow([
+          'Streak',
+          'Last Active Date',
+          userData.userStreak.lastActiveDate,
+        ]),
+      );
+    }
+
+    userData.userBadges.forEach((ub: any) => {
+      lines.push(
+        this.toCsvRow([
+          'Badge',
+          ub.badge.title,
+          `${ub.progress} (earned ${ub.earnedAt ?? 'in progress'})`,
+        ]),
+      );
+    });
+
+    lines.push('');
+
+    lines.push('Writing Sessions');
+    lines.push(
+      this.toCsvRow([
+        'Session ID',
+        'Date',
+        'Scenario',
+        'Word Count',
+        'Status',
+        'Overall Score',
+      ]),
+    );
+
+    userData.writingSession.forEach((ws: any) => {
+      const wordCount = this.countWords(ws.messages);
+      lines.push(
+        this.toCsvRow([
+          ws.id,
+          ws.createdAt,
+          ws.scenario?.title ?? '',
+          wordCount,
+          ws.status,
+          ws.sessionFeedback?.overallScore ?? '',
+        ]),
+      );
+    });
+
+    return lines.join('\n');
+  }
+
+  private countWords(messages: any): number {
+    if (!messages) return 0;
+
+    try {
+      const arr = Array.isArray(messages) ? messages : JSON.parse(messages);
+      return arr.reduce((total: number, m: any) => {
+        const text = m?.content ?? m?.text ?? '';
+        return (
+          total +
+          (typeof text === 'string'
+            ? text.trim().split(/\s+/).filter(Boolean).length
+            : 0)
+        );
+      }, 0);
+    } catch {
+      return 0;
     }
   }
 }
