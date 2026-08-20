@@ -274,9 +274,14 @@ export class UsersService {
         throw new NotFoundException('User not found');
       }
 
-      return format === 'csv'
-        ? this.formatAsCsv(userData)
-        : this.formatAsJson(userData);
+      return {
+        data:
+          format === 'csv'
+            ? this.formatAsCsv(userData)
+            : JSON.stringify(this.formatAsJson(userData), null, 2),
+        filename: `user-data-${userId}-${new Date().toISOString().split('T')[0]}.${format}`,
+        contentType: format === 'csv' ? 'text/csv' : 'application/json',
+      };
     } catch (error) {
       throw error;
     }
@@ -292,34 +297,36 @@ export class UsersService {
         authProviders: userData.authProviders,
         createdAt: userData.createdAt,
       },
-      streak: userData.streak
+      streak: userData.userStreak
         ? {
             currentStreak: userData.userStreak.currentStreak,
             longestStreak: userData.userStreak.longestStreak,
             lastActiveDate: userData.userStreak.lastActiveDate,
           }
         : null,
-      badges: userData.badges((ub: any) => ({
-        title: ub.badge.title,
-        progress: ub.progress,
-        earnedAt: ub.earnedAt,
-      })),
-      writingSessions: userData.writingSession.map((ws: any) => ({
-        id: ws.id,
-        date: ws.createdAt,
-        scenarioTitle: ws.scenario?.title,
-        scenarioCategory: ws.scenario?.category,
-        messages: ws.messages,
-        feedback: ws.sessionFeedback
-          ? {
-              overallScore: ws.sessionFeedback.overallScore,
-              categoryScores: ws.sessionFeedback.categoryScores,
-              strengths: ws.sessionFeedback.strengths,
-              improvements: ws.sessionFeedback.improvements,
-            }
-          : null,
-      })),
-      practiceLogs: userData.practiceLog.map((pl: any) => pl.date),
+      badges:
+        userData.userBadges?.map((ub: any) => ({
+          title: ub.badge?.title,
+          progress: ub.progress,
+          earnedAt: ub.earnedAt,
+        })) ?? [],
+      writingSessions:
+        userData.writingSession?.map((ws: any) => ({
+          id: ws.id,
+          date: ws.createdAt,
+          scenarioTitle: ws.scenario?.title,
+          scenarioCategory: ws.scenario?.category,
+          messages: ws.messages,
+          feedback: ws.sessionFeedback
+            ? {
+                overallScore: ws.sessionFeedback.overallScore,
+                categoryScores: ws.sessionFeedback.categoryScores,
+                strengths: ws.sessionFeedback.strengths,
+                improvements: ws.sessionFeedback.improvements,
+              }
+            : null,
+        })) ?? [],
+      practiceLogs: userData.practiceLog?.map((pl: any) => pl.date) ?? [],
     };
   }
 
@@ -328,6 +335,14 @@ export class UsersService {
     const str =
       typeof value === 'object' ? JSON.stringify(value) : String(value);
 
+    if (
+      str.includes(',') ||
+      str.includes('"') ||
+      str.includes('\n') ||
+      str.includes('\r')
+    ) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
     return str;
   }
 

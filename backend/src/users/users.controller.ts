@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -17,6 +18,7 @@ import { UpdatePasswordDto } from './dto/changePassword.dto';
 import { UpdateEmailDto } from './dto/changeEmail.dto';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { DeleteAccountDto } from './dto/deleteAccount.dto';
+import type { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -82,5 +84,21 @@ export class UsersController {
     @Body() dto: DeleteAccountDto,
   ) {
     return this.usersService.deleteAccount(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { ttl: 60000, limit: 2 } })
+  @Get('me/export')
+  async exportUserData(
+    @CurrentUser('userId') userId: string,
+    @Query('format') format: 'json' | 'csv' = 'json',
+    @Res() res: Response,
+  ) {
+    const { data, filename, contentType } =
+      await this.usersService.exportUserData(userId, format);
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    return res.send(data);
   }
 }
