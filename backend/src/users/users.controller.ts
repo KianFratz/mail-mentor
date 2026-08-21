@@ -91,7 +91,7 @@ export class UsersController {
   @Get('me/export')
   async exportUserData(
     @CurrentUser('userId') userId: string,
-    @Query('format') format: 'json' | 'csv' = 'json',
+    @Query('format') format: 'json' | 'pdf' | 'csv' = 'json' ,
     @Res() res: Response,
   ) {
     const { data, filename, contentType } =
