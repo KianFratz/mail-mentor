@@ -11,7 +11,7 @@ import { Prisma, User } from '../generated/prisma/client';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { MailService } from 'src/mail/mail.service';
-import { triggerAsyncId } from 'async_hooks';
+import { formatDate } from 'date-fns';
 
 @Injectable()
 export class UsersService {
@@ -211,7 +211,10 @@ export class UsersService {
     }
   }
 
-  async exportUserData(userId: string, format: 'json' | 'csv') {
+  async exportUserData(
+    userId: string,
+    format: 'json' | 'csv' | 'pdf',
+  ): Promise<{ data: string | Buffer; filename: string; contentType: string }> {
     try {
       const userData = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -272,6 +275,17 @@ export class UsersService {
 
       if (!userData) {
         throw new NotFoundException('User not found');
+      }
+
+      if (format === 'pdf') {
+        const html = this.buildPdfHtml(this.formatAsJson(userData));
+        const pdfBuf = await this.generatePdf(html);
+
+        return {
+          data: pdfBuf,
+          filename: `user-data-${userId}-${new Date().toISOString().split('T')[0]}.pdf`,
+          contentType: 'application/pdf',
+        };
       }
 
       return {
@@ -442,5 +456,742 @@ export class UsersService {
     } catch {
       return 0;
     }
+  }
+
+  private async generatePdf(html: string): Promise<Buffer> {
+    const puppetter = await import('puppeteer');
+    const browser = await puppetter.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    try {
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      const pdf = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '20mm', right: '15mm', bottom: '20mm', left: '15mm' },
+      });
+
+      return Buffer.from(pdf);
+    } finally {
+      await browser.close();
+    }
+  }
+
+  private buildPdfHtml(jsonData: any): string {
+    const escapeHtml = (value: unknown): string => {
+      if (value === undefined || value === null) {
+        return 'N/A';
+      }
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    };
+
+    const formData = (value: unknown): string => {
+      if (!value) {
+        return 'N/A';
+      }
+
+      const date = new Date(String(value));
+
+      if (Number.isNaN(date.getTime())) {
+        return 'N/A';
+      }
+
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    };
+
+    const getScoreColor = (score: number): string => {
+      if (score >= 80) return '#16a34a';
+      if (score >= 60) return '#d97706';
+
+      return '#dc2626';
+    };
+
+    const renderScoreBar = (score: unknown): string => {
+      const numericScore = Number(score);
+
+      if (!Number.isFinite(numericScore)) {
+        return `<span style="color: #6b7280;">N/A</span>`;
+      }
+
+      const normalizedScore = Math.max(0, Math.min(100, numericScore));
+
+      const color = getScoreColor(normalizedScore);
+
+      return `
+      <div style="
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+      ">
+        <div style="
+          flex: 1;
+          height: 8px;
+          background: #e5e7eb;
+          border-radius: 999px;
+          overflow: hidden;
+        ">
+          <div style="
+            width: ${normalizedScore}%;
+            height: 100%;
+            background: ${color};
+            border-radius: 999px;
+          "></div>
+        </div>
+
+        <span style="
+          min-width: 36px;
+          font-weight: 700;
+          color: ${color};
+        ">
+          ${normalizedScore}
+        </span>
+      </div>
+    `;
+    };
+
+    const renderList = (data: unknown): string => {
+      if (!data) {
+        return `<span class="empty">N/A</span>`;
+      }
+
+      const items = Array.isArray(data) ? data : [data];
+
+      if (items.length === 0) {
+        return `<span class="empty">N/A</span>`;
+      }
+
+      return `
+      <ul>
+        ${items
+          .map(
+            (item) => `
+              <li>${escapeHtml(item)}</li>
+            `,
+          )
+          .join('')}
+      </ul>
+    `;
+    };
+
+    const renderCategoryScores = (scores: unknown): string => {
+      if (!scores || typeof scores !== 'object' || Array.isArray(scores)) {
+        return `<span class="empty">No category scores available.</span>`;
+      }
+
+      return Object.entries(scores as Record<string, unknown>)
+        .map(([category, score]) => {
+          return `
+          <div class="category-score">
+            <div class="category-name">
+              ${escapeHtml(category)}
+            </div>
+
+            ${renderScoreBar(score)}
+          </div>
+        `;
+        })
+        .join('');
+    };
+
+    const profile = jsonData.profile ?? {};
+    const streak = jsonData.streak;
+    const badges = jsonData.badges ?? [];
+    const writingSessions = jsonData.writingSessions ?? [];
+    const practiceLog = jsonData.practiceLogs ?? [];
+    const appName = jsonData?.appName ?? 'Mail Mentor';
+    const exportDate = jsonData?.exportDate ?? new Date().toISOString();
+
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>${escapeHtml(appName)} - User Data Export</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #ffffff;
+      color: #111827;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #111827;
+      color: #ffffff;
+      padding: 28px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .header p {
+      margin: 4px 0;
+      color: #d1d5db;
+    }
+
+    .section {
+      margin-bottom: 24px;
+      page-break-inside: avoid;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #111827;
+      color: #111827;
+    }
+
+    .card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .field-value {
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .streak-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 18px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 25px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .badge {
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+    }
+
+    .badge-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 999px;
+    }
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      font-size: 11px;
+    }
+
+    th {
+      background: #111827;
+      color: #ffffff;
+      text-align: left;
+      padding: 9px;
+      font-weight: 700;
+    }
+
+    td {
+      padding: 10px 9px;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    .session-card {
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .session-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .score {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .subsection-title {
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .practice-dates {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .practice-date {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .empty {
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    @media print {
+      body {
+        padding: 20px;
+      }
+
+      .section {
+        page-break-inside: avoid;
+      }
+
+      .session-card {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 16px;
+      }
+
+      .grid,
+      .badge-grid,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .streak-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .practice-dates {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <h1>${escapeHtml(appName)} — User Data Export</h1>
+
+      <p>
+        Export date:
+        <strong>${formatDate(exportDate, 'yyyy-MM-dd')}</strong>
+      </p>
+
+      <p>
+        User:
+        <strong>
+          ${escapeHtml(profile.name || 'N/A')}
+        </strong>
+        ${profile.email ? `(${escapeHtml(profile.email)})` : ''}
+      </p>
+    </div>
+
+    <!-- PROFILE -->
+    <section class="section">
+      <h2>Profile</h2>
+
+      <div class="card">
+        <div class="grid">
+
+          <div class="field">
+            <span class="field-label">ID</span>
+            <span class="field-value">
+              ${escapeHtml(profile.id || 'N/A')}
+            </span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Name</span>
+            <span class="field-value">
+              ${escapeHtml(profile.name || 'N/A')}
+            </span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Email</span>
+            <span class="field-value">
+              ${escapeHtml(profile.email || 'N/A')}
+            </span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Auth Providers</span>
+            <span class="field-value">
+              ${
+                Array.isArray(profile.authProviders)
+                  ? profile.authProviders
+                      .map((provider: unknown) => escapeHtml(provider))
+                      .join(', ')
+                  : 'N/A'
+              }
+            </span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Account Created</span>
+            <span class="field-value">
+              ${formatDate(profile.createdAt, 'yyyy-MM-dd')}
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- STREAK -->
+    <section class="section">
+      <h2>Streak</h2>
+
+      <div class="card">
+        <div class="streak-grid">
+
+          <div class="stat">
+            <div class="stat-value">
+              ${escapeHtml(streak.currentStreak ?? 0)}
+            </div>
+
+            <div class="stat-label">
+              Current Streak
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-value">
+              ${escapeHtml(streak.longestStreak ?? 0)}
+            </div>
+
+            <div class="stat-label">
+              Longest Streak
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-value">
+              ${formatDate(streak.lastActiveDate, 'yyyy-MM-dd')}
+            </div>
+
+            <div class="stat-label">
+              Last Active Date
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section class="section">
+      <h2>Badges</h2>
+
+      <div class="card">
+        ${
+          badges.length === 0
+            ? '<p class="empty">No badges found.</p>'
+            : `
+              <div class="badge-grid">
+                ${badges
+                  .map((userBadge: any) => {
+                    const progress = Math.min(
+                      100,
+                      Math.max(0, Number(userBadge.progress ?? 0)),
+                    );
+
+                    return `
+                      <div class="badge">
+                        <div class="badge-title">
+                          ${escapeHtml(
+                            userBadge.title ??
+                              userBadge.badge?.title ??
+                              'Untitled Badge',
+                          )}
+                        </div>
+
+                        <div>
+                          Progress:
+                          <strong>${progress}%</strong>
+                        </div>
+
+                        <div class="progress-track">
+                          <div
+                            class="progress-fill"
+                            style="width: ${progress}%"
+                          ></div>
+                        </div>
+
+                        <div style="
+                          margin-top: 6px;
+                          font-size: 11px;
+                          color: #6b7280;
+                        ">
+                          Earned:
+                          ${formatDate(userBadge.earnedAt, 'yyyy-MM-dd')}
+                        </div>
+                      </div>
+                    `;
+                  })
+                  .join('')}
+              </div>
+            `
+        }
+      </div>
+    </section>
+
+    <!-- WRITING SESSIONS -->
+    <section class="section">
+      <h2>Writing Sessions</h2>
+
+      ${
+        writingSessions.length === 0
+          ? `
+            <div class="card">
+              <p class="empty">No writing sessions found.</p>
+            </div>
+          `
+          : writingSessions
+              .map((session: any) => {
+                const feedback =
+                  session.feedback ?? session.sessionFeedback ?? {};
+
+                const overallScore =
+                  feedback.overallScore ?? session.overallScore ?? null;
+
+                return `
+                  <div class="card session-card">
+
+                    <div class="session-header">
+                      <div>
+                        <div class="session-title">
+                          ${escapeHtml(
+                            session.scenario?.title ??
+                              session.scenarioTitle ??
+                              session.scenario ??
+                              'Untitled Scenario',
+                          )}
+                        </div>
+
+                        <div style="
+                          color: #6b7280;
+                          font-size: 11px;
+                          margin-top: 3px;
+                        ">
+                          ${formatDate(session.createdAt ?? session.date, 'yyyy-MM-dd')}
+                        </div>
+                      </div>
+
+                      <div class="score">
+                        Overall:
+                        ${renderScoreBar(overallScore)}
+                      </div>
+                    </div>
+
+                    <div class="two-column">
+
+                      <div>
+                        <div class="subsection-title">
+                          Category Scores
+                        </div>
+
+                        ${renderCategoryScores(
+                          feedback.categoryScores ?? session.categoryScores,
+                        )}
+                      </div>
+
+                      <div>
+                        <div class="subsection-title">
+                          Strengths
+                        </div>
+
+                        ${renderList(feedback.strengths ?? session.strengths)}
+
+                        <div
+                          class="subsection-title"
+                          style="margin-top: 14px;"
+                        >
+                          Improvements
+                        </div>
+
+                        ${renderList(
+                          feedback.improvements ?? session.improvements,
+                        )}
+                      </div>
+
+                    </div>
+
+                  </div>
+                `;
+              })
+              .join('')
+      }
+    </section>
+
+    <!-- PRACTICE LOG -->
+    <section class="section">
+      <h2>Practice Log</h2>
+
+      <div class="card">
+        ${
+          practiceLog.length === 0
+            ? '<p class="empty">No practice dates found.</p>'
+            : `
+              <div class="practice-dates">
+                ${practiceLog
+                  .map(
+                    (entry: any) => `
+                      <div class="practice-date">
+                        ${formatDate(entry.date ?? entry, 'yyyy-MM-dd')}
+                      </div>
+                    `,
+                  )
+                  .join('')}
+              </div>
+            `
+        }
+      </div>
+    </section>
+
+    <div class="footer">
+      Generated by ${escapeHtml(appName)}
+      on ${formatDate(exportDate, 'yyyy-MM-dd')}
+    </div>
+
+  </div>
+</body>
+</html>
+  `;
   }
 }
