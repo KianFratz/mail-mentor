@@ -1,20 +1,27 @@
-# Base image
 FROM node:lts-alpine
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Install native Chromium and required font dependencies for Alpine Linux
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+# Environment variables to instruct Puppeteer to use Alpine's Chromium binary
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 COPY package*.json ./
 
-# Install app dependencies
 RUN npm install
 
-# Bundle app source
 COPY . .
 
-# Expose the port the app runs on
 EXPOSE 3000
 
-# Start the server using the production build
 CMD [ "npm", "run", "start:prod" ]
+

@@ -26,7 +26,9 @@ interface ConnectedAccount {
 }
 
 function SettingsSecurity() {
-  const [exportFormat, setExportFormat] = useState<"json" | "csv">("json");
+  const [exportFormat, setExportFormat] = useState<"json" | "csv" | "pdf">(
+    "json",
+  );
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -410,12 +412,13 @@ function SettingsSecurity() {
             <select
               value={exportFormat}
               onChange={(e) =>
-                setExportFormat(e.target.value as "json" | "csv")
+                setExportFormat(e.target.value as "json" | "csv" | "pdf")
               }
               className="h-8 rounded-lg border border-input bg-background px-2.5 text-xs text-foreground outline-none"
             >
               <option value="json">JSON (.json)</option>
               <option value="csv">CSV (.csv)</option>
+              <option value="pdf">PDF (.pdf)</option>
             </select>
 
             <Button

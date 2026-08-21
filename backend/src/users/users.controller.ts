@@ -87,11 +87,11 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Throttle({ default: { ttl: 60000, limit: 2 } })
+  @Throttle({ default: { ttl: 60000, limit: 1 } })
   @Get('me/export')
   async exportUserData(
     @CurrentUser('userId') userId: string,
-    @Query('format') format: 'json' | 'pdf' | 'csv' = 'json' ,
+    @Query('format') format: 'json' | 'pdf' | 'csv' = 'json',
     @Res() res: Response,
   ) {
     const { data, filename, contentType } =

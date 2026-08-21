@@ -34,7 +34,7 @@ interface SettingsStore {
   isDeleting: boolean;
   isExporting: boolean;
 
-  exportUserData: (format: "json" | "csv") => Promise<boolean>;
+  exportUserData: (format: "json" | "csv" | "pdf") => Promise<boolean>;
   disconnectGoogle: () => Promise<boolean>;
   deleteAccount: () => Promise<boolean>;
   requestEmailChange: (payload: RequestEmailChangePayload) => Promise<boolean>;
@@ -185,7 +185,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
       return false;
     }
   },
-  exportUserData: async (format: "json" | "csv") => {
+  exportUserData: async (format: "json" | "csv" | "pdf") => {
     set({ isExporting: true, error: null });
 
     try {
@@ -195,7 +195,12 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
       });
 
       const blob = new Blob([response.data], {
-        type: format === "json" ? "application/json" : "text/csv",
+        type:
+          format === "json"
+            ? "application/json"
+            : format === "pdf"
+              ? "application/pdf"
+              : "text/csv",
       });
 
       const url = window.URL.createObjectURL(blob);
