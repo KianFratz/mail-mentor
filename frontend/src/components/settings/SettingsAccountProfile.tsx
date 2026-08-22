@@ -1,11 +1,12 @@
 import { Eye, EyeOff, Loader2, Mail, Save, User } from "lucide-react";
-import React, { useEffect, useState, type HtmlHTMLAttributes } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
 
 function SettingsAccountProfile() {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     requestEmailChange,
     reset,
@@ -19,30 +20,6 @@ function SettingsAccountProfile() {
   useEffect(() => {
     fetchProfile();
   }, []);
-
-  const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "Alex Morgan",
-    email: "alex.morgan@example.com",
-    avatarUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80",
-    memberSince: "March 2025",
-  });
-
-  const handleSaveProfile = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSavingProfile(true);
-    setTimeout(() => {
-      setIsSavingProfile(false);
-      toastManager.add({
-        title: "Profile Updated",
-        description:
-          "Your personal information and communication preferences have been saved.",
-        type: "success",
-      });
-    }, 600);
-  };
 
   const handleChangeName = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,28 +86,22 @@ function SettingsAccountProfile() {
             </p>
           </div>
         </div>
-        <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
-          Member since{" "}
-          {userProfile?.createdAt
-            ? new Date(userProfile.createdAt).toLocaleDateString()
-            : "Loading..."}
-        </span>
       </div>
 
-      <form
-        onSubmit={handleSaveProfile}
-        className="bg-card border border-border rounded-xl p-6 shadow-xs"
-      >
+      <div className="bg-card border border-border rounded-xl p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <div className="relative group">
-            <img
-              src={profile.avatarUrl}
-              alt={userProfile?.name}
-              className="w-20 h-20 rounded-full object-cover ring-2 ring-primary/20"
-            />
-            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-              <span className="text-xs text-white font-medium">Change</span>
-            </div>
+          <div className="shrink-0 w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-xs ring-2 ring-primary/20">
+            <span className="text-xl font-bold text-primary-foreground select-none">
+              {userProfile?.name
+                ? userProfile.name
+                    .trim()
+                    .split(/\s+/)
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                : "?"}
+            </span>
           </div>
           <div className="space-y-1 flex-1">
             <h3 className="text-base font-semibold text-foreground">
@@ -141,25 +112,14 @@ function SettingsAccountProfile() {
             </p>
             <p className="text-xs text-primary font-medium flex items-center gap-1.5 mt-1"></p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                toastManager.add({
-                  title: "Avatar Upload",
-                  description:
-                    "Select a new image file to update your avatar picture.",
-                  type: "info",
-                })
-              }
-            >
-              Upload New Photo
-            </Button>
-          </div>
+          <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full border border-border">
+            Member since{" "}
+            {userProfile?.createdAt
+              ? new Date(userProfile.createdAt).toLocaleDateString()
+              : "Loading..."}
+          </span>
         </div>
-      </form>
+      </div>
 
       <form
         onSubmit={handleChangeName}
