@@ -83,12 +83,12 @@ export class UsersService {
       throw new UnauthorizedException('Current password is incorrect');
 
     const salt = await bcrypt.genSalt();
-    const currentPasswordHash = await bcrypt.hash(currentPassword, salt);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
 
     return this.prisma.user.update({
       where: { id },
       data: {
-        password: currentPasswordHash,
+        password: newPasswordHash,
       },
       select: { id: true, email: true, name: true },
     });
