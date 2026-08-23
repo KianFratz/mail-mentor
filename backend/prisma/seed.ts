@@ -6,8 +6,8 @@ import { seedTestUser } from './seeders/test-user.seed';
 const prisma = new PrismaService();
 
 async function main() {
-  // await seedScenarios(prisma);
-  // await seedTestUser(prisma);
+  await seedScenarios(prisma);
+  await seedTestUser(prisma);
   await seedBadge(prisma);
 }
 

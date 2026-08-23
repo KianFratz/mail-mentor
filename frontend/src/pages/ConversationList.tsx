@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { statusStyles } from "@/constants/conversation.constant";
+import { statusLabels, statusStyles } from "@/constants/conversation.constant";
 import api from "@/lib/axios";
 import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ function ConversationList() {
                     <span
                       className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${statusStyles[conv.status]}`}
                     >
-                      {conv.status}
+                      {statusLabels[conv.status] || conv.status.replace(/_/g, " ")}
                     </span>
                     <span className="text-xs text-slate-400 font-medium">
                       {new Date(conv.createdAt).toLocaleDateString()}
