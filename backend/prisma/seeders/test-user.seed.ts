@@ -38,7 +38,7 @@ export async function seedTestUser(prisma: PrismaService) {
 
   await prisma.writingSession.deleteMany({ where: { userId: testUser.id } });
 
-  // 1. DRAFT — user started writing, hasn't submitted. Minimal/no AI turns.
+  // 1. IN_PROGRESS — user started writing, hasn't submitted/graded yet. Minimal/no AI turns.
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -60,7 +60,7 @@ export async function seedTestUser(prisma: PrismaService) {
     },
   });
 
-  // 2. SUBMITTED — user finished and sent it in, AI hasn't graded it yet.
+  // 2. IN_PROGRESS — active session with user turn, AI hasn't graded it yet.
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
@@ -270,6 +270,6 @@ export async function seedTestUser(prisma: PrismaService) {
 
   console.log(`Seeded test user: ${testUser.email} / ${TEST_USER_PASSWORD}`);
   console.log(
-    'Created 5 writing sessions: in progress, graded x2, abandoned.',
+    'Created 5 writing sessions: in_progress x2, graded x2, abandoned.',
   );
 }
