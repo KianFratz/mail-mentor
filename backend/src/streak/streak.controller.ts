@@ -4,6 +4,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { LogPracticeDto } from './dto/create-streak.dto';
 import { PercentileCronService } from './percentile-cron.service';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
 @Controller('streaks')
 export class StreakController {
@@ -13,18 +14,21 @@ export class StreakController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('me')
   async getStreak(@CurrentUser('userId') userId: string) {
     return this.streakService.getStreak(userId);
   }
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('me/week')
   async getWeeklyStreak(@CurrentUser('userId') userId: string) {
     return this.streakService.getWeeklyStreak(userId);
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('log')
   async logStreak(
     @CurrentUser('userId') userId: string,

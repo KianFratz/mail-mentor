@@ -2,6 +2,7 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { SkillProficiencyService } from './skill-proficiency.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('skill-proficiency')
 export class SkillProficiencyController {
@@ -10,6 +11,7 @@ export class SkillProficiencyController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('proficiency-scores')
   async proficiencyScores(@CurrentUser('userId') userId: string) {
     return this.skillProficiencyService.getUserProficiencyScores(userId);

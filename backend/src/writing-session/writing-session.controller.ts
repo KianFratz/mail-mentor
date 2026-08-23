@@ -1,8 +1,17 @@
-import { Controller, Post, Body, Req, UseGuards, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  UseGuards,
+  Get,
+  Param,
+} from '@nestjs/common';
 import { WritingSessionService } from './writing-session.service';
 import { CreateWritingSessionDto } from './dto/create-writing-session.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('writing-session')
 export class WritingSessionController {
@@ -10,13 +19,17 @@ export class WritingSessionController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  async create(@Body() dto: CreateWritingSessionDto, @CurrentUser("userId") userId: string) {
+  async create(
+    @Body() dto: CreateWritingSessionDto,
+    @CurrentUser('userId') userId: string,
+  ) {
     return this.writingSessionService.createWritingSession(dto, userId);
   }
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('me')
-  async getWritingSessionByUser(@CurrentUser("userId") userId: string) {
+  async getWritingSessionByUser(@CurrentUser('userId') userId: string) {
     return this.writingSessionService.findManyByUserId(userId);
   }
 
