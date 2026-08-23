@@ -1,6 +1,6 @@
 import type { Scenario } from "./scenario.type";
 
-export type SessionStatus = "draft" | "submitted" | "graded" | "abandoned";
+export type SessionStatus = "in_progress" | "graded" | "abandoned";
 
 export interface WritingSession {
     id: string;
