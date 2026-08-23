@@ -36,7 +36,7 @@ model User {
 model WritingSession {
   id              String           @id @default(uuid()) @db.Uuid
   userId          String           @db.Uuid
-  status          SessionStatus    @default(draft)
+  status          SessionStatus    @default(in_progress)
   subjectLine     String
   textBody        String
   wordCount       Int
@@ -165,8 +165,7 @@ enum AuthProvider {
 }
 
 enum SessionStatus {
-  draft
-  submitted
+  in_progress
   graded
   abandoned
 }
