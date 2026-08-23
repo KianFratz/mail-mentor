@@ -42,7 +42,7 @@ export async function seedTestUser(prisma: PrismaService) {
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
-      status: SessionStatus.draft,
+      status: SessionStatus.in_progress,
       scenarioId: pickScenario(0).id,
       subjectLine: 'Following up on our meeting',
       textBody:
@@ -64,7 +64,7 @@ export async function seedTestUser(prisma: PrismaService) {
   await prisma.writingSession.create({
     data: {
       userId: testUser.id,
-      status: SessionStatus.submitted,
+      status: SessionStatus.in_progress,
       scenarioId: pickScenario(1).id,
       subjectLine: 'Re: Project timeline concerns',
       textBody:
@@ -270,6 +270,6 @@ export async function seedTestUser(prisma: PrismaService) {
 
   console.log(`Seeded test user: ${testUser.email} / ${TEST_USER_PASSWORD}`);
   console.log(
-    'Created 5 writing sessions: draft, submitted, graded x2, abandoned.',
+    'Created 5 writing sessions: in progress, graded x2, abandoned.',
   );
 }
