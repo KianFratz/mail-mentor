@@ -47,12 +47,28 @@ function Scenarios() {
     }
   };
 
+  const levelWeight: Record<string, number> = {
+    beginner: 1,
+    intermediate: 2,
+    advanced: 3,
+    hard: 3,
+  };
+
   const visibleScenarios = useMemo(
     () =>
-      scenarios.filter(
-        (s) =>
-          activeCategory === "All Scenarios" || s.category === activeCategory,
-      ),
+      scenarios
+        .filter(
+          (s) =>
+            activeCategory === "All Scenarios" || s.category === activeCategory,
+        )
+        .slice()
+        .sort((a, b) => {
+          const weightA =
+            levelWeight[a.level] || levelWeight[a.level?.toLowerCase()] || 99;
+          const weightB =
+            levelWeight[b.level] || levelWeight[b.level?.toLowerCase()] || 99;
+          return weightA - weightB;
+        }),
     [scenarios, activeCategory],
   );
 
