@@ -6,7 +6,6 @@ import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import api from "@/lib/axios";
 import type { Scenario } from "@/types/scenario.type";
-import { replace, useNavigate } from "react-router";
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<
@@ -21,7 +20,6 @@ function Scenarios() {
     () => ["All Scenarios", ...new Set(scenarios.map((s) => s.category))],
     [scenarios],
   );
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loadScenarios = async () => {

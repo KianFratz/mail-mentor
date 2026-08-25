@@ -1,3 +1,6 @@
+export type ScenarioColor = "blue" | "purple" | "green" | "orange";
+export type ScenarioLevel = "beginner" | "intermediate" | "advanced" | string;
+
 export interface ScenarioCardProps {
   scenario: Scenario;
   onSelect: (scenario: Scenario) => void;
@@ -6,10 +9,10 @@ export interface ScenarioCardProps {
 export interface Scenario {
   id: string | number;
   category: string;
-  color: "blue" | "purple" | "green" | "orange";
+  color: ScenarioColor;
   title: string;
   description: string;
-  level: "beginner" | "intermediate" | "advanced";
+  level: ScenarioLevel;
   aiPersona?: AiPersona;
   createdAt?: string;
   updatedAt?: string;
