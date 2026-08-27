@@ -4,6 +4,7 @@ export type ScenarioLevel = "beginner" | "intermediate" | "advanced" | string;
 export interface ScenarioCardProps {
   scenario: Scenario;
   onSelect: (scenario: Scenario) => void;
+  locked?: boolean;
 }
 
 export interface Scenario {

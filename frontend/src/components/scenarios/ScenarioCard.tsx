@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   scenario,
   onSelect,
+  locked = false,
 }) => {
   const dotsMap: Record<string, number> = {
     beginner: 1,
@@ -24,6 +25,8 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   const navigate = useNavigate();
 
   const handleScenarioSelect = () => {
+    if (locked) return;
+
     if (onSelect) {
       onSelect(scenario);
     }
@@ -33,7 +36,13 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-300 hover:shadow-lg transition-all group flex flex-col h-full hover:-translate-y-1">
+    <div
+      className={`bg-white rounded-2xl p-6 border border-gray-300 transition-all group flex flex-col h-full relative overflow-hidden ${
+        locked
+          ? "opacity-[0.85] cursor-not-allowed"
+          : "hover:shadow-lg hover:-translate-y-1"
+      }`}
+    >
       <div className="flex justify-between items-start mb-4">
         <span
           className={`${
@@ -71,11 +80,29 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
         </span>
         <Button
           onClick={handleScenarioSelect}
-          className="p-3 pb-2 rounded-xl bg-primary text-primary-foreground group-hover:scale-110 transition-transform"
+          disabled={locked}
+          className={`p-3 pb-2 rounded-xl bg-primary text-primary-foreground transition-transform ${
+            locked ? "opacity-50" : "group-hover:scale-110"
+          }`}
         >
           <span className="material-symbols-outlined">arrow_forward</span>
         </Button>
       </div>
+
+      {locked && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1.5px] rounded-2xl">
+          <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-3 shadow-sm">
+            <span className="material-symbols-outlined text-slate-400 text-3xl">
+              lock
+            </span>
+          </div>
+          <p className="text-sm font-semibold text-slate-700 text-center px-4">
+            {scenario.level?.toLowerCase() === "intermediate"
+              ? "Score 75+ on all Beginner scenarios to unlock"
+              : "Score 75+ on all Intermediate scenarios to unlock"}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

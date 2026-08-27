@@ -6,6 +6,7 @@ import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
 import CreateCompose from "@/components/conversation/CreateCompose";
 import api from "@/lib/axios";
 import type { Scenario } from "@/types/scenario.type";
+import { useScenarioProgressStore } from "@/store/scenario-progress.store";
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<
@@ -21,6 +22,9 @@ function Scenarios() {
     [scenarios],
   );
 
+  const { fetchProgress, isLevelUnlocked, loading: progressLoading } =
+    useScenarioProgressStore();
+
   useEffect(() => {
     const loadScenarios = async () => {
       try {
@@ -34,7 +38,8 @@ function Scenarios() {
     };
 
     loadScenarios();
-  }, []);
+    fetchProgress();
+  }, [fetchProgress]);
 
   const fetchScenarios = async (): Promise<Scenario[]> => {
     try {
@@ -98,7 +103,7 @@ function Scenarios() {
               ))}
             </div>
 
-            {loading ? (
+            {loading || progressLoading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
               </div>
@@ -114,6 +119,7 @@ function Scenarios() {
                     key={scenario.id}
                     scenario={scenario}
                     onSelect={setSelectedScenario}
+                    locked={!isLevelUnlocked(scenario.level)}
                   />
                 ))}
                 {activeCategory === "All Scenarios" && <FeaturedScenario />}
