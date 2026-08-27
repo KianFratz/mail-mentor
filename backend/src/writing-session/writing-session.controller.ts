@@ -18,7 +18,7 @@ export class WritingSessionController {
   constructor(private readonly writingSessionService: WritingSessionService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Throttle({ default: { ttl: 60000, limit: 100} })
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('create')
   async create(
     @Body() dto: CreateWritingSessionDto,
@@ -42,7 +42,7 @@ export class WritingSessionController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Throttle({ default: { ttl: 60000, limit: 5} })
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Get(':id/feedback')
   async getSessionFeedback(@Param('id') sessionId: string) {
     return this.writingSessionService.getFeedback(sessionId);
