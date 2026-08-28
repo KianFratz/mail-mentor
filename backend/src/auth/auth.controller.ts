@@ -6,8 +6,6 @@ import {
   UseGuards,
   Req,
   Res,
-  ConflictException,
-  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -43,6 +41,7 @@ export class AuthController {
     return req.user;
   }
 
+  @Throttle({ 'auth-sensitive': { ttl: 600000, limit: 5 } })
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async goolgeAuthRedirect(@Req() req, @Res() res) {
@@ -64,8 +63,8 @@ export class AuthController {
     return this.authService.disconnectGoogle(userId);
   }
 
-  @Post('refresh')
   @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
     const rt = req.cookies['refresh_token'];
     const { access_token } = await this.authService.refreshAccessToken(rt);
@@ -73,8 +72,8 @@ export class AuthController {
     return res.json({ access_token });
   }
 
-  @Post('register')
   @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Post('register')
   async register(@Body() registerDto: RegisterDto, @Res() res) {
     const { access_token, refresh_token } =
       await this.authService.register(registerDto);
@@ -84,8 +83,8 @@ export class AuthController {
     return res.json({ access_token });
   }
 
-  @Post('login')
   @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const { access_token, refresh_token } =
       await this.authService.login(loginDto);
@@ -95,6 +94,7 @@ export class AuthController {
     return res.json({ access_token });
   }
 
+  @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Post('logout')
   logout(@Res() res: Response) {
     res.clearCookie('refresh_token', {
@@ -108,8 +108,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
   @SkipThrottle({ default: true, 'auth-sensitive': true })
+  @Get('me')
   async getProfile(@CurrentUser('userId') userId: string) {
     const user = await this.usersService.findById(userId);
     return {
@@ -119,8 +119,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('set-password')
   @Throttle({ 'auth-sensitive': { ttl: 900000, limit: 5 } })
+  @Post('set-password')
   async setPassword(
     @CurrentUser('userId') userId: string,
     @Body() dto: SetPasswordDto,

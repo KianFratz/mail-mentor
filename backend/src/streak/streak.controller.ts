@@ -37,7 +37,8 @@ export class StreakController {
     return this.streakService.recordPractice(userId, dto.localDate);
   }
 
-  // @UseGuards(JwtAuthGuard, Admin)
+  // @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { ttl: 600000, limit: 5 } })
   @Post('admin/recompute-percentiles')
   async trigger() {
     return this.percentileCronService.computeMonthlyPercentiles();

@@ -11,12 +11,14 @@ import { AiService } from './ai.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @UseGuards(JwtAuthGuard)
 @Controller('writing-sessions/:sessionId')
 export class AiController {
   constructor(private aiService: AiService) {}
 
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('/reply')
   async reply(
     @Param('sessionId') sessionId: string,
@@ -31,6 +33,7 @@ export class AiController {
     return { reply };
   }
 
+  @Throttle({ default: { ttl: 600000, limit: 3 } })
   @Post('feedback')
   async generateFeedback(
     @Param('sessionId') sessionId: string,
