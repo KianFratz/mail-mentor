@@ -176,8 +176,12 @@ const badges: Prisma.BadgeCreateManyInput[] = [
 ];
 
 export async function seedBadge(prisma: PrismaService) {
-  await prisma.badge.createMany({
+  const result = await prisma.badge.createMany({
     data: badges,
     skipDuplicates: true,
   });
+
+  console.log(
+    `Badge seed completed. Seeded ${result.count} new badges (${badges.length} total defined).`,
+  );
 }

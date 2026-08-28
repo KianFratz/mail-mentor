@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
+import { BadgeService } from 'src/badge/badge.service';
 import {
   MessageRole,
   SessionStatus,
@@ -268,8 +269,12 @@ export async function seedTestUser(prisma: PrismaService) {
     },
   });
 
+  const badgeService = new BadgeService(prisma);
+  await badgeService.evaluateForUser(testUser.id);
+
   console.log(`Seeded test user: ${testUser.email} / ${TEST_USER_PASSWORD}`);
   console.log(
     'Created 5 writing sessions: in_progress x2, graded x2, abandoned.',
   );
+  console.log('Evaluated user badges for test user.');
 }

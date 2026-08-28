@@ -106,13 +106,15 @@ export default function AllBadgesPage() {
             const isEarned = record.earnedAt !== null;
             const progress = isEarned ? 100 : record.progress || 0;
             const requirementNote = getBadgeRequirementNote(record.badge);
-            
+
             const variantStyles: Record<string, string> = {
               tertiary: "bg-accent text-accent-foreground",
               secondary: "bg-success text-success-foreground",
               primary: "bg-primary text-primary-foreground",
             };
-            const iconBgClass = variantStyles[record.badge.variant] || "bg-muted text-muted-foreground";
+            const iconBgClass =
+              variantStyles[record.badge.variant] ||
+              "bg-muted text-muted-foreground";
 
             return (
               <div
@@ -121,7 +123,9 @@ export default function AllBadgesPage() {
                 style={{ animationDelay: `${i * 45}ms` }}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm ${iconBgClass} ${!isEarned ? 'opacity-50 grayscale' : ''}`}>
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm ${iconBgClass} ${!isEarned ? "opacity-50 grayscale" : ""}`}
+                  >
                     <span
                       className="material-symbols-outlined text-[24px] leading-none"
                       style={{ fontVariationSettings: "'FILL' 1" }}
@@ -129,7 +133,7 @@ export default function AllBadgesPage() {
                       {record.badge.icon || "military_tech"}
                     </span>
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <h4 className="text-sm font-semibold text-foreground truncate">
@@ -153,12 +157,18 @@ export default function AllBadgesPage() {
 
                 <div className="bg-muted/30 rounded-lg p-3 mt-1 h-[95px]">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-foreground">Progress</span>
-                    <span className="text-xs font-bold text-foreground">{Math.round(progress)}%</span>
+                    <span className="text-xs font-medium text-foreground">
+                      Progress
+                    </span>
+                    <span className="text-xs font-bold text-foreground">
+                      {Math.round(progress)}%
+                    </span>
                   </div>
                   <Progress value={progress} className="h-1.5" />
                   <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed">
-                    <span className="font-medium text-foreground mr-1">Requirement:</span>
+                    <span className="font-medium text-foreground mr-1">
+                      Requirement:
+                    </span>
                     {requirementNote}
                   </p>
                 </div>

@@ -7,8 +7,8 @@ const prisma = new PrismaService();
 
 async function main() {
   await seedScenarios(prisma);
-  await seedTestUser(prisma);
   await seedBadge(prisma);
+  await seedTestUser(prisma);
 }
 
 main()

@@ -17,10 +17,20 @@ export class BadgeService {
   constructor(private prisma: PrismaService) {}
 
   async getUserBadge(userId: string) {
-    return this.prisma.userBadge.findMany({
+    const userBadges = await this.prisma.userBadge.findMany({
       where: { userId },
       include: { badge: true },
     });
+
+    if (userBadges.length === 0) {
+      await this.evaluateForUser(userId);
+      return this.prisma.userBadge.findMany({
+        where: { userId },
+        include: { badge: true },
+      });
+    }
+
+    return userBadges;
   }
 
   async evaluateForUser(userId: string) {
