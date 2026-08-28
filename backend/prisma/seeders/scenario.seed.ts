@@ -5,12 +5,12 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
   {
     category: 'Workplace',
     color: 'blue',
-    title: 'Request a deadline extension',
+    title: 'Request a Deadline Extension',
     description:
-      'Craft a professional request to your project manager for more time on a deliverable without sounding unprepared.',
+      'You are behind schedule on an important deliverable due to unexpected technical issues. Write to your project manager to explain the situation, request a reasonable extension, and reassure them that you have a plan to finish the work.',
     level: 'beginner',
     aiPersona: {
-      name: 'Alex Rivera',
+      name: 'Marcus Chen',
       role: 'Project Manager',
       personality: 'Organized and results-driven.',
       mood: 'Neutral',
@@ -22,12 +22,12 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
   {
     category: 'Job Applications',
     color: 'purple',
-    title: 'Follow up after a meeting',
+    title: 'Follow Up After a Networking Meeting',
     description:
-      'Summarize key points from a high-stakes networking call and propose clear next steps for collaboration.',
+      'You recently had a productive networking call with a senior professional in your field. Write a follow-up email thanking them for their time, briefly referencing what you discussed, and proposing a clear next step for staying connected.',
     level: 'intermediate',
     aiPersona: {
-      name: 'Alex Rivera',
+      name: 'Sofia Bennett',
       role: 'Networking Contact',
       personality: 'Friendly but busy.',
       mood: 'Positive',
@@ -39,12 +39,12 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
   {
     category: 'Academic',
     color: 'green',
-    title: 'Contest a Grade',
+    title: 'Request a Grade Review',
     description:
-      'Provide evidence-based reasoning to a professor to discuss a discrepancy in an exam evaluation.',
+      'You believe part of your exam was graded incorrectly and have evidence supporting your concern. Write to your professor respectfully, identify the specific discrepancy, explain your reasoning, and request a review of the grade.',
     level: 'advanced',
     aiPersona: {
-      name: 'Alex Rivera',
+      name: 'Dr. Eleanor Wright',
       role: 'Professor',
       personality: 'Strict but fair.',
       mood: 'Neutral',
@@ -57,12 +57,12 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
   {
     category: 'Customer Service',
     color: 'orange',
-    title: 'De-escalate an upset client',
+    title: 'De-escalate an Upset Client',
     description:
-      'Acknowledge service failures and rebuild trust through empathy and actionable recovery steps.',
+      'A client received the wrong laptop after waiting several days for their order and is frustrated about the mistake. Write a response that acknowledges their frustration, apologizes sincerely, and provides clear steps to resolve the issue.',
     level: 'beginner',
     aiPersona: {
-      name: 'Alex Rivera',
+      name: 'Daniel Brooks',
       role: 'Upset Client',
       personality: 'Frustrated but willing to listen.',
       mood: 'Angry',
@@ -74,29 +74,30 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
   {
     category: 'Workplace',
     color: 'blue',
-    title: 'Declining a Meeting',
+    title: 'Politely Decline a Meeting',
     description:
-      'Politely decline a calendar invite while offering alternative ways to contribute or suggesting a delegate.',
+      'You have been invited to a meeting that conflicts with an important deadline. Write a professional response declining the invitation, briefly explaining your availability issue, and offering an alternative way to contribute or a suitable delegate.',
     level: 'intermediate',
     aiPersona: {
-      name: 'Alex Rivera',
-      role: 'Customer',
-      personality: 'Frustrated but willing to listen.',
-      mood: 'Angry',
-      goal: 'Receive a sincere apology and a clear solution.',
-      communicationStyle: 'Direct and impatient',
-      background: 'Ordered a laptop for work but received the wrong item',
+      name: 'Rachel Morgan',
+      role: 'Team Lead',
+      personality: 'Professional and understanding.',
+      mood: 'Neutral',
+      goal: 'Keep the project moving while ensuring the right people are involved.',
+      communicationStyle: 'Concise and professional',
+      background:
+        'Leads a product team coordinating multiple projects and stakeholder meetings',
     },
   },
   {
     category: 'Customer Service',
     color: 'orange',
-    title: 'Handling Scope Creep',
+    title: 'Handle Scope Creep',
     description:
-      'Gracefully manage a client requesting extra features outside the original project agreement without sounding negative.',
+      'A client is asking for several additional features that were not included in the original project agreement. Write a response that acknowledges their ideas, explains the impact on scope and timeline, and proposes a reasonable way to handle the additional work.',
     level: 'advanced',
     aiPersona: {
-      name: 'Alex Rivera',
+      name: 'Jordan Blake',
       role: 'Client',
       personality: 'Enthusiastic but demanding.',
       mood: 'Excited',
