@@ -17,11 +17,25 @@ export default function AllBadgesPage() {
   const earnedCount = userBadges.filter((b) => b.earnedAt !== null).length;
   const totalCount = userBadges.length;
 
-  const filteredBadges = userBadges.filter((record) => {
-    if (filter === "earned") return record.earnedAt !== null;
-    if (filter === "in-progress") return record.earnedAt === null;
-    return true;
-  });
+  const filteredBadges = userBadges
+    .filter((record) => {
+      if (filter === "earned") return record.earnedAt !== null;
+      if (filter === "in-progress") return record.earnedAt === null;
+      return true;
+    })
+    .sort((a, b) => {
+      const aEarned = a.earnedAt !== null;
+      const bEarned = b.earnedAt !== null;
+
+      if (aEarned && !bEarned) return -1;
+      if (!aEarned && bEarned) return 1;
+
+      if (aEarned && bEarned) {
+        return new Date(b.earnedAt!).getTime() - new Date(a.earnedAt!).getTime();
+      }
+
+      return b.progress - a.progress;
+    });
 
   return (
     <div className="md:col-span-6 bg-card border border-border rounded-2xl p-8 pt-6 mt-6 shadow-xs flex flex-col h-[90vh]">
