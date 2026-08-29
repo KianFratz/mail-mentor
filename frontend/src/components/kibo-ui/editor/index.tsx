@@ -720,11 +720,6 @@ export const EditorProvider = ({
     <TooltipProvider>
       <div className={cn(className, "[&_.ProseMirror-focused]:outline-none")}>
         <TiptapEditorProvider
-          editorProps={{
-            handleKeyDown: (_view, event) => {
-              handleCommandNavigation(event);
-            },
-          }}
           extensions={[
             ...defaultExtensions,
             TextStyleKit,
@@ -732,6 +727,14 @@ export const EditorProvider = ({
           ]}
           immediatelyRender={false}
           {...props}
+          editorProps={{
+            ...props.editorProps,
+            handleKeyDown: (view, event) => {
+              const handled = handleCommandNavigation(event);
+              if (handled) return true;
+              return props.editorProps?.handleKeyDown?.(view, event) ?? false;
+            },
+          }}
         >
           <DefaultEditorContent />
           {props.children}
