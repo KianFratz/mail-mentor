@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import {
   EditorProvider,
   EditorBubbleMenu,
@@ -36,9 +36,6 @@ import { countWords } from "@/lib/reply-editor";
 
 export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const navigate = useNavigate();
-  const [textSelectorOpen, setTextSelectorOpen] = useState(false);
-  const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
-  const [linkSelectorOpen, setLinkSelectorOpen] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const [isEndingSession, setIsEndingSession] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
@@ -59,6 +56,12 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
     textBody,
     setSession,
     clearTextBody,
+    textSelectorOpen,
+    setTextSelectorOpen,
+    formatSelectorOpen,
+    setFormatSelectorOpen,
+    linkSelectorOpen,
+    setLinkSelectorOpen,
   } = useConversationStore();
 
   const [currentBody, setCurrentBody] = useState(textBody ?? "");
@@ -176,7 +179,6 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-
     let shouldNavigate = false;
 
     try {

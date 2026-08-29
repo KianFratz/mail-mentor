@@ -28,6 +28,12 @@ interface ConversationStore {
   setShowFeedback: (v: boolean) => void;
   setStatus: (s: SessionStatus) => void;
   clearTextBody: () => void;
+  textSelectorOpen: boolean;
+  formatSelectorOpen: boolean;
+  linkSelectorOpen: boolean;
+  setTextSelectorOpen: (open: boolean) => void;
+  setFormatSelectorOpen: (open: boolean) => void;
+  setLinkSelectorOpen: (open: boolean) => void;
 }
 
 export const useConversationStore = create<ConversationStore>((set) => ({
@@ -41,6 +47,9 @@ export const useConversationStore = create<ConversationStore>((set) => ({
   wordCount: 0,
   showFeedback: false,
   status: null,
+  textSelectorOpen: false,
+  formatSelectorOpen: false,
+  linkSelectorOpen: false,
 
   setSession: (id) =>
     set({
@@ -96,6 +105,10 @@ export const useConversationStore = create<ConversationStore>((set) => ({
       textBody: "",
     }),
 
+  setTextSelectorOpen: (textSelectorOpen) => set({ textSelectorOpen }),
+  setFormatSelectorOpen: (formatSelectorOpen) => set({ formatSelectorOpen }),
+  setLinkSelectorOpen: (linkSelectorOpen) => set({ linkSelectorOpen }),
+
   clear: () =>
     set({
       sessionId: undefined,
@@ -108,5 +121,8 @@ export const useConversationStore = create<ConversationStore>((set) => ({
       wordCount: 0,
       showFeedback: false,
       status: null,
+      textSelectorOpen: false,
+      formatSelectorOpen: false,
+      linkSelectorOpen: false,
     }),
 }));
