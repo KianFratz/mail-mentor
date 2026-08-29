@@ -511,23 +511,27 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
             <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
               <div className="flex items-center gap-2">
-                <span
-                  className={cn(
-                    "text-xs font-medium tabular-nums transition-colors",
-                    charCount >= 1000
-                      ? "text-rose-600 font-semibold"
-                      : "text-slate-400"
-                  )}
-                >
-                  {charCount}/1000 characters
-                </span>
-                {charCount >= 1000 && (
-                  <span className="inline-flex items-center gap-1 text-xs text-rose-600 font-medium px-2.5 py-0.5 bg-rose-50 border border-rose-200 rounded-full animate-in fade-in duration-200">
-                    <span className="material-symbols-outlined text-[14px] text-rose-600">
-                      error
+                {writingSessionStatus !== "graded" && (
+                  <>
+                    <span
+                      className={cn(
+                        "text-xs font-medium tabular-nums transition-colors",
+                        charCount >= 1000
+                          ? "text-rose-600 font-semibold"
+                          : "text-slate-400"
+                      )}
+                    >
+                      {charCount}/1000 characters
                     </span>
-                    Character limit reached
-                  </span>
+                    {charCount >= 1000 && (
+                      <span className="inline-flex items-center gap-1 text-xs text-rose-600 font-medium px-2.5 py-0.5 bg-rose-50 border border-rose-200 rounded-full animate-in fade-in duration-200">
+                        <span className="material-symbols-outlined text-[14px] text-rose-600">
+                          error
+                        </span>
+                        Character limit reached
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               <div className="flex items-center gap-3">
