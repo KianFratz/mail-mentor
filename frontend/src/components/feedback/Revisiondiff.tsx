@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { SuggestedRevision } from "@/types/feedback.type";
+import { stripHtml } from "@/utils/editor-helper";
 
 interface RevisionDiffProps {
   revision: SuggestedRevision;
@@ -18,7 +19,7 @@ export function RevisionDiff({ revision }: RevisionDiffProps) {
               Your Version
             </p>
             <p className="text-sm whitespace-pre-wrap leading-relaxed">
-              {revision.original}
+              {stripHtml(revision.original)}
             </p>
           </div>
           <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20">

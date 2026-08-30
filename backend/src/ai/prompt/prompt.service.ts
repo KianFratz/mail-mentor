@@ -10,6 +10,22 @@ interface ChatMessage {
 
 @Injectable()
 export class PromptService {
+  private stripHtml(html: string): string {
+    return html
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/p>/gi, '\n')
+      .replace(/<\/div>/gi, '\n')
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
   async buildConversationPrompt(scenario: Scenario, history: Message[]) {
     const systemPrompt = this.buildSystemPrompt(scenario);
 
@@ -20,7 +36,7 @@ export class PromptService {
       },
       ...history.map((m) => ({
         role: m.role === 'USER' ? 'user' : 'assistant',
-        content: m.content,
+        content: this.stripHtml(m.content),
       })),
     ];
   }
@@ -53,11 +69,14 @@ export class PromptService {
   ): Promise<ChatMessage[]> {
     const userMessages = history
       .filter((m) => m.role === 'USER')
-      .map((m, i) => `[Message ${i + 1}]: ${m.content}`)
+      .map((m, i) => `[Message ${i + 1}]: ${this.stripHtml(m.content)}`)
       .join('\n\n');
 
     const fullConversation = history
-      .map((m, i) => `[${m.role} - Message ${i + 1}]: ${m.content}`)
+      .map(
+        (m, i) =>
+          `[${m.role} - Message ${i + 1}]: ${this.stripHtml(m.content)}`,
+      )
       .join('\n\n');
 
     const systemPrompt = `You are an expert email writing coach and assessor. 
