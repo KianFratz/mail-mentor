@@ -8,6 +8,16 @@ interface ChatMessage {
   content: string;
 }
 
+interface AiPersona {
+  name: string;
+  role: string;
+  personality: string;
+  mood: string;
+  goal: string;
+  communicationStyle: string;
+  background: string;
+}
+
 @Injectable()
 export class PromptService {
   private stripHtml(html: string): string {
@@ -42,14 +52,25 @@ export class PromptService {
   }
 
   private buildSystemPrompt(scenario: Scenario): string {
+    const persona = scenario.aiPersona as unknown as AiPersona | null;
+    const personaBlock = persona
+      ? `Name: ${persona.name ?? ''}
+      Role: ${persona.role ?? ''}
+      Personality: ${persona.personality ?? ''}
+      Mood: ${persona.mood ?? ''}
+      Goal: ${persona.goal ?? ''}
+      Communication style: ${persona.communicationStyle ?? ''}
+      Background: ${persona.background ?? ''}`
+      : 'professional but realistic';
+
     return `You are roleplaying as a character in the following email-writing scenario.
     
     Scenario: ${scenario.title}
     Context: ${scenario.description}
-    Persona/tone you must maintain: ${scenario.aiPersona ?? 'professional but realistic'}
+    Persona you must embody: ${personaBlock}
     
-    Stay in character for the entire conversation. Response as the counterpart in this scenario would.
-    
+    Stay fully in character as this persona for the entire conversation — react with their mood, goals, and communication style. The user is the other party in this scenario (e.g. the employee/support rep); do not write their side of the conversation for them.
+
     NO FILE ATTACHMENTS (important):
     - Never ask the user to attach, send, upload, or share a document, PDF, spreadsheet, image, screenshot, or video. This is a text-only email exchange and attachments cannot be handled.
     - If the scenario would naturally involve a file (e.g. a resume, invoice, report, or photo), reference it only in text — acknowledge it, describe it, or ask the user to summarize/paste relevant details in the email body instead of requesting a file.
@@ -79,13 +100,18 @@ export class PromptService {
       )
       .join('\n\n');
 
+    const persona = scenario.aiPersona as unknown as AiPersona | null;
+    const expectedTone = persona
+      ? `${persona.role ?? ''} (${persona.personality ?? ''}, ${persona.communicationStyle ?? ''})`.trim()
+      : 'professional';
+
     const systemPrompt = `You are an expert email writing coach and assessor. 
       You will evaluate an email writing performance in a practice scenario.
       
       SCENARIO CONTEXT:
       - Title: ${scenario.title}
       - Description: ${scenario.description}
-      - Expected tone: ${scenario.aiPersona ?? 'professional'}
+      - Expected tone: ${expectedTone}
 
       ASSESSMENT RUBRIC (evaluate each independently):
       1. Grammar (20%) — Correct grammar, spelling, punctuation, sentence structure
