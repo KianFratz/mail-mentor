@@ -29,6 +29,7 @@ model User {
   userStreak           UserStreak[]
   practiceLog          PracticeLog[]
   userBadges           UserBadge[]
+  subscription         Subscription?
 
   @@map("users")
 }
@@ -147,6 +148,26 @@ model UserBadge {
   @@map("user_badges")
 }
 
+model Subscription {
+  id                 String             @id @default(uuid()) @db.Uuid
+  userId             String             @unique @db.Uuid
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan               SubscriptionPlan   @default(free)
+  status             SubscriptionStatus @default(active)
+  providerCustomerId String?
+  providerSubId      String?
+  currentPeriodStart DateTime?          @db.Timestamptz(6)
+  currentPeriodEnd   DateTime?          @db.Timestamptz(6)
+  cancelAtPeriodEnd  Boolean            @default(false)
+  aiReplyUsedToday   Int                @default(0)
+  feedbackUsedToday  Int                @default(0)
+  usageResetAt       DateTime?          @default(now()) @db.Timestamptz(6)
+  createdAt          DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime           @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("subscriptions")
+}
+
 enum UserRole {
   student
   professional
@@ -173,4 +194,16 @@ enum SessionStatus {
 enum MessageRole {
   USER
   ASSISTANT
+}
+
+enum SubscriptionPlan {
+  free
+  pro
+}
+
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+  trialing
 }
