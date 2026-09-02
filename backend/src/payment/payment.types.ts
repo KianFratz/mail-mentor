@@ -12,3 +12,25 @@ export interface SubscriptionResult {
   currentPeriodEnd: Date;
   customerId: string;
 }
+
+export class XenditWebhookPayload {
+  id: string;
+  user_id: string;
+  reference_id: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'SUCCEEDED' | 'FAILED';
+  created: string;
+  updated: string;
+  recurring_plan_id?: string;
+  recurring_cycle_id?: string;
+  amount?: number;
+  currency?: string;
+  [key: string]: any;
+}
+
+export class XenditWebhook {
+  event: string;
+  type?: string;
+  created: string;
+  business_id: string;
+  data: XenditWebhookPayload;
+}
