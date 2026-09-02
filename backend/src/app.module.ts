@@ -19,6 +19,9 @@ import { MailModule } from './mail/mail.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UserThrottlerGuard } from './common/guards/user-throttle.guard';
+import { SubscriptionService } from './subscription/subscription.service';
+import { SubscriptionController } from './subscription/subscription.controller';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -48,8 +51,9 @@ import { UserThrottlerGuard } from './common/guards/user-throttle.guard';
         limit: 3,
       },
     ]),
+    PaymentModule,
   ],
-  controllers: [AppController, AiController],
-  providers: [AppService, { provide: APP_GUARD, useClass: UserThrottlerGuard }],
+  controllers: [AppController, AiController, SubscriptionController],
+  providers: [AppService, { provide: APP_GUARD, useClass: UserThrottlerGuard }, SubscriptionService],
 })
 export class AppModule {}

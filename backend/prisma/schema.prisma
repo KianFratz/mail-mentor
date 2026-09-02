@@ -154,6 +154,9 @@ model Subscription {
   user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan               SubscriptionPlan   @default(free)
   status             SubscriptionStatus @default(active)
+  billingInterval    BillingInterval
+  amount             Decimal            @db.Decimal(10, 2)
+  currency           String             @default("PHP")
   providerCustomerId String?
   providerSubId      String?
   currentPeriodStart DateTime?          @db.Timestamptz(6)
@@ -161,11 +164,29 @@ model Subscription {
   cancelAtPeriodEnd  Boolean            @default(false)
   aiReplyUsedToday   Int                @default(0)
   feedbackUsedToday  Int                @default(0)
-  usageResetAt       DateTime?          @default(now()) @db.Timestamptz(6)
+  usageResetAt       DateTime?          @default(now())
   createdAt          DateTime           @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime           @default(now()) @updatedAt @db.Timestamptz(6)
 
   @@map("subscriptions")
+}
+
+model Payment {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @db.Uuid
+  subscriptionId    String    @db.Uuid
+  referecenId       String    @unique
+  provider          String
+  providerPaymentId String?
+  amount            Decimal   @db.Decimal(10, 2)
+  currency          String
+  status            String
+  paidAt            DateTime?
+  craetedAt         DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([subscriptionId])
 }
 
 enum UserRole {
@@ -206,4 +227,9 @@ enum SubscriptionStatus {
   past_due
   canceled
   trialing
+}
+
+enum BillingInterval {
+  month
+  year
 }
