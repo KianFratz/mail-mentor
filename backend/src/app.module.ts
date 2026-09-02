@@ -54,6 +54,10 @@ import { PaymentModule } from './payment/payment.module';
     PaymentModule,
   ],
   controllers: [AppController, AiController, SubscriptionController],
-  providers: [AppService, { provide: APP_GUARD, useClass: UserThrottlerGuard }, SubscriptionService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: UserThrottlerGuard },
+    SubscriptionService,
+  ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { CreateSubscriptionInput, SubscriptionResult } from './types';
+import { CreateSubscriptionInput, SubscriptionResult } from './payment.types';
 
 export interface PaymentProvider {
   createSubscription(
