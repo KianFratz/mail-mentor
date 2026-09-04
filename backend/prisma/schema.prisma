@@ -175,14 +175,14 @@ model Payment {
   id                String    @id @default(uuid()) @db.Uuid
   userId            String    @db.Uuid
   subscriptionId    String    @db.Uuid
-  referecenId       String    @unique
+  referenceId       String    @unique
   provider          String
   providerPaymentId String?
   amount            Decimal   @db.Decimal(10, 2)
   currency          String
   status            String
   paidAt            DateTime?
-  craetedAt         DateTime  @default(now()) @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
 
   @@index([userId])
