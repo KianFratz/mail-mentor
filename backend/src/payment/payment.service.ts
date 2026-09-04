@@ -118,7 +118,7 @@ export class PaymentService {
         data: {
           userId,
           subscriptionId: subscription.id,
-          referecenId: data.reference_id || `pay_${Date.now()}`,
+          referenceId: data.reference_id || `pay_${Date.now()}`,
           provider: 'xendit',
           providerPaymentId: data.id || data.recurring_cycle_id,
           amount: data.amount || PLAN_PRICES.pro.monthly,
