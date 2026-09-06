@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PLAN_KEY } from '../decorators/requires-plan.decorator';
-import { Observable } from 'rxjs';
 import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
@@ -41,3 +40,4 @@ export class SubscriptionGuard implements CanActivate {
     return true;
   }
 }
+

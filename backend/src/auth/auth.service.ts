@@ -37,6 +37,17 @@ export class AuthService {
           authProviders: [AuthProvider.GOOGLE],
         },
       });
+
+      await this.prisma.subscription.create({
+        data: {
+          userId: user.id,
+          plan: 'free',
+          status: 'active',
+          billingInterval: 'month',
+          amount: 0,
+          currency: 'PHP',
+        },
+      });
     }
 
     const updatedProviders: AuthProvider[] = Array.from(
@@ -49,17 +60,6 @@ export class AuthService {
         googleId: googleUser.googleId,
         googleRefreshToken: googleUser.refreshToken ?? undefined,
         authProviders: updatedProviders,
-      },
-    });
-
-    await this.prisma.subscription.create({
-      data: {
-        userId: user.id,
-        plan: 'free',
-        status: 'active',
-        billingInterval: 'month',
-        amount: 0,
-        currency: 'PHP',
       },
     });
 
@@ -135,23 +135,29 @@ export class AuthService {
     }
 
     const salt = await bcrypt.genSalt();
-    const password_hash = await bcrypt.hash(password, salt);
+    const passwordHash = await bcrypt.hash(password, salt);
 
-    const user = await this.usersService.createUser({
-      email,
-      password: password_hash,
-      name: fullName,
-    });
+    const user = await this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: passwordHash,
+          name: fullName,
+        },
+      });
 
-    await this.prisma.subscription.create({
-      data: {
-        userId: user.id,
-        plan: 'free',
-        status: 'active',
-        billingInterval: 'month',
-        amount: 0,
-        currency: 'PHP',
-      },
+      await tx.subscription.create({
+        data: {
+          userId: user.id,
+          plan: 'free',
+          status: 'active',
+          billingInterval: 'month',
+          amount: 0,
+          currency: 'PHP',
+        },
+      });
+
+      return user;
     });
 
     return this.generateTokenPair(user);

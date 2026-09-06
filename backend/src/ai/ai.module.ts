@@ -9,7 +9,7 @@ import { BadgeService } from 'src/badge/badge.service';
 import { SubscriptionModule } from 'src/subscription/subscription.module';
 
 @Module({
-  imports: [WritingSessionModule SubscriptionModule],
+  imports: [WritingSessionModule, SubscriptionModule],
   providers: [
     AiService,
     OllamaService,

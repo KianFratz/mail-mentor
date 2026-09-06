@@ -7,7 +7,7 @@ export class SubscriptionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSubscription(userId: string) {
-    return this.prisma.subscription.findUnique({ where: { id: userId } });
+    return this.prisma.subscription.findUnique({ where: { userId } });
   }
 
   async checkUsage(userId: string, type: 'aiReply' | 'feedback') {
@@ -49,7 +49,7 @@ export class SubscriptionService {
 
   async getOrProvisionFree(userId: string) {
     const existing = await this.prisma.subscription.findUnique({
-      where: { id: userId },
+      where: { userId },
     });
 
     if (existing) return existing;
