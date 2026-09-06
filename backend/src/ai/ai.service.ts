@@ -9,6 +9,7 @@ import { OllamaService } from './ollama/ollama.service';
 import { StreakService } from 'src/streak/streak.service';
 import { BadgeService } from 'src/badge/badge.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class AiService {
@@ -17,10 +18,17 @@ export class AiService {
     private prompt: PromptService,
     private ollama: OllamaService,
     private streakService: StreakService,
+    private subscriptionService: SubscriptionService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async reply(sessionId: string, userMessage: string, wordCount: number) {
+  async reply(
+    userId: string,
+    sessionId: string,
+    userMessage: string,
+    wordCount: number,
+  ) {
+    await this.subscriptionService.checkUsage(userId, 'aiReply');
     await this.writingSessionService.saveUserMessage(sessionId, userMessage);
     await this.writingSessionService.updateSessionContent(sessionId, wordCount);
 
@@ -91,6 +99,8 @@ export class AiService {
   }
 
   async generateFeedback(sessionId: string, userId: string, localDate: string) {
+    await this.subscriptionService.checkUsage(userId, 'feedback');
+
     const session =
       await this.writingSessionService.getSessionWithHistory(sessionId);
 

@@ -23,8 +23,10 @@ export class AiController {
   async reply(
     @Param('sessionId') sessionId: string,
     @Body() dto: SendMessageDto,
+    @CurrentUser('userId') userId: string,
   ) {
     const reply = await this.aiService.reply(
+      userId,
       sessionId,
       dto.message,
       dto.wordCount,

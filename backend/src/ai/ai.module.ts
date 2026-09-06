@@ -6,9 +6,10 @@ import { WritingSessionService } from 'src/writing-session/writing-session.servi
 import { WritingSessionModule } from 'src/writing-session/writing-session.module';
 import { StreakService } from 'src/streak/streak.service';
 import { BadgeService } from 'src/badge/badge.service';
+import { SubscriptionModule } from 'src/subscription/subscription.module';
 
 @Module({
-  imports: [WritingSessionModule],
+  imports: [WritingSessionModule SubscriptionModule],
   providers: [
     AiService,
     OllamaService,

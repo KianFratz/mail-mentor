@@ -19,6 +19,8 @@ import { UpdateEmailDto } from './dto/changeEmail.dto';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { DeleteAccountDto } from './dto/deleteAccount.dto';
 import type { Response } from 'express';
+import { RequiresPlan } from 'src/common/decorators/requires-plan.decorator';
+import { SubscriptionGuard } from 'src/common/guards/subscription.guard';
 
 @Controller('users')
 export class UsersController {
@@ -86,8 +88,9 @@ export class UsersController {
     return this.usersService.deleteAccount(userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SubscriptionGuard)
   @Throttle({ default: { ttl: 60000, limit: 1 } })
+  @RequiresPlan('pro')
   @Get('me/export')
   async exportUserData(
     @CurrentUser('userId') userId: string,
