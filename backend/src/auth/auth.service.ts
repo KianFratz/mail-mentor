@@ -52,6 +52,17 @@ export class AuthService {
       },
     });
 
+    await this.prisma.subscription.create({
+      data: {
+        userId: user.id,
+        plan: 'free',
+        status: 'active',
+        billingInterval: 'month',
+        amount: 0,
+        currency: 'PHP',
+      },
+    });
+
     return this.generateTokenPair(user);
   }
 
@@ -130,6 +141,17 @@ export class AuthService {
       email,
       password: password_hash,
       name: fullName,
+    });
+
+    await this.prisma.subscription.create({
+      data: {
+        userId: user.id,
+        plan: 'free',
+        status: 'active',
+        billingInterval: 'month',
+        amount: 0,
+        currency: 'PHP',
+      },
     });
 
     return this.generateTokenPair(user);
