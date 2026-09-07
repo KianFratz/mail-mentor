@@ -105,21 +105,23 @@ describe('PaymentService', () => {
 
   describe('handleXenditWebhook', () => {
     it('should activate subscription and record payment when invoice is PAID in Xendit testing environment', async () => {
+      const validUserId = '123e4567-e89b-12d3-a456-426614174000';
+      prismaService.user.findUnique.mockResolvedValue({ id: validUserId });
       prismaService.subscription.upsert.mockResolvedValue({
         id: 'sub-uuid',
-        userId: 'user-123',
+        userId: validUserId,
         plan: 'pro',
         status: 'active',
       });
       prismaService.payment.upsert.mockResolvedValue({
         id: 'pay-uuid',
-        referenceId: 'sub_user-123_month_12345',
+        referenceId: `sub_${validUserId}_month_12345`,
         status: 'SUCCEEDED',
       });
 
       const webhookPayload = {
         id: 'inv_123',
-        external_id: 'sub_user-123_month_12345',
+        external_id: `sub_${validUserId}_month_12345`,
         status: 'PAID',
         amount: 449,
         paid_amount: 449,
@@ -132,7 +134,7 @@ describe('PaymentService', () => {
       expect(res).toEqual({ status: 'success' });
       expect(prismaService.subscription.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { userId: 'user-123' },
+          where: { userId: validUserId },
           create: expect.objectContaining({
             plan: 'pro',
             status: 'active',
@@ -143,9 +145,9 @@ describe('PaymentService', () => {
       );
       expect(prismaService.payment.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { referenceId: 'sub_user-123_month_12345' },
+          where: { referenceId: `sub_${validUserId}_month_12345` },
           create: expect.objectContaining({
-            userId: 'user-123',
+            userId: validUserId,
             amount: 449,
             status: 'SUCCEEDED',
           }),

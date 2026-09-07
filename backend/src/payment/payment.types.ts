@@ -22,7 +22,7 @@ export interface SubscriptionResult {
   customerId?: string;
 }
 
-export class XenditWebhookPayload {
+export interface XenditWebhookPayload {
   id?: string;
   user_id?: string;
   customer_id?: string;
@@ -43,7 +43,7 @@ export class XenditWebhookPayload {
   [key: string]: any;
 }
 
-export class XenditWebhook {
+export interface XenditWebhook {
   event?: string;
   type?: string;
   created?: string;

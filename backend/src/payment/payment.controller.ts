@@ -11,7 +11,7 @@ import { PaymentService } from './payment.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { XenditWebhook } from './payment.types';
+import type { XenditWebhook } from './payment.types';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller('payment')

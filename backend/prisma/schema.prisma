@@ -187,6 +187,7 @@ model Payment {
 
   @@index([userId])
   @@index([subscriptionId])
+  @@map("payments")
 }
 
 enum UserRole {

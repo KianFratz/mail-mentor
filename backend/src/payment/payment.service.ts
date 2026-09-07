@@ -93,15 +93,22 @@ export class PaymentService {
     const externalId = data.external_id || data.externalId || data.reference_id || data.referenceId || '';
     const parts = externalId.split('_');
 
-    const userId =
+    const rawUserId =
       data.metadata?.userId ||
       data.metadata?.user_id ||
-      data.userId ||
-      data.user_id ||
-      (parts.length >= 2 ? parts[1] : null);
+      (parts.length >= 2 && parts[0] === 'sub' ? parts[1] : null);
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (!userId) {
-      this.logger.warn(`Could not extract userId from webhook data: ${JSON.stringify(data)}`);
+      this.logger.warn(`Could not extract a valid UUID userId from webhook data (rawUserId: "${rawUserId}"): ${JSON.stringify(data)}`);
+      return;
+    }
+
+    const userExists = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!userExists) {
+      this.logger.warn(`User ${userId} from webhook does not exist in database`);
       return;
     }
 
@@ -130,7 +137,7 @@ export class PaymentService {
         amount,
         currency,
         providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId: data.user_id || data.customer_id || data.payer_email,
+        providerCustomerId: data.customer_id || data.payer_email || data.user_id,
         currentPeriodStart: now,
         currentPeriodEnd,
       },
@@ -142,7 +149,7 @@ export class PaymentService {
         amount,
         currency,
         providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId: data.user_id || data.customer_id || data.payer_email,
+        providerCustomerId: data.customer_id || data.payer_email || data.user_id,
         currentPeriodStart: now,
         currentPeriodEnd,
       },
@@ -178,7 +185,10 @@ export class PaymentService {
   private async markPaymentFailed(data: any) {
     const externalId = data.external_id || data.externalId || data.reference_id || '';
     const parts = externalId.split('_');
-    const userId = data.metadata?.userId || (parts.length >= 2 ? parts[1] : null);
+    const rawUserId = data.metadata?.userId || (parts.length >= 2 && parts[0] === 'sub' ? parts[1] : null);
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (userId) {
       await this.prisma.subscription.updateMany({
@@ -186,6 +196,8 @@ export class PaymentService {
         data: { status: 'past_due' },
       });
       this.logger.log(`Subscription marked past_due for user ${userId}`);
+    } else {
+      this.logger.warn(`Could not extract a valid UUID userId for failed payment webhook`);
     }
   }
 }
