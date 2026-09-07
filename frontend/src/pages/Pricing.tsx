@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Check, Sparkles, Zap, Shield, HelpCircle, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
 import { toastManager } from "@/components/ui/toast";
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const { plan, fetchSubscription, createSubscriptionCheckout } = useSubscriptionStore();
   const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
@@ -14,6 +15,20 @@ export default function Pricing() {
   useEffect(() => {
     fetchSubscription();
   }, [fetchSubscription]);
+
+  // Handle payment failure redirect from Xendit
+  useEffect(() => {
+    const paymentStatus = searchParams.get("payment");
+    if (paymentStatus === "failed") {
+      toastManager.add({
+        title: "Payment Failed",
+        description: "Your payment was not completed. Please try again.",
+        type: "error",
+      });
+      // Clean up the query param
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleSelectPlan = async (targetPlan: "pro") => {
     if (plan === targetPlan) {
@@ -28,14 +43,14 @@ export default function Pricing() {
     try {
       setUpgradingPlan(targetPlan);
       const res = await createSubscriptionCheckout(targetPlan, billingCycle === "annual" ? "year" : "month");
-      const checkoutUrl = res?.actions?.url || res?.checkoutUrl || res?.invoice_url || res?.url;
+      const checkoutUrl = res?.invoiceUrl || res?.checkoutUrl || res?.url || res?.actions?.url;
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
         toastManager.add({
-          title: "Checkout Initiated",
-          description: "Subscription checkout request completed.",
-          type: "success",
+          title: "Error",
+          description: "Could not get checkout URL. Please try again.",
+          type: "error",
         });
       }
     } catch (err: any) {
