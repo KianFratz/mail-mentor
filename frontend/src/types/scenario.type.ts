@@ -5,6 +5,8 @@ export interface ScenarioCardProps {
   scenario: Scenario;
   onSelect: (scenario: Scenario) => void;
   locked?: boolean;
+  planLocked?: boolean;
+  onUpgradePrompt?: () => void;
 }
 
 export interface Scenario {

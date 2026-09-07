@@ -1,6 +1,6 @@
 import { colorMap, levelColorMap } from "@/constants/scenario.constant";
 import type { ScenarioCardProps } from "@/types/scenario.type";
-import { ArrowRight, Lock } from "lucide-react";
+import { ArrowRight, Lock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
 
@@ -8,6 +8,8 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   scenario,
   onSelect,
   locked = false,
+  planLocked = false,
+  onUpgradePrompt,
 }) => {
   const dotsMap: Record<string, number> = {
     beginner: 1,
@@ -25,7 +27,13 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   const levelInfo = levelColorMap[normalizedLevel] || levelColorMap.beginner;
   const navigate = useNavigate();
 
+  const isCardDisabled = locked || planLocked;
+
   const handleScenarioSelect = () => {
+    if (planLocked) {
+      if (onUpgradePrompt) onUpgradePrompt();
+      return;
+    }
     if (locked) return;
 
     if (onSelect) {
@@ -36,15 +44,17 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
     });
   };
 
-  const unlockMessage =
-    normalizedLevel === "intermediate"
+  const unlockMessage = planLocked
+    ? `Upgrade to Pro to unlock ${scenario.level} level`
+    : normalizedLevel === "intermediate"
       ? "Score 75+ on all Beginner scenarios"
       : "Score 75+ on all Intermediate scenarios";
 
   return (
     <div
+      onClick={planLocked ? handleScenarioSelect : undefined}
       className={`bg-white rounded-2xl border border-gray-300 transition-all group flex flex-col h-full relative overflow-hidden ${
-        locked ? "cursor-not-allowed" : "hover:shadow-lg hover:-translate-y-1"
+        isCardDisabled ? (planLocked ? "cursor-pointer hover:border-violet-300 hover:shadow-md" : "cursor-not-allowed") : "hover:shadow-lg hover:-translate-y-1"
       }`}
     >
       <div className="p-6 pb-3">
@@ -60,7 +70,12 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
             className="flex gap-1.5 items-center px-2 py-1 bg-slate-50 rounded-full border border-slate-200/60"
             title={`Level: ${scenario.level}`}
           >
-            {locked ? (
+            {planLocked ? (
+              <span className="flex items-center gap-1 text-[10px] font-extrabold text-violet-600 uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
+                PRO
+              </span>
+            ) : locked ? (
               <Lock className="w-3.5 h-3.5 text-slate-400" />
             ) : (
               [1, 2, 3].map((dot) => (
@@ -77,7 +92,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
         <h3 className="text-xl font-semibold text-foreground mb-3">
           {scenario.title}
         </h3>
-        {locked ? (
+        {isCardDisabled ? (
           <div className="relative">
             <p className="text-base text-muted-foreground line-clamp-3">
               {scenario.description}
@@ -92,12 +107,37 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
       </div>
 
       <div className="relative mt-auto">
-        {locked && (
+        {isCardDisabled && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-b-2xl z-10 pointer-events-none" />
         )}
 
         <div className="px-6 pb-6 pt-2 flex flex-col gap-3">
-          {locked ? (
+          {planLocked ? (
+            <>
+              <div className="relative z-20 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 text-violet-800 text-sm font-semibold shadow-xs">
+                <Sparkles className="w-4 h-4 shrink-0 text-amber-500 fill-amber-400" />
+                <span>{unlockMessage}</span>
+              </div>
+
+              <div className="relative z-20 flex items-center justify-between">
+                <span
+                  className={`${levelInfo.badge} px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${levelInfo.dot}`}
+                  />
+                  {scenario.level}
+                </span>
+                <Button
+                  onClick={handleScenarioSelect}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-violet-200 hover:opacity-90"
+                >
+                  Upgrade
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            </>
+          ) : locked ? (
             <>
               <div className="relative z-20 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F9FAFB] border border-gray-300 text-slate-700 text-sm font-medium ">
                 <Lock className="w-3.5 h-3.5 shrink-0 text-slate-400" />

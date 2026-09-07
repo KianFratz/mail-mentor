@@ -1,10 +1,16 @@
 import Sidebar from "@/components/SideBar";
 import { DashboardData } from "@/constants/dashboard-layout.constant";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation } from "react-router";
+import { useEffect } from "react";
+import { useSubscriptionStore } from "@/store/subscription.store";
 
 export default function AppShell() {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const { fetchSubscription } = useSubscriptionStore();
+
+  useEffect(() => {
+    fetchSubscription();
+  }, [fetchSubscription]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

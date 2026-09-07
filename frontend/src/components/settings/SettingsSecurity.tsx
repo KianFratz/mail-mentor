@@ -9,12 +9,15 @@ import {
   Mail,
   RefreshCw,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
+import { useSubscriptionStore } from "@/store/subscription.store";
+import { UpgradeModal } from "../subscription/UpgradeModal";
 import { SetPasswordForm } from "../SetPasswordForm";
 
 interface ConnectedAccount {
@@ -33,12 +36,6 @@ function SettingsSecurity() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [showSetPasswordForm, setShowSetPasswordForm] = useState(false);
-
-  const profile = {
-    avatarUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80",
-    memberSince: "March 2025",
-  };
 
   const {
     requestPasswordChange,
@@ -141,7 +138,24 @@ function SettingsSecurity() {
     }
   };
 
+  const { plan, limits, fetchSubscription } = useSubscriptionStore();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  useEffect(() => {
+    fetchSubscription();
+  }, [fetchSubscription]);
+
   const handleExportData = async () => {
+    if (plan === "free" || !limits?.exportEnabled) {
+      setShowUpgradeModal(true);
+      toastManager.add({
+        title: "Pro Feature",
+        description: "Data Export (JSON, CSV, PDF) is available on the Pro plan. Upgrade to unlock!",
+        type: "error",
+      });
+      return;
+    }
+
     const success = await exportUserData(exportFormat);
 
     if (success) {
@@ -386,9 +400,17 @@ function SettingsSecurity() {
               <Download className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-foreground">
-                Export My Data
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Export My Data
+                </h3>
+                {plan === "free" && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-200">
+                    <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
+                    PRO
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Download a complete archive copy of your Mail Mentor data,
                 scores, and activity history.
@@ -455,6 +477,12 @@ function SettingsSecurity() {
           </div>
         </div>
       )}
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        feature="Data Export"
+      />
     </section>
   );
 }

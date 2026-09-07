@@ -15,6 +15,7 @@ import ConversationList from "./pages/ConversationList";
 import AllScoresPage from "./pages/AllScores";
 import AllBadgesPage from "./pages/AllBadges";
 import VerifyEmailChange from "./components/settings/VerifyEmailChange";
+import Pricing from "./pages/Pricing";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             />
 
             <Route element={<ProtectedRoute />}>
+              <Route path="/pricing" element={<Pricing />} />
               <Route element={<AppShell />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/scenarios" element={<Scenarios />} />

@@ -33,13 +33,23 @@ import DisplayMessage from "./DisplayMessage";
 import { FeedbackPanelSkeleton } from "../feedback/FeedbackPanel";
 import { useConversationStore } from "@/store/conversation.store";
 import { countWords } from "@/lib/reply-editor";
+import { useSubscriptionStore } from "@/store/subscription.store";
+import { UpgradeModal } from "../subscription/UpgradeModal";
 
 export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const navigate = useNavigate();
   const [editorKey, setEditorKey] = useState(0);
   const [isEndingSession, setIsEndingSession] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { plan, limits, usage, fetchSubscription } = useSubscriptionStore();
+
+  useEffect(() => {
+    fetchSubscription();
+  }, [fetchSubscription]);
   const {
     scenario,
     sessionId,
@@ -159,6 +169,17 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
       return;
     }
 
+    if (plan === "free" && (usage.aiReplyUsedToday ?? 0) >= (limits.aiRepliesPerDay ?? 5)) {
+      setUpgradeFeature("Daily AI Replies");
+      setShowUpgradeModal(true);
+      toastManager.add({
+        title: "Daily Limit Reached",
+        description: `You've reached your daily limit of ${limits.aiRepliesPerDay} AI replies on the Free plan. Upgrade to Pro for unlimited replies!`,
+        type: "error",
+      });
+      return;
+    }
+
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
@@ -191,7 +212,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
           scenarioId: scenario?.id,
         });
         currentSessionId = createRes.data.id;
-        setSession(currentSessionId);
+        if (currentSessionId) setSession(currentSessionId);
         shouldNavigate = true;
       }
 
@@ -215,11 +236,16 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
       addMessage(aiMsg);
       setStreaming(false);
+      fetchSubscription();
 
       if (shouldNavigate) {
         navigate(`/conversation/${currentSessionId}`, { replace: true });
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.response?.status === 402) {
+        setUpgradeFeature("Daily AI Replies");
+        setShowUpgradeModal(true);
+      }
       const isTimeout =
         axios.isCancel(err) ||
         (axios.isAxiosError(err) && err.code == "ERR_CANCELED");
@@ -230,7 +256,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
         role: "ai",
         content: isTimeout
           ? "The AI is taking too long to respond. Please try again."
-          : "Sorry, something went wrong while fetching a response. Please try again.",
+          : err?.response?.data?.message || "Sorry, something went wrong while fetching a response. Please try again.",
         timestamp: new Date(),
       };
       addMessage(errMsg);
@@ -245,6 +271,18 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
   const handleEndSession = async () => {
     if (!sessionId || messages.length === 0) return;
+
+    if (plan === "free" && (usage.feedbackUsedToday ?? 0) >= (limits.feedbacksPerDay ?? 1)) {
+      setUpgradeFeature("Daily AI Feedback");
+      setShowUpgradeModal(true);
+      toastManager.add({
+        title: "Daily Feedback Limit Reached",
+        description: `You've reached your daily feedback limit (${limits.feedbacksPerDay}/day) on the Free plan. Upgrade to Pro for unlimited feedback!`,
+        type: "error",
+      });
+      return;
+    }
+
     setIsEndingSession(true);
 
     if (!messages) {
@@ -281,7 +319,12 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
       if (response) setFeedback(response.data);
       setShowFeedback(true);
-    } catch (err) {
+      fetchSubscription();
+    } catch (err: any) {
+      if (err?.response?.status === 402) {
+        setUpgradeFeature("Daily AI Feedback");
+        setShowUpgradeModal(true);
+      }
       let message = "Something went wrong, please try again later.";
 
       if (axios.isAxiosError(err)) {
@@ -510,7 +553,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
             </div>
 
             <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-100 bg-white rounded-b-xl">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 {writingSessionStatus !== "graded" && (
                   <>
                     <span
@@ -532,6 +575,23 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
                       </span>
                     )}
                   </>
+                )}
+
+                {/* Subscription Daily Usage Badge */}
+                {plan === "free" ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/70 rounded-full">
+                    <span className="material-symbols-outlined text-[14px] text-amber-600">
+                      schedule
+                    </span>
+                    {usage.aiReplyUsedToday ?? 0}/{limits.aiRepliesPerDay ?? 5} AI replies left today
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/70 rounded-full">
+                    <span className="material-symbols-outlined text-[14px] text-violet-600">
+                      bolt
+                    </span>
+                    Pro • Unlimited AI Replies
+                  </span>
                 )}
               </div>
               <div className="flex items-center gap-3">
@@ -637,6 +697,12 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
               </div>
             </div>
           </div>
+
+          <UpgradeModal
+            isOpen={showUpgradeModal}
+            onClose={() => setShowUpgradeModal(false)}
+            feature={upgradeFeature}
+          />
         </>
       )}
     </div>

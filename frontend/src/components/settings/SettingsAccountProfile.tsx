@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toastManager } from "../ui/toast";
 import { useSettingsStore } from "@/store/settings.store";
+import SubscriptionStatusCard from "./SubscriptionStatusCard";
 
 function SettingsAccountProfile() {
   const [showPassword, setShowPassword] = useState(false);
@@ -120,6 +121,9 @@ function SettingsAccountProfile() {
           </span>
         </div>
       </div>
+
+      {/* Subscription Status Card */}
+      <SubscriptionStatusCard />
 
       <form
         onSubmit={handleChangeName}

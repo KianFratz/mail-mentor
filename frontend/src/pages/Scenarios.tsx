@@ -7,6 +7,8 @@ import CreateCompose from "@/components/conversation/CreateCompose";
 import api from "@/lib/axios";
 import type { Scenario } from "@/types/scenario.type";
 import { useScenarioProgressStore } from "@/store/scenario-progress.store";
+import { useSubscriptionStore } from "@/store/subscription.store";
+import { UpgradeModal } from "@/components/subscription/UpgradeModal";
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<
@@ -17,6 +19,9 @@ function Scenarios() {
   );
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState("");
+
   const categoriesList = useMemo(
     () => ["All Scenarios", ...new Set(scenarios.map((s) => s.category))],
     [scenarios],
@@ -24,6 +29,8 @@ function Scenarios() {
 
   const { fetchProgress, isLevelUnlocked, loading: progressLoading } =
     useScenarioProgressStore();
+
+  const { limits, fetchSubscription } = useSubscriptionStore();
 
   useEffect(() => {
     const loadScenarios = async () => {
@@ -39,7 +46,8 @@ function Scenarios() {
 
     loadScenarios();
     fetchProgress();
-  }, [fetchProgress]);
+    fetchSubscription();
+  }, [fetchProgress, fetchSubscription]);
 
   const fetchScenarios = async (): Promise<Scenario[]> => {
     try {
@@ -76,6 +84,12 @@ function Scenarios() {
         }),
     [scenarios, activeCategory],
   );
+
+  const isScenarioPlanAllowed = (level?: string) => {
+    if (!level) return true;
+    const allowed = limits?.allowedLevels ?? ["beginner"];
+    return allowed.includes(level.toLowerCase());
+  };
 
   return (
     <main className="flex-grow overflow-y-auto p-margin-mobile md:p-margin-desktop bg-[#F9FAFB]">
@@ -114,14 +128,22 @@ function Scenarios() {
                   gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                 }}
               >
-                {visibleScenarios.map((scenario) => (
-                  <ScenarioCard
-                    key={scenario.id}
-                    scenario={scenario}
-                    onSelect={setSelectedScenario}
-                    locked={!isLevelUnlocked(scenario.level)}
-                  />
-                ))}
+                {visibleScenarios.map((scenario) => {
+                  const allowedByPlan = isScenarioPlanAllowed(scenario.level);
+                  return (
+                    <ScenarioCard
+                      key={scenario.id}
+                      scenario={scenario}
+                      onSelect={setSelectedScenario}
+                      locked={!isLevelUnlocked(scenario.level)}
+                      planLocked={!allowedByPlan}
+                      onUpgradePrompt={() => {
+                        setUpgradeFeature(`${scenario.level.toUpperCase()} Scenarios`);
+                        setShowUpgradeModal(true);
+                      }}
+                    />
+                  );
+                })}
                 {activeCategory === "All Scenarios" && <FeaturedScenario />}
               </div>
             )}
@@ -131,6 +153,11 @@ function Scenarios() {
         )}
       </div>
       <AIPopover />
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        feature={upgradeFeature}
+      />
     </main>
   );
 }
