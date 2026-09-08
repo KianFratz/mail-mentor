@@ -13,6 +13,7 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import type { XenditWebhook } from './payment.types';
 import { Throttle } from '@nestjs/throttler';
+import crypto, { timingSafeEqual } from 'crypto';
 
 @Controller('payment')
 export class PaymentController {
@@ -35,12 +36,31 @@ export class PaymentController {
     @Headers('x-callback-token') callbackToken: string,
     @Body() payload: XenditWebhook,
   ) {
-    // Verify webhook token from Xendit
     const expectedToken = process.env.XENDIT_WEBHOOK_TOKEN;
-    if (expectedToken && callbackToken !== expectedToken) {
-      this.logger.warn(
-        `Webhook rejected: invalid callback token. Received: ${callbackToken?.substring(0, 8)}...`,
+
+    if (!expectedToken) {
+      this.logger.error(
+        'XENDIT_WEBHOOK_TOKEN environment variable is not configured',
       );
+
+      throw new UnauthorizedException('Webhook verification misconfigured');
+    }
+
+    if (!callbackToken) {
+      this.logger.warn('Webhook rejected: missing callback token');
+
+      throw new UnauthorizedException('Invalid webhook callback token');
+    }
+
+    const receivedToken = Buffer.from(callbackToken, 'utf8');
+    const expectedTokenBuffer = Buffer.from(expectedToken, 'utf8');
+
+    if (
+      receivedToken.length !== expectedTokenBuffer.length ||
+      !timingSafeEqual(receivedToken, expectedTokenBuffer)
+    ) {
+      this.logger.warn('Webhook rejected: invalid callback token');
+
       throw new UnauthorizedException('Invalid webhook callback token');
     }
 

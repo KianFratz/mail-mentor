@@ -167,23 +167,25 @@ model Subscription {
   usageResetAt       DateTime?          @default(now())
   createdAt          DateTime           @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime           @default(now()) @updatedAt @db.Timestamptz(6)
+  payments           Payment[]
 
   @@map("subscriptions")
 }
 
 model Payment {
-  id                String    @id @default(uuid()) @db.Uuid
-  userId            String    @db.Uuid
-  subscriptionId    String    @db.Uuid
-  referenceId       String    @unique
+  id                String       @id @default(uuid()) @db.Uuid
+  userId            String       @db.Uuid
+  subscriptionId    String       @db.Uuid
+  subscription      Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  referenceId       String       @unique
   provider          String
   providerPaymentId String?
-  amount            Decimal   @db.Decimal(10, 2)
+  amount            Decimal      @db.Decimal(10, 2)
   currency          String
   status            String
   paidAt            DateTime?
-  createdAt         DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt         DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  createdAt         DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime     @default(now()) @updatedAt @db.Timestamptz(6)
 
   @@index([userId])
   @@index([subscriptionId])

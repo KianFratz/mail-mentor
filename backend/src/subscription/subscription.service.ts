@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { PLAN_LIMITS } from './subscription.constant';
+import { isThisHour } from 'date-fns';
 
 @Injectable()
 export class SubscriptionService {
@@ -13,37 +14,70 @@ export class SubscriptionService {
   async checkUsage(userId: string, type: 'aiReply' | 'feedback') {
     const sub = await this.getOrProvisionFree(userId);
     const limits = PLAN_LIMITS[sub.plan];
-
-    // Reset counters if a new day has started
-    const now = new Date();
-    const resetAt = sub.usageResetAt ?? new Date(0);
-    const isNewDay = now.toDateString() !== resetAt.toDateString();
-
-    if (isNewDay) {
-      await this.prisma.subscription.update({
-        where: { userId },
-        data: { aiReplyUsedToday: 0, feedbackUsedToday: 0, usageResetAt: now },
-      });
-
-      sub.aiReplyUsedToday = 0;
-      sub.feedbackUsedToday = 0;
-    }
-
     const field = type === 'aiReply' ? 'aiReplyUsedToday' : 'feedbackUsedToday';
     const limitKey = type === 'aiReply' ? 'aiRepliesPerDay' : 'feedbacksPerDay';
-    const used = sub[field] as number;
     const limit = limits[limitKey] as number;
 
-    if (used >= limit) {
-      throw new HttpException(
-        `Daily ${type} limit reached. Upgrade to Pro for unlimited access.`,
-        HttpStatus.PAYMENT_REQUIRED,
-      );
+    if (limit === Infinity) {
+      return;
     }
 
-    await this.prisma.subscription.update({
-      where: { userId },
-      data: { [field]: { increment: 1 } },
+    const now = new Date();
+
+    const todayUtc = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    );
+
+    await this.prisma.$transaction(async (tx) => {
+      // Lock this subscription row so concurrent requests
+      // cannot perform the reset simultaneously.
+      const current = await tx.subscription.findUnique({
+        where: { userId },
+      });
+
+      if (!current) {
+        throw new Error('Subscription not found');
+      }
+
+      const resetAt = current.usageResetAt ?? new Date(0);
+
+      const resetDateUtc = new Date(
+        Date.UTC(
+          resetAt.getUTCFullYear(),
+          resetAt.getUTCMonth(),
+          resetAt.getUTCDate(),
+        ),
+      );
+
+      const isNewDay = todayUtc.getTime() !== resetDateUtc.getTime();
+
+      if (isNewDay) {
+        await tx.subscription.update({
+          where: { userId },
+          data: {
+            aiReplyUsedToday: 0,
+            feedbackUsedToday: 0,
+            usageResetAt: todayUtc,
+          },
+        });
+      }
+
+      // Atomic quota check + increment
+      const result = await tx.subscription.updateMany({
+        where: { userId, [field]: { lt: limit } },
+        data: {
+          [field]: {
+            incremenet: 1,
+          },
+        },
+      });
+
+      if (result.count === 0) {
+        throw new HttpException(
+          `Daily ${type} limit reached. Upgrade to Pro for unlimited access.`,
+          HttpStatus.PAYMENT_REQUIRED,
+        );
+      }
     });
   }
 

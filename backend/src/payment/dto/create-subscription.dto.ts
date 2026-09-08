@@ -1,11 +1,11 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class CreateSubscriptionDto {
   @IsOptional()
-  @IsString()
+  @IsIn(['free', 'pro'])
   plan?: string;
 
   @IsOptional()
-  @IsString()
+  @IsIn(['month', 'year', 'annual'])
   interval?: string;
 }

@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { XenditPaymentProvider } from './xendit-provider.service';
 import { PLAN_PRICES } from './payment.constant';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { XenditWebhook } from './payment.types';
+import { XenditWebhook, XenditWebhookPayload } from './payment.types';
 
 @Injectable()
 export class PaymentService {
@@ -14,8 +14,7 @@ export class PaymentService {
     private readonly prisma: PrismaService,
     private readonly xendit: XenditPaymentProvider,
   ) {
-    this.frontendUrl =
-      process.env.FRONTEND_URL || 'http://localhost:5173';
+    this.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   }
 
   async createSubscription(userId: string, dto: CreateSubscriptionDto) {
@@ -58,7 +57,12 @@ export class PaymentService {
     this.logger.log(`Received Xendit webhook: ${JSON.stringify(payload)}`);
 
     const data = payload.data || payload;
-    const eventName = (payload.event || payload.type || data.status || '').toLowerCase();
+    const eventName = (
+      payload.event ||
+      payload.type ||
+      data.status ||
+      ''
+    ).toLowerCase();
     const rawStatus = (data.status || '').toUpperCase();
 
     const isSuccess =
@@ -89,8 +93,13 @@ export class PaymentService {
     return { status: 'success' };
   }
 
-  private async activateAndSavePayment(data: any) {
-    const externalId = data.external_id || data.externalId || data.reference_id || data.referenceId || '';
+  private async activateAndSavePayment(data: XenditWebhookPayload) {
+    const externalId =
+      data.external_id ||
+      data.externalId ||
+      data.reference_id ||
+      data.referenceId ||
+      '';
     const parts = externalId.split('_');
 
     const rawUserId =
@@ -98,26 +107,43 @@ export class PaymentService {
       data.metadata?.user_id ||
       (parts.length >= 2 && parts[0] === 'sub' ? parts[1] : null);
 
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (!userId) {
-      this.logger.warn(`Could not extract a valid UUID userId from webhook data (rawUserId: "${rawUserId}"): ${JSON.stringify(data)}`);
+      this.logger.warn(
+        `Could not extract a valid UUID userId from webhook data (rawUserId: "${rawUserId}"): ${JSON.stringify(data)}`,
+      );
       return;
     }
 
-    const userExists = await this.prisma.user.findUnique({ where: { id: userId } });
+    const userExists = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
     if (!userExists) {
-      this.logger.warn(`User ${userId} from webhook does not exist in database`);
+      this.logger.warn(
+        `User ${userId} from webhook does not exist in database`,
+      );
       return;
     }
 
     let interval: 'month' | 'year' = 'month';
-    if (data.metadata?.billingInterval === 'year' || parts.includes('year') || parts.includes('annual')) {
+    if (
+      data.metadata?.billingInterval === 'year' ||
+      parts.includes('year') ||
+      parts.includes('annual')
+    ) {
       interval = 'year';
     }
 
-    const amount = Number(data.amount || data.paid_amount || (interval === 'year' ? PLAN_PRICES.pro.annual : PLAN_PRICES.pro.monthly));
+    const amount = Number(
+      data.amount ||
+        data.paid_amount ||
+        (interval === 'year'
+          ? PLAN_PRICES.pro.annual
+          : PLAN_PRICES.pro.monthly),
+    );
     const currency = data.currency || 'PHP';
 
     const now = new Date();
@@ -137,7 +163,8 @@ export class PaymentService {
         amount,
         currency,
         providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId: data.customer_id || data.payer_email || data.user_id,
+        providerCustomerId:
+          data.customer_id || data.payer_email || data.user_id,
         currentPeriodStart: now,
         currentPeriodEnd,
       },
@@ -149,7 +176,8 @@ export class PaymentService {
         amount,
         currency,
         providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId: data.customer_id || data.payer_email || data.user_id,
+        providerCustomerId:
+          data.customer_id || data.payer_email || data.user_id,
         currentPeriodStart: now,
         currentPeriodEnd,
       },
@@ -179,15 +207,21 @@ export class PaymentService {
       },
     });
 
-    this.logger.log(`Subscription activated and payment saved for user ${userId}`);
+    this.logger.log(
+      `Subscription activated and payment saved for user ${userId}`,
+    );
   }
 
   private async markPaymentFailed(data: any) {
-    const externalId = data.external_id || data.externalId || data.reference_id || '';
+    const externalId =
+      data.external_id || data.externalId || data.reference_id || '';
     const parts = externalId.split('_');
-    const rawUserId = data.metadata?.userId || (parts.length >= 2 && parts[0] === 'sub' ? parts[1] : null);
+    const rawUserId =
+      data.metadata?.userId ||
+      (parts.length >= 2 && parts[0] === 'sub' ? parts[1] : null);
 
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (userId) {
@@ -197,7 +231,9 @@ export class PaymentService {
       });
       this.logger.log(`Subscription marked past_due for user ${userId}`);
     } else {
-      this.logger.warn(`Could not extract a valid UUID userId for failed payment webhook`);
+      this.logger.warn(
+        `Could not extract a valid UUID userId for failed payment webhook`,
+      );
     }
   }
 }
