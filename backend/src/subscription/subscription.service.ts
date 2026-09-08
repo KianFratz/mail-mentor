@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { PLAN_LIMITS } from './subscription.constant';
-import { isThisHour } from 'date-fns';
 
 @Injectable()
 export class SubscriptionService {
@@ -67,7 +66,7 @@ export class SubscriptionService {
         where: { userId, [field]: { lt: limit } },
         data: {
           [field]: {
-            incremenet: 1,
+            increment: 1,
           },
         },
       });

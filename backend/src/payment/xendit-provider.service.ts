@@ -5,20 +5,23 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
-import { PaymentProvider } from './payment-provider.interface';
 import { CreateSubscriptionInput, SubscriptionResult } from './payment.types';
 import { Xendit } from 'xendit-node';
 
 @Injectable()
-export class XenditPaymentProvider implements PaymentProvider {
+export class XenditPaymentProvider {
   private readonly logger = new Logger(XenditPaymentProvider.name);
   private xenditClient: Xendit;
 
   constructor() {
     const secretKey = process.env.XENDIT_SECRET_KEY || '';
+
     if (!secretKey) {
-      this.logger.error('XENDIT_SECRET_KEY is not set in environment variables');
+      this.logger.error(
+        'XENDIT_SECRET_KEY is not set in environment variables',
+      );
     }
+
     this.xenditClient = new Xendit({ secretKey });
   }
 

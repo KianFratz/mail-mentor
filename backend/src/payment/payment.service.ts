@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, Inject } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { XenditPaymentProvider } from './xendit-provider.service';
 import { PLAN_PRICES } from './payment.constant';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { XenditWebhook, XenditWebhookPayload } from './payment.types';
+import type { PaymentProvider } from './payment-provider.interface';
 
 @Injectable()
 export class PaymentService {
@@ -12,7 +12,8 @@ export class PaymentService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly xendit: XenditPaymentProvider,
+    @Inject('PAYMENT_PROVIDER')
+    private readonly paymentProvider: PaymentProvider,
   ) {
     this.frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   }
@@ -29,7 +30,7 @@ export class PaymentService {
     const price = isAnnual ? PLAN_PRICES.pro.annual : PLAN_PRICES.pro.monthly;
     const externalId = `sub_${userId}_${interval}_${Date.now()}`;
 
-    const session = await this.xendit.createSubscription({
+    const session = await this.paymentProvider.createSubscription({
       userId: user.id,
       externalId,
       amount: price,

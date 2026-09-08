@@ -5,7 +5,14 @@ import { XenditPaymentProvider } from './xendit-provider.service';
 
 @Module({
   controllers: [PaymentController],
-  providers: [PaymentService, XenditPaymentProvider],
-  exports: [XenditPaymentProvider],
+  providers: [
+    PaymentService,
+    XenditPaymentProvider,
+    {
+      provide: 'PAYMENT_PROVIDER',
+      useExisting: XenditPaymentProvider,
+    },
+  ],
+  exports: ['PAYMENT_PROVIDER'],
 })
 export class PaymentModule {}
