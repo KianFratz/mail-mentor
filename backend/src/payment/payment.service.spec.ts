@@ -1,22 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentService } from './payment.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { XenditPaymentProvider } from './xendit-provider.service';
+import { SubscriptionService } from '../subscription/subscription.service';
 
 describe('PaymentService', () => {
   let service: PaymentService;
   let prismaService: any;
   let xenditProvider: any;
+  let subscriptionService: any;
 
   beforeEach(async () => {
     prismaService = {
       user: {
         findUnique: jest.fn(),
-      },
-      subscription: {
-        findUnique: jest.fn(),
-        upsert: jest.fn(),
-        updateMany: jest.fn(),
       },
       payment: {
         upsert: jest.fn(),
@@ -27,11 +23,17 @@ describe('PaymentService', () => {
       createSubscription: jest.fn(),
     };
 
+    subscriptionService = {
+      activateProSubscription: jest.fn().mockResolvedValue({ id: 'sub-uuid' }),
+      markSubscriptionPastDue: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PaymentService,
         { provide: PrismaService, useValue: prismaService },
-        { provide: XenditPaymentProvider, useValue: xenditProvider },
+        { provide: SubscriptionService, useValue: subscriptionService },
+        { provide: 'PAYMENT_PROVIDER', useValue: xenditProvider },
       ],
     }).compile();
 
@@ -107,12 +109,6 @@ describe('PaymentService', () => {
     it('should activate subscription and record payment when invoice is PAID in Xendit testing environment', async () => {
       const validUserId = '123e4567-e89b-12d3-a456-426614174000';
       prismaService.user.findUnique.mockResolvedValue({ id: validUserId });
-      prismaService.subscription.upsert.mockResolvedValue({
-        id: 'sub-uuid',
-        userId: validUserId,
-        plan: 'pro',
-        status: 'active',
-      });
       prismaService.payment.upsert.mockResolvedValue({
         id: 'pay-uuid',
         referenceId: `sub_${validUserId}_month_12345`,
@@ -132,15 +128,12 @@ describe('PaymentService', () => {
       const res = await service.handleXenditWebhook(webhookPayload as any);
 
       expect(res).toEqual({ status: 'success' });
-      expect(prismaService.subscription.upsert).toHaveBeenCalledWith(
+      expect(subscriptionService.activateProSubscription).toHaveBeenCalledWith(
+        validUserId,
         expect.objectContaining({
-          where: { userId: validUserId },
-          create: expect.objectContaining({
-            plan: 'pro',
-            status: 'active',
-            billingInterval: 'month',
-            amount: 449,
-          }),
+          billingInterval: 'month',
+          amount: 449,
+          currency: 'PHP',
         }),
       );
       expect(prismaService.payment.upsert).toHaveBeenCalledWith(
@@ -148,6 +141,7 @@ describe('PaymentService', () => {
           where: { referenceId: `sub_${validUserId}_month_12345` },
           create: expect.objectContaining({
             userId: validUserId,
+            subscriptionId: 'sub-uuid',
             amount: 449,
             status: 'SUCCEEDED',
           }),
@@ -156,4 +150,5 @@ describe('PaymentService', () => {
     });
   });
 });
+
 

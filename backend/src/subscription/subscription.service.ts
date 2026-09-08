@@ -114,4 +114,57 @@ export class SubscriptionService {
       },
     };
   }
+
+  async activateProSubscription(
+    userId: string,
+    details: {
+      billingInterval: 'month' | 'year';
+      amount: number;
+      currency: string;
+      startDate?: Date;
+      endDate?: Date;
+    },
+  ) {
+    const startDate = details.startDate ?? new Date();
+
+    const endDate =
+      details.endDate ??
+      new Date(
+        startDate.getTime() +
+          (details.billingInterval === 'month'
+            ? 30 * 24 * 60 * 60 * 1000
+            : 365 * 24 * 60 * 60 * 1000),
+      );
+
+    return this.prisma.subscription.upsert({
+      where: { userId },
+      create: {
+        userId,
+        plan: 'pro',
+        status: 'active',
+        billingInterval: details.billingInterval,
+        amount: details.amount,
+        currency: details.currency,
+        currentPeriodStart: startDate,
+        currentPeriodEnd: endDate,
+      },
+      update: {
+        plan: 'pro',
+        status: 'active',
+        billingInterval: details.billingInterval,
+        amount: details.amount,
+        currency: details.currency,
+        currentPeriodStart: startDate,
+        currentPeriodEnd: endDate,
+      },
+    });
+  }
+
+  async markSubscriptionPastDue(userId: string) {
+    return this.prisma.subscription.updateMany({
+      where: { userId },
+      data: { status: 'past_due' },
+    });
+  }
 }
+

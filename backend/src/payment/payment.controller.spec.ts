@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { XenditPaymentProvider } from './xendit-provider.service';
+import { SubscriptionService } from '../subscription/subscription.service';
 
 describe('PaymentController', () => {
   let controller: PaymentController;
@@ -13,7 +13,8 @@ describe('PaymentController', () => {
       providers: [
         PaymentService,
         { provide: PrismaService, useValue: {} },
-        { provide: XenditPaymentProvider, useValue: {} },
+        { provide: SubscriptionService, useValue: {} },
+        { provide: 'PAYMENT_PROVIDER', useValue: {} },
       ],
     }).compile();
 
@@ -24,4 +25,5 @@ describe('PaymentController', () => {
     expect(controller).toBeDefined();
   });
 });
+
 

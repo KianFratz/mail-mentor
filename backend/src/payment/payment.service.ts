@@ -4,6 +4,7 @@ import { PLAN_PRICES } from './payment.constant';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { XenditWebhook, XenditWebhookPayload } from './payment.types';
 import type { PaymentProvider } from './payment-provider.interface';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
 @Injectable()
 export class PaymentService {
@@ -12,6 +13,7 @@ export class PaymentService {
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly subscriptionService: SubscriptionService,
     @Inject('PAYMENT_PROVIDER')
     private readonly paymentProvider: PaymentProvider,
   ) {
@@ -155,34 +157,14 @@ export class PaymentService {
       currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
     }
 
-    const subscription = await this.prisma.subscription.upsert({
-      where: { userId },
-      update: {
-        plan: 'pro',
-        status: 'active',
+    const subscription =
+      await this.subscriptionService.activateProSubscription(userId, {
         billingInterval: interval,
         amount,
         currency,
-        providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId:
-          data.customer_id || data.payer_email || data.user_id,
-        currentPeriodStart: now,
-        currentPeriodEnd,
-      },
-      create: {
-        userId,
-        plan: 'pro',
-        status: 'active',
-        billingInterval: interval,
-        amount,
-        currency,
-        providerSubId: data.id || data.recurring_plan_id || externalId,
-        providerCustomerId:
-          data.customer_id || data.payer_email || data.user_id,
-        currentPeriodStart: now,
-        currentPeriodEnd,
-      },
-    });
+        startDate: now,
+        endDate: currentPeriodEnd,
+      });
 
     const referenceId = externalId || `pay_${data.id || Date.now()}`;
     const paidAt = data.paid_at ? new Date(data.paid_at) : now;
@@ -213,7 +195,7 @@ export class PaymentService {
     );
   }
 
-  private async markPaymentFailed(data: any) {
+  private async markPaymentFailed(data: XenditWebhookPayload) {
     const externalId =
       data.external_id || data.externalId || data.reference_id || '';
     const parts = externalId.split('_');
@@ -226,10 +208,7 @@ export class PaymentService {
     const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (userId) {
-      await this.prisma.subscription.updateMany({
-        where: { userId },
-        data: { status: 'past_due' },
-      });
+      await this.subscriptionService.markSubscriptionPastDue(userId);
       this.logger.log(`Subscription marked past_due for user ${userId}`);
     } else {
       this.logger.warn(
@@ -238,3 +217,4 @@ export class PaymentService {
     }
   }
 }
+
