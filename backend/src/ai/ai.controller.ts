@@ -18,7 +18,7 @@ import { Throttle } from '@nestjs/throttler';
 export class AiController {
   constructor(private aiService: AiService) {}
 
-  @Throttle({ default: { ttl: 60000, limit: 5 } })
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   @Post('/reply')
   async reply(
     @Param('sessionId') sessionId: string,

@@ -14,6 +14,7 @@ export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly subscriptionService: SubscriptionService,
+    
     @Inject('PAYMENT_PROVIDER')
     private readonly paymentProvider: PaymentProvider,
   ) {
