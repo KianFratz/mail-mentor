@@ -13,15 +13,23 @@ import { PrismaService } from 'prisma/prisma.service';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthProvider } from 'src/generated/prisma/enums';
+import { getRequiredJwtSecret } from './jwt-secret';
 
 @Injectable()
 export class AuthService {
+  private readonly refreshSecret: string;
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.refreshSecret = getRequiredJwtSecret(
+      this.configService,
+      'JWT_REFRESH_SECRET',
+    );
+  }
 
   async loginWithGoogle(googleUser: any) {
     let user = await this.prisma.user.findUnique({
@@ -114,9 +122,7 @@ export class AuthService {
     const refresh_token = this.jwtService.sign(
       { sub: user.id },
       {
-        secret:
-          this.configService.get<string>('JWT_REFRESH_SECRET') ||
-          'super-refresh-secret',
+        secret: this.refreshSecret,
         expiresIn: (this.configService.get<string>(
           'JWT_REFRESH_TOKEN_EXPIRATION',
         ) || '7d') as any,
@@ -193,9 +199,7 @@ export class AuthService {
     let payload: any;
     try {
       payload = this.jwtService.verify(refreshToken, {
-        secret:
-          this.configService.get<string>('JWT_REFRESH_SECRET') ||
-          'super-refresh-secret',
+        secret: this.refreshSecret,
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
