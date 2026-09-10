@@ -3,6 +3,7 @@ import {
   Post,
   Body,
   Get,
+  UnauthorizedException,
   UseGuards,
   Req,
   Res,
@@ -111,11 +112,13 @@ export class AuthController {
   @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get('me')
   async getProfile(@CurrentUser('userId') userId: string) {
-    const user = await this.usersService.findById(userId);
-    return {
-      ...user,
-      hasPassword: !!user?.password,
-    };
+    const user = await this.usersService.getAuthProfile(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)

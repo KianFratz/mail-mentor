@@ -54,6 +54,31 @@ export class UsersService {
     });
   }
 
+  async getAuthProfile(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        currentLevel: true,
+        authProviders: true,
+        createdAt: true,
+        password: true,
+      },
+    });
+
+    if (!user) return null;
+
+    const { password, ...safeUser } = user;
+
+    return {
+      ...safeUser,
+      hasPassword: !!password,
+    };
+  }
+
   async updateUserName(id: string, newUserName: string) {
     return this.prisma.user.update({
       where: { id },
