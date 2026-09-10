@@ -8,10 +8,12 @@ describe('SkillProficiencyController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SkillProficiencyController],
-      providers: [SkillProficiencyService],
+      providers: [{ provide: SkillProficiencyService, useValue: {} }],
     }).compile();
 
-    controller = module.get<SkillProficiencyController>(SkillProficiencyController);
+    controller = module.get<SkillProficiencyController>(
+      SkillProficiencyController,
+    );
   });
 
   it('should be defined', () => {
