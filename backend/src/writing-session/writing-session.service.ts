@@ -45,9 +45,9 @@ export class WritingSessionService {
     });
   }
 
-  async getSessionWithHistory(sessionId: string) {
-    const session = await this.prisma.writingSession.findUnique({
-      where: { id: sessionId },
+  async getSessionWithHistory(sessionId: string, userId: string) {
+    const session = await this.prisma.writingSession.findFirst({
+      where: { id: sessionId, userId },
       include: {
         scenario: true,
         messages: { orderBy: { createdAt: 'asc' } },
@@ -62,7 +62,9 @@ export class WritingSessionService {
     return session;
   }
 
-  async saveUserMessage(sessionId: string, content: string) {
+  async saveUserMessage(sessionId: string, userId: string, content: string) {
+    await this.assertSessionOwner(sessionId, userId);
+
     return this.prisma.message.create({
       data: {
         writingSessionId: sessionId,
@@ -72,7 +74,13 @@ export class WritingSessionService {
     });
   }
 
-  async saveAssistantMessage(sessionId: string, content: string) {
+  async saveAssistantMessage(
+    sessionId: string,
+    userId: string,
+    content: string,
+  ) {
+    await this.assertSessionOwner(sessionId, userId);
+
     return this.prisma.message.create({
       data: {
         writingSessionId: sessionId,
@@ -82,7 +90,8 @@ export class WritingSessionService {
     });
   }
 
-  async saveFeedback(sessionId: string, feedback: any) {
+  async saveFeedback(sessionId: string, userId: string, feedback: any) {
+    await this.assertSessionOwner(sessionId, userId);
     await this.isFeedbackExisting(sessionId);
 
     return this.prisma.sessionFeedback.create({
@@ -97,16 +106,25 @@ export class WritingSessionService {
     });
   }
 
-  async updateSessionStatus(sessionId: string, status: SessionStatus) {
+  async updateSessionStatus(
+    sessionId: string,
+    userId: string,
+    status: SessionStatus,
+  ) {
+    await this.assertSessionOwner(sessionId, userId);
+
     return this.prisma.writingSession.update({
       where: { id: sessionId },
       data: { status },
     });
   }
 
-  async getFeedback(sessionId: string) {
-    const feedback = await this.prisma.sessionFeedback.findUnique({
-      where: { writingSessionId: sessionId },
+  async getFeedback(sessionId: string, userId: string) {
+    const feedback = await this.prisma.sessionFeedback.findFirst({
+      where: {
+        writingSessionId: sessionId,
+        writingSession: { userId },
+      },
     });
 
     if (!feedback) {
@@ -126,7 +144,13 @@ export class WritingSessionService {
     }
   }
 
-  async updateSessionContent(sessionId: string, wordCount: number) {
+  async updateSessionContent(
+    sessionId: string,
+    userId: string,
+    wordCount: number,
+  ) {
+    await this.assertSessionOwner(sessionId, userId);
+
     return this.prisma.writingSession.update({
       where: { id: sessionId },
       data: {
@@ -135,5 +159,16 @@ export class WritingSessionService {
         },
       },
     });
+  }
+
+  private async assertSessionOwner(sessionId: string, userId: string) {
+    const session = await this.prisma.writingSession.findFirst({
+      where: { id: sessionId, userId },
+      select: { id: true },
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Session with ID "${sessionId}" not found.`);
+    }
   }
 }

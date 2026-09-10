@@ -37,14 +37,20 @@ export class WritingSessionController {
   @UseGuards(JwtAuthGuard)
   @SkipThrottle({ default: true, 'auth-sensitive': true })
   @Get(':id')
-  async getSessionWithHistory(@Param('id') id: string) {
-    return this.writingSessionService.getSessionWithHistory(id);
+  async getSessionWithHistory(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId: string,
+  ) {
+    return this.writingSessionService.getSessionWithHistory(id, userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Get(':id/feedback')
-  async getSessionFeedback(@Param('id') sessionId: string) {
-    return this.writingSessionService.getFeedback(sessionId);
+  async getSessionFeedback(
+    @Param('id') sessionId: string,
+    @CurrentUser('userId') userId: string,
+  ) {
+    return this.writingSessionService.getFeedback(sessionId, userId);
   }
 }

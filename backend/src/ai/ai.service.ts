@@ -29,11 +29,21 @@ export class AiService {
     wordCount: number,
   ) {
     await this.subscriptionService.checkUsage(userId, 'aiReply');
-    await this.writingSessionService.saveUserMessage(sessionId, userMessage);
-    await this.writingSessionService.updateSessionContent(sessionId, wordCount);
+    await this.writingSessionService.saveUserMessage(
+      sessionId,
+      userId,
+      userMessage,
+    );
+    await this.writingSessionService.updateSessionContent(
+      sessionId,
+      userId,
+      wordCount,
+    );
 
-    const session =
-      await this.writingSessionService.getSessionWithHistory(sessionId);
+    const session = await this.writingSessionService.getSessionWithHistory(
+      sessionId,
+      userId,
+    );
     const messages = await this.prompt.buildConversationPrompt(
       session.scenario,
       session.messages,
@@ -56,6 +66,7 @@ export class AiService {
 
       await this.writingSessionService.saveAssistantMessage(
         sessionId,
+        userId,
         cleanedResponse,
       );
 
@@ -101,8 +112,10 @@ export class AiService {
   async generateFeedback(sessionId: string, userId: string, localDate: string) {
     await this.subscriptionService.checkUsage(userId, 'feedback');
 
-    const session =
-      await this.writingSessionService.getSessionWithHistory(sessionId);
+    const session = await this.writingSessionService.getSessionWithHistory(
+      sessionId,
+      userId,
+    );
 
     const userMessages = session.messages.filter((m) => m.role === 'USER');
     if (userMessages.length === 0) {
@@ -146,10 +159,15 @@ export class AiService {
 
       const saved = await this.writingSessionService.saveFeedback(
         sessionId,
+        userId,
         feedback,
       );
 
-      await this.writingSessionService.updateSessionStatus(sessionId, 'graded');
+      await this.writingSessionService.updateSessionStatus(
+        sessionId,
+        userId,
+        'graded',
+      );
       await this.streakService.recordPractice(userId, localDate);
       this.eventEmitter.emit('feedback.created', {
         userId,
