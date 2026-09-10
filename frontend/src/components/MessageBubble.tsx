@@ -1,5 +1,6 @@
 import type { ChatMessage } from "@/types/reply-editor.type";
 import { Avatar } from "./Avatar";
+import { htmlToPlainText } from "@/lib/html";
 
 export function MessageBubble({
   message,
@@ -16,6 +17,9 @@ export function MessageBubble({
     hour: "2-digit",
     minute: "2-digit",
   });
+  const displayContent = isUser
+    ? htmlToPlainText(message.content)
+    : message.content;
 
   return (
     <div
@@ -35,14 +39,7 @@ export function MessageBubble({
             }
           `}
         >
-          {isUser ? (
-            <div
-              className="prose prose-sm prose-invert max-w-none whitespace-pre-wrap [&>p]:my-2 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
-              dangerouslySetInnerHTML={{ __html: message.content }}
-            />
-          ) : (
-            <p className="whitespace-pre-wrap">{message.content}</p>
-          )}
+          <p className="whitespace-pre-wrap">{displayContent}</p>
         </div>
         <span className="text-[10px] text-slate-400 mt-1 px-1">{time}</span>
       </div>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { statusLabels, statusStyles } from "@/constants/conversation.constant";
 import api from "@/lib/axios";
+import { htmlToPlainText } from "@/lib/html";
 import type { WritingSession } from "@/types/conversation.type";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -96,12 +97,9 @@ function ConversationList() {
                   <h3 className="text-xl font-bold text-slate-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                     {conv.subjectLine || "No Subject"}
                   </h3>
-                  <div
-                    className="text-sm text-slate-500 mb-6 line-clamp-3 prose prose-sm prose-slate"
-                    dangerouslySetInnerHTML={{
-                      __html: conv.textBody || "No content...",
-                    }}
-                  />
+                  <p className="text-sm text-slate-500 mb-6 line-clamp-3 whitespace-pre-wrap">
+                    {htmlToPlainText(conv.textBody) || "No content..."}
+                  </p>
 
                   <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
