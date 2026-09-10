@@ -23,7 +23,7 @@ export default function AllScoresPage() {
 
   useEffect(() => {
     fetchRecentScores(limit, page);
-  }, [page, limit]);
+  }, [fetchRecentScores, page, limit]);
 
   const goToPage = (nextPage: number) => {
     const params = new URLSearchParams(searchParams);

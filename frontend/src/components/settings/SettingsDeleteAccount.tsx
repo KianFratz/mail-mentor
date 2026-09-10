@@ -9,7 +9,7 @@ import { performLogout } from "@/lib/tokenEvents";
 function SettingsDeleteAccount() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState("");
-  const { deleteAccount, isDeleting, error, reset } = useSettingsStore();
+  const { deleteAccount, isDeleting, reset } = useSettingsStore();
 
   const handleCloseModal = () => {
     setShowDeleteModal(false);

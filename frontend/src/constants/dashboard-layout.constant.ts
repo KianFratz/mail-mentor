@@ -18,6 +18,12 @@ export const DashboardData: DashboardDataProps = {
   ],
   activeSideNavHref: "/drafting",
   sideNavCtaLabel: "Logout",
+  overallScore: 0,
+  skills: [],
+  streakDays: 0,
+  streakMessage: "Start practicing to build your streak.",
+  weekDays: [],
+  recentScores: [],
 
   onViewAllScores: () => console.log("View All clicked"),
 

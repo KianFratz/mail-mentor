@@ -1,5 +1,3 @@
-import React from "react";
-
 function RecentScoreCardSkeleton() {
   return (
     <div className="animate-pulse">

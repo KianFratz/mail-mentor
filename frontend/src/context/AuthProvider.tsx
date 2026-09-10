@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data } = await api.post<RefreshResponse>("/auth/refresh");
         localStorage.setItem(TOKEN_KEY, data.access_token);
         setToken(data.access_token);
-      } catch (err) {
+      } catch {
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
       } finally {

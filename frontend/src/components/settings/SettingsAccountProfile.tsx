@@ -20,7 +20,7 @@ function SettingsAccountProfile() {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [fetchProfile]);
 
   const handleChangeName = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

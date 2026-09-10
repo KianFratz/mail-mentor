@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import CreateCompose from "./CreateCompose";
 import type { Scenario } from "@/types/scenario.type";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useConversationStore } from "@/store/conversation.store";
 
 function NewConversation() {
@@ -18,7 +18,7 @@ function NewConversation() {
     } else {
       navigate("/scenarios", { replace: true });
     }
-  }, [newScenario]);
+  }, [navigate, newScenario, setScenario]);
 
   if (!newScenario) {
     navigate("/conversations", { replace: true });

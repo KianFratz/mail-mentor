@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import emptyState from "../../assets/undraw_books_wxzz.png";
 import RecentScoreCardSkeleton from "./RecentScoreCardSkeleton";
 
-export default function RecentScoresCard({}) {
+export default function RecentScoresCard() {
   const { scores, loading, fetchRecentScores } = useRecentScoresStore();
   const recentScores = scores.slice(0, 3);
   const navigate = useNavigate();

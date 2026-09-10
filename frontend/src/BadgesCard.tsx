@@ -20,7 +20,7 @@ export default function BadgesCard({
   lockedBadge: fallbackLockedBadge,
 }: BadgesCardProps) {
   const navigate = useNavigate();
-  const { userBadges, fetchUserBadge, loading } = useBadgeStore();
+  const { userBadges, fetchUserBadge } = useBadgeStore();
 
   useEffect(() => {
     fetchUserBadge();

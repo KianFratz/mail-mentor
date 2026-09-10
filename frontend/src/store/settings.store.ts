@@ -217,7 +217,7 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
 
       set({ isExporting: false });
       return true;
-    } catch (error) {
+    } catch (error: any) {
       const message =
         error?.response?.data?.message ??
         "Failed to export data archive. Please try again later.";

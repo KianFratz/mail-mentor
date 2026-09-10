@@ -1,4 +1,4 @@
-import React, { type JSX } from "react";
+import type { JSX } from "react";
 import { ScoreCard } from "./Scorecard";
 import { CategoryBreakdown } from "./CategoryBreakdown";
 import { StrengthsAndImprovements } from "./StrengthsAndImprovements";

@@ -118,7 +118,9 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
         `${payload.firstName || ""} ${payload.lastName || ""}`.trim() ||
         "User";
     }
-  } catch (e) {}
+  } catch {
+    userName = "User";
+  }
 
   const userInitials = getInitials(userName, "U");
   const aiName = scenario?.aiPersona?.name || "AI";
@@ -332,7 +334,8 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
           message =
             "Generating feedback is taking longer than expected. Please try again.";
         } else {
-          err.response?.data?.message || err.response?.data || message;
+          message =
+            err.response?.data?.message || err.response?.data || message;
         }
 
         if (Array.isArray(message)) {

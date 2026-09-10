@@ -6,7 +6,7 @@ import {
   ShieldCheck,
   XCircle,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "../ui/button";
 import { useVerifyEmailChangeStore } from "@/store/verify-email-change.store";

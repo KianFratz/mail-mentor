@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AIPopover } from "@/components/scenarios/AiPopover";
 import { CategoryFilter } from "@/components/scenarios/CategoryFilter";
 import { FeaturedScenario } from "@/components/scenarios/FeaturedScenario";
@@ -9,6 +9,13 @@ import type { Scenario } from "@/types/scenario.type";
 import { useScenarioProgressStore } from "@/store/scenario-progress.store";
 import { useSubscriptionStore } from "@/store/subscription.store";
 import { UpgradeModal } from "@/components/subscription/UpgradeModal";
+
+const levelWeight: Record<string, number> = {
+  beginner: 1,
+  intermediate: 2,
+  advanced: 3,
+  hard: 3,
+};
 
 function Scenarios() {
   const [activeCategory, setActiveCategory] = useState<
@@ -32,6 +39,17 @@ function Scenarios() {
 
   const { limits, fetchSubscription } = useSubscriptionStore();
 
+  const fetchScenarios = useCallback(async (): Promise<Scenario[]> => {
+    try {
+      const { data } = await api.get<Scenario[]>("/scenarios");
+
+      return data;
+    } catch (error) {
+      console.error("Failed fetching scenarios:", error);
+      return [];
+    }
+  }, []);
+
   useEffect(() => {
     const loadScenarios = async () => {
       try {
@@ -47,25 +65,7 @@ function Scenarios() {
     loadScenarios();
     fetchProgress();
     fetchSubscription();
-  }, [fetchProgress, fetchSubscription]);
-
-  const fetchScenarios = async (): Promise<Scenario[]> => {
-    try {
-      const { data } = await api.get<Scenario[]>("/scenarios");
-
-      return data;
-    } catch (error) {
-      console.error("Failed fetching scenarios:", error);
-      return [];
-    }
-  };
-
-  const levelWeight: Record<string, number> = {
-    beginner: 1,
-    intermediate: 2,
-    advanced: 3,
-    hard: 3,
-  };
+  }, [fetchProgress, fetchScenarios, fetchSubscription]);
 
   const visibleScenarios = useMemo(
     () =>

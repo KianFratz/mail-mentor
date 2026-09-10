@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import type React from "react";
 import { MessageBubble } from "../MessageBubble";
 import { TypingIndicator } from "../TypingIndicator";
 import type { ChatMessage } from "@/types/reply-editor.type";

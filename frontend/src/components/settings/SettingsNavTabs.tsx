@@ -1,5 +1,5 @@
 import { KeyRound, ShieldAlert, User } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function SettingsNavTabs() {
   const [activeTab, setActiveTab] = useState<"profile" | "security" | "danger">(
