@@ -46,15 +46,11 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async goolgeAuthRedirect(@Req() req, @Res() res) {
-    const { access_token, refresh_token } =
-      await this.authService.loginWithGoogle(req.user);
+    const { refresh_token } = await this.authService.loginWithGoogle(req.user);
 
     this.setRefreshTokenCookie(res, refresh_token);
 
-    // Access token passed to frontend via query param ( short-lived, 15m)
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/oauth-success?token=${access_token}`,
-    );
+    return res.redirect(`${process.env.FRONTEND_URL}/oauth-success`);
   }
 
   @UseGuards(JwtAuthGuard)

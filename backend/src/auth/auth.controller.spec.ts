@@ -6,11 +6,18 @@ import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let controller: AuthController;
+  let authService: {
+    loginWithGoogle: jest.Mock;
+  };
   let usersService: {
     getAuthProfile: jest.Mock;
   };
 
   beforeEach(async () => {
+    process.env.FRONTEND_URL = 'http://frontend.test';
+    authService = {
+      loginWithGoogle: jest.fn(),
+    };
     usersService = {
       getAuthProfile: jest.fn(),
     };
@@ -18,7 +25,7 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
-        { provide: AuthService, useValue: {} },
+        { provide: AuthService, useValue: authService },
         { provide: UsersService, useValue: usersService },
       ],
     }).compile();
@@ -67,5 +74,32 @@ describe('AuthController', () => {
     await expect(controller.getProfile('missing-user')).rejects.toBeInstanceOf(
       UnauthorizedException,
     );
+  });
+
+  it('does not put the Google access token in the OAuth redirect URL', async () => {
+    authService.loginWithGoogle.mockResolvedValue({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    });
+    const response = {
+      cookie: jest.fn(),
+      redirect: jest.fn(),
+    };
+
+    await controller.goolgeAuthRedirect(
+      { user: { email: 'user@example.com' } },
+      response,
+    );
+
+    expect(response.cookie).toHaveBeenCalledWith(
+      'refresh_token',
+      'refresh-token',
+      expect.objectContaining({ httpOnly: true }),
+    );
+    expect(response.redirect).toHaveBeenCalledWith(
+      'http://frontend.test/oauth-success',
+    );
+    expect(response.redirect.mock.calls[0][0]).not.toContain('access-token');
+    expect(response.redirect.mock.calls[0][0]).not.toContain('token=');
   });
 });
