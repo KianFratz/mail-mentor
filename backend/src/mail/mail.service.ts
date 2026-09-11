@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
-import { error } from 'console';
 
 @Injectable()
 export class MailService {
@@ -29,11 +28,11 @@ export class MailService {
         html,
       });
 
-      this.logger.log(`Email sent: ${info.message}`);
+      this.logger.log({ event: 'email_sent' });
       return info;
     } catch (err) {
-      this.logger.error('Failed to send email', error);
-      throw error;
+      this.logger.error({ event: 'email_send_failed' });
+      throw err;
     }
   }
 
@@ -54,7 +53,7 @@ export class MailService {
         `,
       });
     } catch (err) {
-      this.logger.error(`Failed to send verification email to ${toEmail}`, err);
+      this.logger.error({ event: 'verification_email_failed' });
       throw err;
     }
   }
@@ -73,10 +72,7 @@ export class MailService {
       `,
       });
     } catch (err) {
-      this.logger.error(
-        `Failed to send change notice email to ${oldEmail}`,
-        err,
-      );
+      this.logger.error({ event: 'email_change_notice_failed' });
       throw err;
     }
   }

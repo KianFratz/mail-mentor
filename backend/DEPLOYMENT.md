@@ -22,3 +22,11 @@ Production additionally requires:
 
 PORT is optional (default 3000). PORT and MAIL_PORT must be integers from 1 to
 65535. Keep credentials in the deployment secret store, never in source control.
+
+Backend logs are newline-delimited JSON on stdout (errors on stderr). Nested
+sensitive fields, configured secret values, email addresses, URLs, and Error
+objects are redacted. Log fixed event names and allowlisted operational fields;
+do not pass request bodies, provider responses, or personal data to the logger.
+Public errors have `statusCode`, `error`, and `message`. Client validation messages
+are retained; all server errors return `Internal server error` and provider
+responses are never sent to clients.

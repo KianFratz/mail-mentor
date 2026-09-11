@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Ollama } from 'ollama';
 
@@ -25,9 +25,9 @@ export class OllamaService {
 
       return response;
     } catch (error: any) {
-      console.error('AI API Error:', error?.message || error);
+      new Logger(OllamaService.name).error({ event: 'ai_provider_failed' });
       throw new HttpException(
-        error?.message || 'Failed to communicate with AI API',
+        'Failed to communicate with AI API',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

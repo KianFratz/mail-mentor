@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import {
@@ -127,10 +128,7 @@ export class BadgeService {
     try {
       await this.evaluateForUser(payload.userId);
     } catch (error) {
-      console.error(
-        `Failed to evaluate badges for user ${payload.userId}:`,
-        error instanceof Error ? error.stack : undefined,
-      );
+      new Logger(BadgeService.name).error({ event: 'badge_evaluation_failed' });
     }
   }
 }

@@ -14,7 +14,7 @@ export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly subscriptionService: SubscriptionService,
-    
+
     @Inject('PAYMENT_PROVIDER')
     private readonly paymentProvider: PaymentProvider,
   ) {
@@ -58,7 +58,7 @@ export class PaymentService {
   }
 
   async handleXenditWebhook(payload: XenditWebhook) {
-    this.logger.log(`Received Xendit webhook: ${JSON.stringify(payload)}`);
+    this.logger.log({ event: 'payment_webhook_received' });
 
     const data = payload.data || payload;
     const eventName = (
@@ -116,9 +116,7 @@ export class PaymentService {
     const userId = rawUserId && uuidRegex.test(rawUserId) ? rawUserId : null;
 
     if (!userId) {
-      this.logger.warn(
-        `Could not extract a valid UUID userId from webhook data (rawUserId: "${rawUserId}"): ${JSON.stringify(data)}`,
-      );
+      this.logger.warn({ event: 'payment_webhook_invalid_user' });
       return;
     }
 
@@ -126,9 +124,7 @@ export class PaymentService {
       where: { id: userId },
     });
     if (!userExists) {
-      this.logger.warn(
-        `User ${userId} from webhook does not exist in database`,
-      );
+      this.logger.warn({ event: 'payment_webhook_user_not_found' });
       return;
     }
 
@@ -158,14 +154,16 @@ export class PaymentService {
       currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
     }
 
-    const subscription =
-      await this.subscriptionService.activateProSubscription(userId, {
+    const subscription = await this.subscriptionService.activateProSubscription(
+      userId,
+      {
         billingInterval: interval,
         amount,
         currency,
         startDate: now,
         endDate: currentPeriodEnd,
-      });
+      },
+    );
 
     const referenceId = externalId || `pay_${data.id || Date.now()}`;
     const paidAt = data.paid_at ? new Date(data.paid_at) : now;
@@ -191,9 +189,7 @@ export class PaymentService {
       },
     });
 
-    this.logger.log(
-      `Subscription activated and payment saved for user ${userId}`,
-    );
+    this.logger.log({ event: 'payment_subscription_activated' });
   }
 
   private async markPaymentFailed(data: XenditWebhookPayload) {
@@ -210,7 +206,7 @@ export class PaymentService {
 
     if (userId) {
       await this.subscriptionService.markSubscriptionPastDue(userId);
-      this.logger.log(`Subscription marked past_due for user ${userId}`);
+      this.logger.log({ event: 'payment_subscription_past_due' });
     } else {
       this.logger.warn(
         `Could not extract a valid UUID userId for failed payment webhook`,
@@ -218,4 +214,3 @@ export class PaymentService {
     }
   }
 }
-

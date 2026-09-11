@@ -1,8 +1,6 @@
 import {
   Injectable,
   InternalServerErrorException,
-  BadRequestException,
-  ForbiddenException,
   Logger,
 } from '@nestjs/common';
 import { CreateSubscriptionInput, SubscriptionResult } from './payment.types';
@@ -29,9 +27,7 @@ export class XenditPaymentProvider {
     input: CreateSubscriptionInput,
   ): Promise<SubscriptionResult> {
     try {
-      this.logger.log(
-        `Creating invoice for user ${input.userId}, amount: ${input.amount} ${input.currency || 'PHP'}`,
-      );
+      this.logger.log({ event: 'payment_invoice_creating' });
 
       const response = await this.xenditClient.Invoice.createInvoice({
         data: {
@@ -46,9 +42,7 @@ export class XenditPaymentProvider {
         },
       });
 
-      this.logger.log(
-        `Invoice created successfully: ${response.id}, URL: ${response.invoiceUrl}`,
-      );
+      this.logger.log({ event: 'payment_invoice_created' });
 
       return {
         id: response.id || '',
@@ -61,27 +55,8 @@ export class XenditPaymentProvider {
         customerId: input.userId,
       };
     } catch (error: any) {
-      this.logger.error(
-        `Xendit createInvoice failed: ${error.errorMessage || error.message || JSON.stringify(error)}`,
-      );
-
-      // Surface meaningful Xendit errors
-      const status = error.status || error.statusCode;
-      const msg =
-        error.errorMessage ||
-        error.message ||
-        'Payment provider request failed';
-
-      if (status === 403) {
-        throw new ForbiddenException(
-          `Xendit API key lacks required permissions. Please enable Invoice API access in your Xendit Dashboard. Details: ${msg}`,
-        );
-      }
-      if (status === 400) {
-        throw new BadRequestException(`Xendit: ${msg}`);
-      }
-
-      throw new InternalServerErrorException(`Xendit: ${msg}`);
+      this.logger.error({ event: 'payment_invoice_failed' });
+      throw new InternalServerErrorException('Payment provider request failed');
     }
   }
 
@@ -103,9 +78,7 @@ export class XenditPaymentProvider {
         currency: response.currency || 'PHP',
       };
     } catch (error: any) {
-      throw new InternalServerErrorException(
-        `Xendit Cancellation failed: ${error.errorMessage || error.message || error}`,
-      );
+      throw new InternalServerErrorException('Payment provider request failed');
     }
   }
 
@@ -125,9 +98,7 @@ export class XenditPaymentProvider {
         currency: response.currency || 'PHP',
       };
     } catch (error: any) {
-      throw new InternalServerErrorException(
-        `Xendit Fetch failed: ${error.errorMessage || error.message || error}`,
-      );
+      throw new InternalServerErrorException('Payment provider request failed');
     }
   }
 }
