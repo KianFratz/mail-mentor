@@ -1,6 +1,6 @@
 import axios from "axios";
 import { emitTokenChange, performLogout } from "./tokenEvents";
-import { TOKEN_KEY } from "@/constants/auth.constant";
+import { getAccessToken, setAccessToken } from "./access-token";
 
 interface RefreshResponse {
   access_token: string;
@@ -17,7 +17,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getAccessToken();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -69,7 +69,7 @@ api.interceptors.response.use(
           throw new Error("No access token is refresh response");
         }
 
-        localStorage.setItem(TOKEN_KEY, newToken);
+        setAccessToken(newToken);
         emitTokenChange(newToken);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;

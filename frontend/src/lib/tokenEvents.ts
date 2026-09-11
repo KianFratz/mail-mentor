@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from "@/constants/auth.constant";
+import { clearAccessToken } from "./access-token";
 import api from "./axios";
 
 type TokenListener = (token: string | null) => void;
@@ -25,7 +25,8 @@ export async function performLogout() {
       err,
     );
   } finally {
-    localStorage.removeItem(TOKEN_KEY);
+    clearAccessToken();
+    emitTokenChange(null);
     window.location.replace("/login");
   }
 }

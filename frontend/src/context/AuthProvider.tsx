@@ -1,7 +1,15 @@
-import { TOKEN_KEY } from "@/constants/auth.constant";
 import api from "@/lib/axios";
+import {
+  getAccessToken,
+  setAccessToken,
+  clearAccessToken,
+} from "@/lib/access-token";
 import { isTokenExpired } from "@/lib/jwt";
-import { onTokenChange, performLogout } from "@/lib/tokenEvents";
+import {
+  emitTokenChange,
+  onTokenChange,
+  performLogout,
+} from "@/lib/tokenEvents";
 import type { AuthContextValue } from "@/types/auth.type";
 import React, {
   createContext,
@@ -20,22 +28,12 @@ interface RefreshResponse {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem(TOKEN_KEY),
-  );
+  const [token, setToken] = useState<string | null>(() => getAccessToken());
   const [isInitializing, setIsInitializing] = useState(true);
   const initAttempted = useRef(false);
 
-  // Token is now written to localStorage at the point of change
-  // (saveToken / tokenEvents listener), not reactively here — avoids
-  // a render-cycle gap between state and storage.
   useEffect(() => {
     const unsubscribe = onTokenChange((newToken) => {
-      if (newToken) {
-        localStorage.setItem(TOKEN_KEY, newToken);
-      } else {
-        localStorage.removeItem(TOKEN_KEY);
-      }
       setToken(newToken);
     });
     return unsubscribe;
@@ -46,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAttempted.current = true;
 
     const initAuth = async () => {
-      const existingToken = localStorage.getItem(TOKEN_KEY);
+      const existingToken = getAccessToken();
 
       // If we have a token and it's not expired, trust it — no need
       // to hit the network on every page load.
@@ -55,16 +53,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // No local token, OR it's expired: the httpOnly refresh cookie
-      // is the real source of truth, so always attempt a refresh
-      // rather than assuming "no local token" means "logged out."
+      // No memory token, OR it's expired: the httpOnly refresh cookie is
+      // the durable source of truth, so attempt a refresh on page load.
       try {
         const { data } = await api.post<RefreshResponse>("/auth/refresh");
-        localStorage.setItem(TOKEN_KEY, data.access_token);
-        setToken(data.access_token);
+        setAccessToken(data.access_token);
+        emitTokenChange(data.access_token);
       } catch {
-        localStorage.removeItem(TOKEN_KEY);
-        setToken(null);
+        clearAccessToken();
+        emitTokenChange(null);
       } finally {
         setIsInitializing(false);
       }
@@ -74,8 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const saveToken = useCallback((newToken: string) => {
-    localStorage.setItem(TOKEN_KEY, newToken);
-    setToken(newToken);
+    setAccessToken(newToken);
+    emitTokenChange(newToken);
     setIsInitializing(false);
   }, []);
 

@@ -35,6 +35,7 @@ import { useConversationStore } from "@/store/conversation.store";
 import { countWords } from "@/lib/reply-editor";
 import { useSubscriptionStore } from "@/store/subscription.store";
 import { UpgradeModal } from "../subscription/UpgradeModal";
+import { getAccessToken } from "@/lib/access-token";
 
 export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
 
   let userName = "User";
   try {
-    const tokenStr = localStorage.getItem("access_token");
+    const tokenStr = getAccessToken();
     if (tokenStr) {
       const payload = JSON.parse(atob(tokenStr.split(".")[1]));
       userName =

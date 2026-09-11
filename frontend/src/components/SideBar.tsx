@@ -22,8 +22,6 @@ export default function SideNavbar({
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("user");
       logout();
       clear();
     }
