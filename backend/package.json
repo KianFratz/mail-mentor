@@ -98,7 +98,7 @@
     "moduleNameMapper": {
       "^prisma/(.*)$": "<rootDir>/../prisma/$1",
       "^src/(.*)$": "<rootDir>/$1",
-      "^(.*)\\.js$": "$1"
+      "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

@@ -25,10 +25,15 @@ export class PublicErrorFilter implements ExceptionFilter {
       message = detail || 'Request failed';
     }
     if (status >= 500)
-      this.logger.error({ event: 'api_failure', statusCode: status });
+      this.logger.error({
+        event: 'api_failure',
+        statusCode: status,
+        requestId: response.locals?.requestId,
+      });
     if (!response.headersSent)
       response.status(status).json({
         statusCode: status,
+        requestId: response.locals?.requestId,
         error: HttpStatus[status] || 'ERROR',
         message,
       });

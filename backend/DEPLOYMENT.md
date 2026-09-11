@@ -30,3 +30,24 @@ do not pass request bodies, provider responses, or personal data to the logger.
 Public errors have `statusCode`, `error`, and `message`. Client validation messages
 are retained; all server errors return `Internal server error` and provider
 responses are never sent to clients.
+
+## Health and deployment observability
+
+`GET /health` is public and exempt from throttling. It returns `status`, `app`,
+`version`, and `uptimeSeconds`. This is a liveness probe: it confirms that HTTP
+requests are being served, not that the database or external providers are healthy.
+The backend connects to the database during startup. Use separate dependency
+monitoring for ongoing database, SMTP, OAuth, AI, and payment availability.
+
+Version defaults to backend/package.json; set APP_VERSION to the release version
+or commit SHA during deployment. The startup log includes the same app/version.
+Shutdown hooks close database connections on termination.
+
+Every request receives a generated X-Request-ID response header (exposed to CORS
+clients); error bodies include the same requestId. Completion logs include app,
+version, requestId, method, route template, statusCode, durationMs, and aborted.
+Unknown routes are logged as `unmatched`; raw URLs, query strings, headers, and
+bodies are omitted. Aborted connections use log status 499. Client failures log
+at warn and server failures at error. Aggregate `http_request` events in your
+log platform for request counts, error rates, and latency; no metrics service
+or public metrics endpoint is required.
