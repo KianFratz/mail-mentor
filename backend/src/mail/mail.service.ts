@@ -1,13 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Resend } from 'resend';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { error } from 'console';
 
 @Injectable()
 export class MailService {
-  private resend: Resend;
-  private fromAddress: string;
   private readonly logger = new Logger(MailService.name);
   private transporter: nodemailer.Transporter;
 
@@ -15,14 +12,12 @@ export class MailService {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('MAIL_HOST'),
       port: Number(this.configService.get<string>('MAIL_PORT')),
-      secure: false, // true for port 465, false for 587
+      secure: Number(this.configService.get<string>('MAIL_PORT')) === 465,
       auth: {
         user: this.configService.get<string>('MAIL_USER'),
         pass: this.configService.get<string>('MAIL_PASS'),
       },
     } as nodemailer.TransportOptions);
-    this.resend = new Resend(process.env.RESEND_API_KEY);
-    this.fromAddress = process.env.MAIL_FROM || 'onboarding@resend.dev';
   }
 
   async sendMail(to: string, subject: string, html: string) {
