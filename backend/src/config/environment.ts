@@ -77,7 +77,9 @@ export function validateEnvironment(env: Record<string, unknown>) {
   }
   if (
     value('MAIL_FROM') &&
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('MAIL_FROM'))
+    !/^([^\s@<>]+@[^\s@<>]+\.[^\s@<>]+|[^<>]+<[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+>)$/.test(
+      value('MAIL_FROM'),
+    )
   )
     errors.push('MAIL_FROM must be an email address');
   if (errors.length)

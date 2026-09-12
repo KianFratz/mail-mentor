@@ -22,6 +22,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { UserThrottlerGuard } from './common/guards/user-throttle.guard';
 import { PaymentModule } from './payment/payment.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { RedisCacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
     ]),
     PaymentModule,
     SubscriptionModule,
+    RedisCacheModule,
   ],
   controllers: [AppController, AiController],
   providers: [AppService, { provide: APP_GUARD, useClass: UserThrottlerGuard }],

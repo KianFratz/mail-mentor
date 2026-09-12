@@ -30,6 +30,14 @@ describe('environment validation', () => {
   it('accepts complete production configuration', () => {
     expect(validateEnvironment(prod).NODE_ENV).toBe('production');
   });
+  it('accepts a display name in MAIL_FROM', () => {
+    expect(
+      validateEnvironment({
+        ...prod,
+        MAIL_FROM: 'Mail Mentor <mail@example.com>',
+      }).NODE_ENV,
+    ).toBe('production');
+  });
   it.each(Object.keys(prod).filter((key) => key !== 'NODE_ENV'))(
     'rejects missing production %s',
     (key) => {
