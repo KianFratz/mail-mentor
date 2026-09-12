@@ -1,15 +1,17 @@
 import {
   BadRequestException,
   GatewayTimeoutException,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
 import { OllamaService } from './ollama/ollama.service';
 import { StreakService } from 'src/streak/streak.service';
-import { BadgeService } from 'src/badge/badge.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SubscriptionService } from 'src/subscription/subscription.service';
+import type { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class AiService {
@@ -20,6 +22,8 @@ export class AiService {
     private streakService: StreakService,
     private subscriptionService: SubscriptionService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async reply(
@@ -174,6 +178,9 @@ export class AiService {
         sessionId,
       });
 
+      await this.cacheManager.del(`skill-proficiency:${userId}`);
+      await this.clearRecentScoresCache(userId);
+
       return saved;
     } catch (err) {
       if (err instanceof Error && err.message === 'AI_TIMEOUT') {
@@ -195,5 +202,13 @@ export class AiService {
         setTimeout(() => reject(new Error('AI_TIMEOUT')), timeoutMs),
       ),
     ]);
+  }
+
+  private async clearRecentScoresCache(userId: string) {
+    const keyIndex = `recent-scores:${userId}:keys`;
+    const keys = (await this.cacheManager.get<string[]>(keyIndex)) ?? [];
+
+    await Promise.all(keys.map((key) => this.cacheManager.del(key)));
+    await this.cacheManager.del(keyIndex);
   }
 }

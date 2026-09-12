@@ -1,12 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { validateHeaderValue } from 'http';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import type { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class SkillProficiencyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+  ) {}
 
   async getUserProficiencyScores(userId: string) {
+    const cacheKey = `skill-proficiency:${userId}`;
+    const cached = await this.cacheManager.get(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
+
     const sessions = await this.prisma.writingSession.findMany({
       where: {
         userId,
@@ -62,7 +74,7 @@ export class SkillProficiencyService {
         ? 0
         : Number(((overallScore / overallMaxScore) * 100).toFixed(1));
 
-    return {
+    const result = {
       overall: {
         score: overallScore,
         maxScore: overallMaxScore,
@@ -70,5 +82,9 @@ export class SkillProficiencyService {
       },
       progress,
     };
+
+    await this.cacheManager.set(cacheKey, result, 300_000);
+
+    return result;
   }
 }
