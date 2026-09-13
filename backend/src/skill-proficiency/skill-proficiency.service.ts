@@ -1,10 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import type { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  CACHE_TTL,
+  cacheKeys,
+  safeCacheGet,
+  safeCacheSet,
+} from 'src/cache/cache-policy';
 
 @Injectable()
 export class SkillProficiencyService {
+  private readonly logger = new Logger(SkillProficiencyService.name);
+
   constructor(
     private prisma: PrismaService,
     @Inject(CACHE_MANAGER)
@@ -12,11 +20,16 @@ export class SkillProficiencyService {
   ) {}
 
   async getUserProficiencyScores(userId: string) {
-    const cacheKey = `skill-proficiency:${userId}`;
-    const cached = await this.cacheManager.get(cacheKey);
+    const cacheKey = cacheKeys.skillProficiency(userId);
+    const cached = await safeCacheGet(
+      this.cacheManager,
+      cacheKey,
+      'skill_proficiency',
+      this.logger,
+    );
 
-    if (cached) {
-      return cached;
+    if (cached.hit) {
+      return cached.value;
     }
 
     const sessions = await this.prisma.writingSession.findMany({
@@ -83,7 +96,14 @@ export class SkillProficiencyService {
       progress,
     };
 
-    await this.cacheManager.set(cacheKey, result, 300_000);
+    await safeCacheSet(
+      this.cacheManager,
+      cacheKey,
+      result,
+      CACHE_TTL.dashboard,
+      'skill_proficiency',
+      this.logger,
+    );
 
     return result;
   }

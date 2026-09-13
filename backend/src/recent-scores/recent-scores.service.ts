@@ -1,10 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import type { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  CACHE_TTL,
+  cacheKeys,
+  getRecentScoresGeneration,
+  safeCacheGet,
+  safeCacheSet,
+} from 'src/cache/cache-policy';
 
 @Injectable()
 export class RecentScoresService {
+  private readonly logger = new Logger(RecentScoresService.name);
+
   constructor(
     private prisma: PrismaService,
     @Inject(CACHE_MANAGER)
@@ -12,12 +21,21 @@ export class RecentScoresService {
   ) {}
 
   async getAllSessionWithFeedback(userId: string, limit: number, page = 1) {
-    const cacheKey = `recent-scores:${userId}:limit:${limit}:page:${page}`;
-    const keyIndex = `recent-scores:${userId}:keys`;
-    const cached = await this.cacheManager.get(cacheKey);
-    
-    if (cached) {
-      return cached;
+    const generation = await getRecentScoresGeneration(
+      this.cacheManager,
+      userId,
+      this.logger,
+    );
+    const cacheKey = cacheKeys.recentScores(userId, generation, limit, page);
+    const cached = await safeCacheGet(
+      this.cacheManager,
+      cacheKey,
+      'recent_scores',
+      this.logger,
+    );
+
+    if (cached.hit) {
+      return cached.value;
     }
 
     const where = { userId, status: 'graded' as const };
@@ -35,16 +53,15 @@ export class RecentScoresService {
 
     const result = { data, total, page, limit };
 
-    await this.cacheManager.set(cacheKey, result, 300_000);
-    await this.trackUserCacheKey(keyIndex, cacheKey);
+    await safeCacheSet(
+      this.cacheManager,
+      cacheKey,
+      result,
+      CACHE_TTL.dashboard,
+      'recent_scores',
+      this.logger,
+    );
 
     return result;
-  }
-
-  private async trackUserCacheKey(keyIndex: string, cacheKey: string) {
-    const keys = (await this.cacheManager.get<string[]>(keyIndex)) ?? [];
-    if (keys.includes(cacheKey)) return;
-
-    await this.cacheManager.set(keyIndex, [...keys, cacheKey], 300_000);
   }
 }

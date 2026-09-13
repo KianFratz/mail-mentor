@@ -3,6 +3,7 @@ import {
   GatewayTimeoutException,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { WritingSessionService } from 'src/writing-session/writing-session.service';
 import { PromptService } from './prompt/prompt.service';
@@ -12,9 +13,16 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SubscriptionService } from 'src/subscription/subscription.service';
 import type { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  cacheKeys,
+  rotateRecentScoresGeneration,
+  safeCacheDelete,
+} from 'src/cache/cache-policy';
 
 @Injectable()
 export class AiService {
+  private readonly logger = new Logger(AiService.name);
+
   constructor(
     private writingSessionService: WritingSessionService,
     private prompt: PromptService,
@@ -178,8 +186,21 @@ export class AiService {
         sessionId,
       });
 
-      await this.cacheManager.del(`skill-proficiency:${userId}`);
-      await this.clearRecentScoresCache(userId);
+      await Promise.all([
+        safeCacheDelete(
+          this.cacheManager,
+          cacheKeys.skillProficiency(userId),
+          'skill_proficiency',
+          this.logger,
+        ),
+        safeCacheDelete(
+          this.cacheManager,
+          cacheKeys.unlockedLevels(userId),
+          'unlocked_levels',
+          this.logger,
+        ),
+        rotateRecentScoresGeneration(this.cacheManager, userId, this.logger),
+      ]);
 
       return saved;
     } catch (err) {
@@ -202,13 +223,5 @@ export class AiService {
         setTimeout(() => reject(new Error('AI_TIMEOUT')), timeoutMs),
       ),
     ]);
-  }
-
-  private async clearRecentScoresCache(userId: string) {
-    const keyIndex = `recent-scores:${userId}:keys`;
-    const keys = (await this.cacheManager.get<string[]>(keyIndex)) ?? [];
-
-    await Promise.all(keys.map((key) => this.cacheManager.del(key)));
-    await this.cacheManager.del(keyIndex);
   }
 }
