@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
 import { BadgeService } from 'src/badge/badge.service';
+import type { Cache } from 'cache-manager';
 import {
   MessageRole,
   SessionStatus,
@@ -269,7 +270,12 @@ export async function seedTestUser(prisma: PrismaService) {
     },
   });
 
-  const badgeService = new BadgeService(prisma);
+  const seedCache = {
+    get: async () => undefined,
+    set: async () => undefined,
+    del: async () => true,
+  } as unknown as Cache;
+  const badgeService = new BadgeService(prisma, seedCache);
   await badgeService.evaluateForUser(testUser.id);
 
   console.log(`Seeded test user: ${testUser.email} / ${TEST_USER_PASSWORD}`);

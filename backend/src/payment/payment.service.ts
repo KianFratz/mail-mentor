@@ -57,6 +57,10 @@ export class PaymentService {
     };
   }
 
+  async cancelSubscription(userId: string) {
+    return this.subscriptionService.scheduleCancellation(userId);
+  }
+
   async handleXenditWebhook(payload: XenditWebhook) {
     this.logger.log({ event: 'payment_webhook_received' });
 

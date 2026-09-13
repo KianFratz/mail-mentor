@@ -1,5 +1,9 @@
-export type SubscriptionPlan = 'free' | 'pro';
-export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing';
+export type SubscriptionPlan = "free" | "pro";
+export type SubscriptionStatus =
+  | "active"
+  | "past_due"
+  | "canceled"
+  | "trialing";
 
 export interface PlanLimits {
   aiRepliesPerDay: number;
@@ -21,6 +25,9 @@ export interface SubscriptionUsage {
 export interface SubscriptionData {
   plan: SubscriptionPlan;
   status: SubscriptionStatus;
+  billingInterval?: "month" | "year";
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd: boolean;
   limits: PlanLimits;
   usage: SubscriptionUsage;
 }

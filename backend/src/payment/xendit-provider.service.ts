@@ -59,46 +59,4 @@ export class XenditPaymentProvider {
       throw new InternalServerErrorException('Payment provider request failed');
     }
   }
-
-  async cancelSubscription(
-    subscriptionId: string,
-  ): Promise<SubscriptionResult> {
-    try {
-      const response = await this.xenditClient.Invoice.expireInvoice({
-        invoiceId: subscriptionId,
-      });
-
-      return {
-        id: response.id || subscriptionId,
-        externalId: response.externalId,
-        status: response.status,
-        invoiceUrl: response.invoiceUrl,
-        checkoutUrl: response.invoiceUrl,
-        amount: response.amount,
-        currency: response.currency || 'PHP',
-      };
-    } catch (error: any) {
-      throw new InternalServerErrorException('Payment provider request failed');
-    }
-  }
-
-  async getSubscription(subscriptionId: string): Promise<SubscriptionResult> {
-    try {
-      const response = await this.xenditClient.Invoice.getInvoiceById({
-        invoiceId: subscriptionId,
-      });
-
-      return {
-        id: response.id || subscriptionId,
-        externalId: response.externalId,
-        status: response.status,
-        invoiceUrl: response.invoiceUrl,
-        checkoutUrl: response.invoiceUrl,
-        amount: response.amount,
-        currency: response.currency || 'PHP',
-      };
-    } catch (error: any) {
-      throw new InternalServerErrorException('Payment provider request failed');
-    }
-  }
 }

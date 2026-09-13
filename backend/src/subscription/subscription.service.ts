@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { PLAN_LIMITS } from './subscription.constant';
 
@@ -7,7 +13,11 @@ export class SubscriptionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSubscription(userId: string) {
-    return this.prisma.subscription.findUnique({ where: { userId } });
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { userId },
+    });
+
+    return this.normalizeExpiredCancellation(subscription);
   }
 
   async checkUsage(userId: string, type: 'aiReply' | 'feedback') {
@@ -81,9 +91,7 @@ export class SubscriptionService {
   }
 
   async getOrProvisionFree(userId: string) {
-    const existing = await this.prisma.subscription.findUnique({
-      where: { userId },
-    });
+    const existing = await this.getSubscription(userId);
 
     if (existing) return existing;
 
@@ -106,6 +114,9 @@ export class SubscriptionService {
     return {
       plan: sub?.plan,
       status: sub?.status,
+      billingInterval: sub?.billingInterval,
+      currentPeriodEnd: sub?.currentPeriodEnd,
+      cancelAtPeriodEnd: sub?.cancelAtPeriodEnd,
       limits,
       usage: {
         aiReplyUsedToday: sub?.aiReplyUsedToday,
@@ -156,8 +167,38 @@ export class SubscriptionService {
         currency: details.currency,
         currentPeriodStart: startDate,
         currentPeriodEnd: endDate,
+        cancelAtPeriodEnd: false,
       },
     });
+  }
+
+  async scheduleCancellation(userId: string) {
+    const subscription = await this.getSubscription(userId);
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    if (subscription.plan !== 'pro' || subscription.status !== 'active') {
+      throw new BadRequestException(
+        'Only an active Pro subscription can be canceled',
+      );
+    }
+
+    if (!subscription.currentPeriodEnd) {
+      throw new BadRequestException(
+        'Subscription billing period is unavailable',
+      );
+    }
+
+    const updated = subscription.cancelAtPeriodEnd
+      ? subscription
+      : await this.prisma.subscription.update({
+          where: { userId },
+          data: { cancelAtPeriodEnd: true },
+        });
+
+    return this.toPlanDetails(updated);
   }
 
   async markSubscriptionPastDue(userId: string) {
@@ -166,5 +207,42 @@ export class SubscriptionService {
       data: { status: 'past_due' },
     });
   }
-}
 
+  private async normalizeExpiredCancellation(subscription: any) {
+    if (
+      !subscription?.cancelAtPeriodEnd ||
+      !subscription.currentPeriodEnd ||
+      subscription.currentPeriodEnd > new Date()
+    ) {
+      return subscription;
+    }
+
+    return this.prisma.subscription.update({
+      where: { userId: subscription.userId },
+      data: {
+        plan: 'free',
+        status: 'canceled',
+        amount: 0,
+        cancelAtPeriodEnd: false,
+        currentPeriodStart: null,
+        currentPeriodEnd: null,
+      },
+    });
+  }
+
+  private toPlanDetails(subscription: any) {
+    return {
+      plan: subscription.plan,
+      status: subscription.status,
+      billingInterval: subscription.billingInterval,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+      limits: PLAN_LIMITS[subscription.plan],
+      usage: {
+        aiReplyUsedToday: subscription.aiReplyUsedToday,
+        feedbackUsedToday: subscription.feedbackUsedToday,
+        usageResetAt: subscription.usageResetAt,
+      },
+    };
+  }
+}

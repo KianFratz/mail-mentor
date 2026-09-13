@@ -3,10 +3,11 @@ import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { XenditPaymentProvider } from './xendit-provider.service';
 import { SubscriptionModule } from 'src/subscription/subscription.module';
+import { SubscriptionController } from 'src/subscription/subscription.controller';
 
 @Module({
   imports: [SubscriptionModule],
-  controllers: [PaymentController],
+  controllers: [PaymentController, SubscriptionController],
   providers: [
     PaymentService,
     XenditPaymentProvider,
@@ -15,6 +16,6 @@ import { SubscriptionModule } from 'src/subscription/subscription.module';
       useExisting: XenditPaymentProvider,
     },
   ],
-  exports: ['PAYMENT_PROVIDER'],
+  exports: ['PAYMENT_PROVIDER', PaymentService],
 })
 export class PaymentModule {}

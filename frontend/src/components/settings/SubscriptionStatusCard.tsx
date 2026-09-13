@@ -1,18 +1,68 @@
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { toastManager } from "../ui/toast";
 
 export function SubscriptionStatusCard() {
   const navigate = useNavigate();
-  const { plan, limits, usage, fetchSubscription } = useSubscriptionStore();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const {
+    plan,
+    limits,
+    usage,
+    billingInterval,
+    currentPeriodEnd,
+    cancelAtPeriodEnd,
+    isCanceling,
+    error,
+    fetchSubscription,
+    cancelSubscription,
+  } = useSubscriptionStore();
 
   useEffect(() => {
     fetchSubscription();
   }, [fetchSubscription]);
 
   const isPro = plan === "pro";
+  const periodEndLabel = currentPeriodEnd
+    ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(
+        new Date(currentPeriodEnd),
+      )
+    : null;
+
+  const handleCancel = async () => {
+    const canceled = await cancelSubscription();
+    if (canceled) {
+      setConfirmOpen(false);
+      toastManager.add({
+        title: "Cancellation scheduled",
+        description: periodEndLabel
+          ? `Your Pro access will remain available until ${periodEndLabel}.`
+          : "Your subscription will end after the current billing period.",
+        type: "success",
+      });
+      await fetchSubscription();
+      return;
+    }
+
+    toastManager.add({
+      title: "Cancellation failed",
+      description:
+        useSubscriptionStore.getState().error || error || "Please try again.",
+      type: "error",
+    });
+  };
 
   return (
     <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-4">
@@ -51,7 +101,9 @@ export function SubscriptionStatusCard() {
             AI Replies Today
           </span>
           <p className="text-base font-bold text-foreground">
-            {isPro ? "Unlimited" : `${usage.aiReplyUsedToday ?? 0} / ${limits.aiRepliesPerDay ?? 5}`}
+            {isPro
+              ? "Unlimited"
+              : `${usage.aiReplyUsedToday ?? 0} / ${limits.aiRepliesPerDay ?? 5}`}
           </p>
         </div>
 
@@ -60,7 +112,9 @@ export function SubscriptionStatusCard() {
             Feedback Today
           </span>
           <p className="text-base font-bold text-foreground">
-            {isPro ? "Unlimited" : `${usage.feedbackUsedToday ?? 0} / ${limits.feedbacksPerDay ?? 1}`}
+            {isPro
+              ? "Unlimited"
+              : `${usage.feedbackUsedToday ?? 0} / ${limits.feedbacksPerDay ?? 1}`}
           </p>
         </div>
 
@@ -69,10 +123,20 @@ export function SubscriptionStatusCard() {
             History Access
           </span>
           <p className="text-base font-bold text-foreground">
-            {limits.maxHistoryDays ? `${limits.maxHistoryDays} Days` : "Unlimited"}
+            {limits.maxHistoryDays
+              ? `${limits.maxHistoryDays} Days`
+              : "Unlimited"}
           </p>
         </div>
       </div>
+
+      {isPro && (
+        <div className="rounded-xl border border-border bg-muted/30 p-3.5 text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">Billing:</span>{" "}
+          {billingInterval === "year" ? "Annual" : "Monthly"}
+          {periodEndLabel && ` · Current period ends ${periodEndLabel}`}
+        </div>
+      )}
 
       <div className="flex items-center justify-between pt-2 border-t border-border">
         <p className="text-xs text-muted-foreground">
@@ -81,14 +145,60 @@ export function SubscriptionStatusCard() {
             : "Upgrade to Pro (₱449/mo) for unlimited replies, all scenario levels, and PDF data export."}
         </p>
 
-        <Button
-          onClick={() => navigate("/pricing")}
-          className="gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 shadow-sm text-xs font-semibold rounded-xl"
-        >
-          {isPro ? "View Plan Details" : "Upgrade to Pro"}
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {isPro &&
+            (cancelAtPeriodEnd ? (
+              <span className="text-xs font-medium text-destructive">
+                {periodEndLabel
+                  ? `Cancels on ${periodEndLabel}`
+                  : "Cancellation scheduled"}
+              </span>
+            ) : (
+              <Button
+                variant="destructive"
+                onClick={() => setConfirmOpen(true)}
+              >
+                Cancel subscription
+              </Button>
+            ))}
+          <Button
+            onClick={() => navigate("/pricing")}
+            className="gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 shadow-sm text-xs font-semibold rounded-xl"
+          >
+            {isPro ? "View Plan Details" : "Upgrade to Pro"}
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Button>
+        </div>
       </div>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancel Pro subscription?</DialogTitle>
+            <DialogDescription>
+              Your Pro features will remain available
+              {periodEndLabel
+                ? ` through ${periodEndLabel}`
+                : " through the current billing period"}
+              . This does not issue a refund.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" disabled={isCanceling}>
+                Keep Pro
+              </Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              disabled={isCanceling}
+              onClick={handleCancel}
+            >
+              {isCanceling ? "Canceling…" : "Confirm cancellation"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -35,6 +35,17 @@ describe('getCorsOrigins', () => {
     ).toEqual(['https://app.example.com']);
   });
 
+  it('combines the browser origins from CORS_ORIGINS and FRONTEND_URL', () => {
+    expect(
+      getCorsOrigins(
+        configWith({
+          CORS_ORIGINS: 'http://localhost:8080',
+          FRONTEND_URL: 'http://localhost:5173',
+        }),
+      ),
+    ).toEqual(['http://localhost:8080', 'http://localhost:5173']);
+  });
+
   it('falls back to localhost outside production', () => {
     process.env.NODE_ENV = 'development';
 

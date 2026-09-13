@@ -26,6 +26,7 @@ describe('PaymentService', () => {
     subscriptionService = {
       activateProSubscription: jest.fn().mockResolvedValue({ id: 'sub-uuid' }),
       markSubscriptionPastDue: jest.fn(),
+      scheduleCancellation: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +39,23 @@ describe('PaymentService', () => {
     }).compile();
 
     service = module.get<PaymentService>(PaymentService);
+  });
+
+  describe('cancelSubscription', () => {
+    it('delegates cancellation state changes to SubscriptionService', async () => {
+      subscriptionService.scheduleCancellation.mockResolvedValue({
+        plan: 'pro',
+        cancelAtPeriodEnd: true,
+      });
+
+      await expect(service.cancelSubscription('user-123')).resolves.toEqual({
+        plan: 'pro',
+        cancelAtPeriodEnd: true,
+      });
+      expect(subscriptionService.scheduleCancellation).toHaveBeenCalledWith(
+        'user-123',
+      );
+    });
   });
 
   it('should be defined', () => {
@@ -150,5 +168,3 @@ describe('PaymentService', () => {
     });
   });
 });
-
-

@@ -12,15 +12,20 @@ interface SubscriptionStore {
   status: SubscriptionStatus;
   limits: PlanLimits;
   usage: SubscriptionUsage;
+  billingInterval?: "month" | "year";
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
   isLoading: boolean;
   isUpgrading: boolean;
+  isCanceling: boolean;
   error: string | null;
 
   fetchSubscription: () => Promise<void>;
   createSubscriptionCheckout: (
     plan?: string,
-    interval?: string
+    interval?: string,
   ) => Promise<{ actions?: { url: string }; [key: string]: any } | null>;
+  cancelSubscription: () => Promise<boolean>;
   reset: () => void;
 }
 
@@ -45,8 +50,11 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
   status: "active",
   limits: defaultLimits,
   usage: defaultUsage,
+  currentPeriodEnd: null,
+  cancelAtPeriodEnd: false,
   isLoading: false,
   isUpgrading: false,
+  isCanceling: false,
   error: null,
 
   fetchSubscription: async () => {
@@ -58,6 +66,9 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
         status: data.status || "active",
         limits: data.limits || defaultLimits,
         usage: data.usage || defaultUsage,
+        billingInterval: data.billingInterval,
+        currentPeriodEnd: data.currentPeriodEnd || null,
+        cancelAtPeriodEnd: Boolean(data.cancelAtPeriodEnd),
         isLoading: false,
       });
     } catch (err: any) {
@@ -70,7 +81,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
   createSubscriptionCheckout: async (plan = "pro", interval = "month") => {
     set({ isUpgrading: true, error: null });
     try {
-      const { data } = await api.post("/payment/subscription", {
+      const { data } = await api.post("/subscription", {
         plan,
         interval,
       });
@@ -78,9 +89,33 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
       return data;
     } catch (err: any) {
       const message =
-        err?.response?.data?.message || "Failed to initiate subscription payment.";
+        err?.response?.data?.message ||
+        "Failed to initiate subscription payment.";
       set({ isUpgrading: false, error: message });
       return null;
+    }
+  },
+
+  cancelSubscription: async () => {
+    set({ isCanceling: true, error: null });
+    try {
+      const { data } = await api.delete("/subscription");
+      set({
+        plan: data.plan,
+        status: data.status,
+        billingInterval: data.billingInterval,
+        currentPeriodEnd: data.currentPeriodEnd || null,
+        cancelAtPeriodEnd: Boolean(data.cancelAtPeriodEnd),
+        limits: data.limits || defaultLimits,
+        usage: data.usage || defaultUsage,
+        isCanceling: false,
+      });
+      return true;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "Failed to cancel subscription.";
+      set({ isCanceling: false, error: message });
+      return false;
     }
   },
 
@@ -90,8 +125,12 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
       status: "active",
       limits: defaultLimits,
       usage: defaultUsage,
+      billingInterval: undefined,
+      currentPeriodEnd: null,
+      cancelAtPeriodEnd: false,
       isLoading: false,
       isUpgrading: false,
+      isCanceling: false,
       error: null,
     }),
 }));
