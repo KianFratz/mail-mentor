@@ -1,8 +1,21 @@
-import { colorMap, levelColorMap } from "@/constants/scenario.constant";
 import type { ScenarioCardProps } from "@/types/scenario.type";
 import { ArrowRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
+
+const categoryStyles = {
+  blue: "border-blue-100 bg-blue-50/70 text-blue-700",
+  purple: "border-violet-100 bg-violet-50/70 text-violet-700",
+  green: "border-teal-100 bg-teal-50/70 text-teal-700",
+  orange: "border-orange-100 bg-orange-50/70 text-orange-700",
+};
+
+const levelStyles: Record<string, string> = {
+  beginner: "border-teal-100 bg-teal-50/70 text-teal-700",
+  intermediate: "border-amber-100 bg-amber-50/70 text-amber-700",
+  advanced: "border-rose-100 bg-rose-50/70 text-rose-700",
+  hard: "border-rose-100 bg-rose-50/70 text-rose-700",
+};
 
 export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   scenario,
@@ -11,20 +24,8 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   planLocked = false,
   onUpgradePrompt,
 }) => {
-  const dotsMap: Record<string, number> = {
-    beginner: 1,
-    intermediate: 2,
-    advanced: 3,
-    hard: 3,
-    Beginner: 1,
-    Intermediate: 2,
-    Advanced: 3,
-    Hard: 3,
-  };
-
   const normalizedLevel = scenario.level?.toLowerCase() || "beginner";
-  const activeDots = dotsMap[scenario.level] || dotsMap[normalizedLevel] || 1;
-  const levelInfo = levelColorMap[normalizedLevel] || levelColorMap.beginner;
+  const levelStyle = levelStyles[normalizedLevel] || levelStyles.beginner;
   const navigate = useNavigate();
 
   const isCardDisabled = locked || planLocked;
@@ -47,48 +48,40 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   const unlockMessage = planLocked
     ? `Upgrade to Pro to unlock ${scenario.level} level`
     : normalizedLevel === "intermediate"
-      ? "Score 75+ on all Beginner scenarios"
-      : "Score 75+ on all Intermediate scenarios";
+    ? "Score 75+ on all Beginner scenarios"
+    : "Score 75+ on all Intermediate scenarios";
+
+  const scenarioMetadata = (
+    <div className="flex flex-wrap items-center gap-2">
+      <span
+        className={`${
+          categoryStyles[scenario.color] ||
+          "border-slate-100 bg-slate-50 text-slate-600"
+        } rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide`}
+      >
+        {scenario.category}
+      </span>
+      <span
+        className={`${levelStyle} rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide`}
+      >
+        {scenario.level}
+      </span>
+    </div>
+  );
 
   return (
     <div
       onClick={planLocked ? handleScenarioSelect : undefined}
       className={`bg-white rounded-2xl border border-gray-300 transition-all group flex flex-col h-full relative overflow-hidden ${
-        isCardDisabled ? (planLocked ? "cursor-pointer hover:border-violet-300 hover:shadow-md" : "cursor-not-allowed") : "hover:shadow-lg hover:-translate-y-1"
+        isCardDisabled
+          ? planLocked
+            ? "cursor-pointer hover:border-violet-300 hover:shadow-md"
+            : "cursor-not-allowed"
+          : "hover:shadow-lg hover:-translate-y-1"
       }`}
     >
-      <div className="p-6 pb-3">
-        <div className="flex justify-between items-start mb-4">
-          <span
-            className={`${
-              colorMap[scenario.color] || "bg-gray-100 text-gray-700"
-            } px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider`}
-          >
-            {scenario.category}
-          </span>
-          <div
-            className="flex gap-1.5 items-center px-2 py-1 bg-slate-50 rounded-full border border-slate-200/60"
-            title={`Level: ${scenario.level}`}
-          >
-            {planLocked ? (
-              <span className="flex items-center gap-1 text-[10px] font-extrabold text-violet-600 uppercase tracking-wider">
-                PRO
-              </span>
-            ) : locked ? (
-              <Lock className="w-3.5 h-3.5 text-slate-400" />
-            ) : (
-              [1, 2, 3].map((dot) => (
-                <span
-                  key={dot}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    dot <= activeDots ? levelInfo.dot : "bg-slate-200"
-                  }`}
-                />
-              ))
-            )}
-          </div>
-        </div>
-        <h3 className="text-xl font-semibold text-foreground mb-3">
+      <div className={isCardDisabled ? "p-6 pb-3" : "p-6 pb-0"}>
+        <h3 className="mb-3 text-2xl font-bold leading-tight text-foreground">
           {scenario.title}
         </h3>
         {isCardDisabled ? (
@@ -99,7 +92,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
             <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b from-transparent to-white pointer-events-none" />
           </div>
         ) : (
-          <p className="text-base text-muted-foreground mb-6">
+          <p className="text-base text-muted-foreground">
             {scenario.description}
           </p>
         )}
@@ -117,15 +110,8 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
                 <span>{unlockMessage}</span>
               </div>
 
-              <div className="relative z-20 flex items-center justify-between">
-                <span
-                  className={`${levelInfo.badge} px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${levelInfo.dot}`}
-                  />
-                  {scenario.level}
-                </span>
+              <div className="relative z-20 flex items-center justify-between gap-3">
+                {scenarioMetadata}
                 <Button
                   onClick={handleScenarioSelect}
                   className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-violet-200 hover:opacity-90"
@@ -142,34 +128,22 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
                 <span>{unlockMessage}</span>
               </div>
 
-              <div className="relative z-20 flex items-center justify-between">
-                <span
-                  className={`${levelInfo.badge} px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${levelInfo.dot}`}
-                  />
-                  {scenario.level}
-                </span>
+              <div className="relative z-20 flex items-center justify-between gap-3">
+                {scenarioMetadata}
                 <Button
                   disabled
-                  className="p-2 rounded-xl bg-primary text-primary-foreground opacity-60"
+                  className="h-9 w-12 rounded-xl bg-primary p-0 text-primary-foreground opacity-60"
                 >
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-between">
-              <span
-                className={`${levelInfo.badge} px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${levelInfo.dot}`} />
-                {scenario.level}
-              </span>
+            <div className="flex items-center justify-between gap-3">
+              {scenarioMetadata}
               <Button
                 onClick={handleScenarioSelect}
-                className="p-2 rounded-xl bg-primary text-primary-foreground transition-transform group-hover:scale-110"
+                className="h-9 w-12 rounded-xl bg-primary p-0 text-primary-foreground transition-transform group-hover:scale-110"
               >
                 <ArrowRight className="w-4 h-4" />
               </Button>
