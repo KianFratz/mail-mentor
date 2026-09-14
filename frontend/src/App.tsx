@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router";
 import { AuthProvider } from "@/context/AuthProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { ToastProvider } from "@/components/ui/toast";
@@ -16,6 +16,7 @@ import AllScoresPage from "./pages/AllScores";
 import AllBadgesPage from "./pages/AllBadges";
 import VerifyEmailChange from "./components/settings/VerifyEmailChange";
 import Pricing from "./pages/Pricing";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -45,9 +46,9 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/scores/me" element={<AllScoresPage />} />
                 <Route path="/badges/me" element={<AllBadgesPage />} />
-                <Route path="*" element={<Navigate to="/dashboard" />} />
               </Route>
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
