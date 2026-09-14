@@ -11,10 +11,10 @@ export default function AIAdviceCard({
       <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
 
       <div className="flex-1 min-w-0 relative z-10">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-primary-foreground/70 mb-0.5">
+        <p className="text-md font-extrabold uppercase tracking-wide text-primary-foreground mb-1">
           {eyebrow}
         </p>
-        <p className="text-sm text-primary-foreground leading-snug">
+        <p className="text-xs text-primary-foreground/70 leading-snug">
           {message}
         </p>
       </div>
