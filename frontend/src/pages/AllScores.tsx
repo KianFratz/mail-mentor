@@ -1,7 +1,7 @@
 import ScoreItem from "@/components/ScoreItem";
 import { useRecentScoresStore } from "@/store/recent-scores.store";
 import { useEffect } from "react";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { useSearchParams } from "react-router";
 import emptyStateImage from "@/assets/undraw_no-data_ig65.png";
 import {
@@ -43,9 +43,6 @@ export default function AllScoresPage() {
     <div className="md:col-span-6 bg-card border border-border rounded-2xl p-8 pt-6 mt-6 shadow-xs flex flex-col h-[90vh]">
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
-            <Sparkles className="w-4.5 h-4.5 text-accent" strokeWidth={2} />
-          </div>
           <div>
             <h3 className="text-base font-semibold text-foreground leading-tight">
               All Scores

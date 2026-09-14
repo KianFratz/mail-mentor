@@ -1,6 +1,6 @@
 import { colorMap, levelColorMap } from "@/constants/scenario.constant";
 import type { ScenarioCardProps } from "@/types/scenario.type";
-import { ArrowRight, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
 
@@ -72,7 +72,6 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
           >
             {planLocked ? (
               <span className="flex items-center gap-1 text-[10px] font-extrabold text-violet-600 uppercase tracking-wider">
-                <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
                 PRO
               </span>
             ) : locked ? (
@@ -115,7 +114,6 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
           {planLocked ? (
             <>
               <div className="relative z-20 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 text-violet-800 text-sm font-semibold shadow-xs">
-                <Sparkles className="w-4 h-4 shrink-0 text-amber-500 fill-amber-400" />
                 <span>{unlockMessage}</span>
               </div>
 

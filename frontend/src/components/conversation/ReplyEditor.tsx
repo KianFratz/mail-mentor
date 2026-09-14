@@ -591,10 +591,7 @@ export default function ReplyEditor({ editorRef }: ReplyEditorProps) {
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/70 rounded-full">
-                    <span className="material-symbols-outlined text-[14px] text-violet-600">
-                      bolt
-                    </span>
-                    Pro • Unlimited AI Replies
+                    Avail Pro for Unlimited AI Replies
                   </span>
                 )}
               </div>

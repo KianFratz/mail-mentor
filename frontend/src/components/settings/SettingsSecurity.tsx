@@ -9,7 +9,6 @@ import {
   Mail,
   RefreshCw,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -406,7 +405,6 @@ function SettingsSecurity() {
                 </h3>
                 {plan === "free" && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-200">
-                    <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
                     PRO
                   </span>
                 )}

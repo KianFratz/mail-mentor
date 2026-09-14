@@ -1,4 +1,4 @@
-import { Check, Sparkles, X, Zap } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
 
@@ -54,7 +54,6 @@ export function UpgradeModal({
           </button>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold tracking-wide uppercase mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             Pro Plan Upgrade
           </div>
 
@@ -89,7 +88,6 @@ export function UpgradeModal({
               onClick={handleUpgradeClick}
               className="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-base font-semibold shadow-lg shadow-violet-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              <Zap className="w-4 h-4 fill-amber-300 text-amber-300" />
               Upgrade to Pro — ₱449/mo
             </Button>
             <button

@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { Check, Sparkles, Zap, Shield, HelpCircle, ArrowLeft } from "lucide-react";
+import {
+  Check,
+  Shield,
+  HelpCircle,
+  ArrowLeft,
+} from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
@@ -8,8 +13,11 @@ import { toastManager } from "@/components/ui/toast";
 export default function Pricing() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
-  const { plan, fetchSubscription, createSubscriptionCheckout } = useSubscriptionStore();
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">(
+    "monthly"
+  );
+  const { plan, fetchSubscription, createSubscriptionCheckout } =
+    useSubscriptionStore();
   const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,8 +50,12 @@ export default function Pricing() {
 
     try {
       setUpgradingPlan(targetPlan);
-      const res = await createSubscriptionCheckout(targetPlan, billingCycle === "annual" ? "year" : "month");
-      const checkoutUrl = res?.invoiceUrl || res?.checkoutUrl || res?.url || res?.actions?.url;
+      const res = await createSubscriptionCheckout(
+        targetPlan,
+        billingCycle === "annual" ? "year" : "month"
+      );
+      const checkoutUrl =
+        res?.invoiceUrl || res?.checkoutUrl || res?.url || res?.actions?.url;
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
@@ -87,7 +99,8 @@ export default function Pricing() {
     {
       id: "pro",
       name: "Pro Plan",
-      description: "Supercharge your email writing skills with unlimited AI access.",
+      description:
+        "Supercharge your email writing skills with unlimited AI access.",
       priceMonthly: "₱449",
       priceAnnual: "₱359",
       period: "per month",
@@ -144,15 +157,15 @@ export default function Pricing() {
         </button>
 
         <div className="flex items-center gap-2">
-          <Zap className="w-5 h-5 text-amber-400 fill-amber-400" />
-          <span className="font-bold text-lg text-white tracking-tight">Mail Mentor</span>
+          <span className="font-bold text-lg text-white tracking-tight">
+            Mail Mentor
+          </span>
         </div>
       </header>
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 pt-6 pb-12 text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-300 text-xs font-semibold uppercase tracking-wider">
-          <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400" />
           Simple, Transparent Pricing
         </div>
 
@@ -164,16 +177,23 @@ export default function Pricing() {
         </h1>
 
         <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Choose the plan that fits your growth. Upgrade anytime to access unlimited AI feedback and all practice scenarios.
+          Choose the plan that fits your growth. Upgrade anytime to access
+          unlimited AI feedback and all practice scenarios.
         </p>
 
         {/* Billing cycle toggle */}
         <div className="pt-6 flex items-center justify-center gap-3">
-          <span className={`text-sm font-medium ${billingCycle === "monthly" ? "text-white" : "text-slate-400"}`}>
+          <span
+            className={`text-sm font-medium ${
+              billingCycle === "monthly" ? "text-white" : "text-slate-400"
+            }`}
+          >
             Monthly Billing
           </span>
           <button
-            onClick={() => setBillingCycle(billingCycle === "monthly" ? "annual" : "monthly")}
+            onClick={() =>
+              setBillingCycle(billingCycle === "monthly" ? "annual" : "monthly")
+            }
             className="relative w-14 h-8 rounded-full bg-slate-800 border border-slate-700 p-1 transition-colors focus:outline-none"
           >
             <div
@@ -182,7 +202,11 @@ export default function Pricing() {
               }`}
             />
           </button>
-          <span className={`text-sm font-medium flex items-center gap-1.5 ${billingCycle === "annual" ? "text-white" : "text-slate-400"}`}>
+          <span
+            className={`text-sm font-medium flex items-center gap-1.5 ${
+              billingCycle === "annual" ? "text-white" : "text-slate-400"
+            }`}
+          >
             Annual Billing
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
               Save 20%
@@ -218,7 +242,9 @@ export default function Pricing() {
                 )}
               </div>
 
-              <p className="text-xs text-slate-400 min-h-[32px] mb-6">{p.description}</p>
+              <p className="text-xs text-slate-400 min-h-[32px] mb-6">
+                {p.description}
+              </p>
 
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-extrabold text-white">
@@ -229,7 +255,10 @@ export default function Pricing() {
 
               <ul className="space-y-3 pt-4 border-t border-slate-700/60 mb-8">
                 {p.features.map((feat, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-300">
+                  <li
+                    key={idx}
+                    className="flex items-start gap-3 text-sm text-slate-300"
+                  >
                     <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{feat}</span>
                   </li>
@@ -250,7 +279,9 @@ export default function Pricing() {
                   : "bg-slate-700 hover:bg-slate-600 text-white"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {upgradingPlan === p.id ? "Redirecting to checkout..." : p.buttonText}
+              {upgradingPlan === p.id
+                ? "Redirecting to checkout..."
+                : p.buttonText}
             </Button>
           </div>
         ))}
@@ -263,12 +294,17 @@ export default function Pricing() {
             <HelpCircle className="w-4 h-4" />
             Frequently Asked Questions
           </div>
-          <h2 className="text-2xl font-bold text-white">Got Questions? We’ve got answers.</h2>
+          <h2 className="text-2xl font-bold text-white">
+            Got Questions? We’ve got answers.
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="bg-slate-800/40 border border-slate-800 rounded-2xl p-5 space-y-2">
+            <div
+              key={idx}
+              className="bg-slate-800/40 border border-slate-800 rounded-2xl p-5 space-y-2"
+            >
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
                 <Shield className="w-4 h-4 text-violet-400 shrink-0" />
                 {faq.q}

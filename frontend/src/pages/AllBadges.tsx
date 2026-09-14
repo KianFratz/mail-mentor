@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Sparkles, Trophy, Lock } from "lucide-react";
+import { Trophy, Lock } from "lucide-react";
 import { useBadgeStore } from "@/store/badge.store";
 import { getBadgeRequirementNote } from "@/utils/badge-helper";
 import emptyStateImage from "@/assets/undraw_no-data_ig65.png";
@@ -155,7 +155,7 @@ export default function AllBadgesPage() {
                       </h4>
                       {isEarned ? (
                         <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-success bg-success/10 px-2 py-0.5 rounded-full">
-                          <Sparkles className="w-3 h-3" /> Earned
+                          Earned
                         </span>
                       ) : (
                         <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-muted px-2 py-0.5 rounded-full">

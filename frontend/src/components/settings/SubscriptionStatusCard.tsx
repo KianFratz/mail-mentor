@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
@@ -68,9 +68,6 @@ export function SubscriptionStatusCard() {
     <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400">
-            <Zap className="w-5 h-5" />
-          </div>
           <div>
             <h3 className="text-sm font-semibold text-foreground">
               Subscription & Plan
@@ -84,7 +81,6 @@ export function SubscriptionStatusCard() {
         <div className="flex items-center gap-2">
           {isPro ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               Pro Plan
             </span>
           ) : (
