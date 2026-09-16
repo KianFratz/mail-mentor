@@ -49,7 +49,7 @@ export function SubscriptionStatusCard() {
         title: "Cancellation scheduled",
         description: periodEndLabel
           ? `Your Pro access will remain available until ${periodEndLabel}.`
-          : "Your subscription will end after the current billing period.",
+          : "Your Pro access will end after the current access period.",
         type: "success",
       });
       await fetchSubscription();
@@ -70,7 +70,7 @@ export function SubscriptionStatusCard() {
         <div className="flex items-center gap-3">
           <div>
             <h3 className="text-sm font-semibold text-foreground">
-              Subscription & Plan
+              Plan & Usage
             </h3>
             <p className="text-xs text-muted-foreground">
               Manage your Mail Mentor plan, limits, and usage status.
@@ -128,7 +128,7 @@ export function SubscriptionStatusCard() {
 
       {isPro && (
         <div className="rounded-xl border border-border bg-muted/30 p-3.5 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">Billing:</span>{" "}
+          <span className="font-semibold text-foreground">Access period:</span>{" "}
           {billingInterval === "year" ? "Annual" : "Monthly"}
           {periodEndLabel && ` · Current period ends ${periodEndLabel}`}
         </div>
@@ -154,7 +154,7 @@ export function SubscriptionStatusCard() {
                 variant="destructive"
                 onClick={() => setConfirmOpen(true)}
               >
-                Cancel subscription
+                End Pro access
               </Button>
             ))}
           <Button
@@ -170,7 +170,7 @@ export function SubscriptionStatusCard() {
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Cancel Pro subscription?</DialogTitle>
+            <DialogTitle>End Pro access?</DialogTitle>
             <DialogDescription>
               Your Pro features will remain available
               {periodEndLabel

@@ -1,7 +1,7 @@
 {
-  "name": "project-name",
+  "name": "mail-mentor-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "Mail Mentor API",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docs:check": "prettier --check \"../README.md\" \"../CONTRIBUTING.md\" \"../docs/**/*.md\" \"README.md\" \"../frontend/README.md\"",
+    "docs:format": "prettier --write \"../README.md\" \"../CONTRIBUTING.md\" \"../docs/**/*.md\" \"README.md\" \"../frontend/README.md\""
+  },
+  "engines": {
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "@keyv/redis": "^5.1.6",

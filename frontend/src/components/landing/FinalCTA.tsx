@@ -9,19 +9,16 @@ export function FinalCTA() {
           Ready to Elevate Your Writing?
         </h2>
         <p className="text-lg text-primary-foreground/90 max-w-xl mx-auto">
-          Join 10,000+ professionals mastering the art of correspondence with
-          Mail Mentor.
+          Practice realistic email conversations and review structured feedback
+          at the end of each session.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
           <button className="px-10 py-5 bg-background text-primary rounded-2xl font-semibold hover:shadow-2xl transition-all active:scale-95">
             <Link to="/login">Start Writing for Free</Link>
           </button>
-          <button className="px-10 py-5 border border-primary-foreground/20 hover:bg-primary-foreground/10 rounded-2xl font-semibold transition-all">
-            <Link to="/login">Schedule a Demo</Link>
-          </button>
         </div>
         <p className="text-xs text-primary-foreground/60">
-          No credit card required. Cancel anytime.
+          Start on the Free plan. No credit card is required.
         </p>
       </div>
     </section>

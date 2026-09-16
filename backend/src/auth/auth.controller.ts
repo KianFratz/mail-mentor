@@ -13,11 +13,11 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 import type { Response, Request } from 'express';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -37,14 +37,14 @@ export class AuthController {
   }
 
   @Get('google')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleOAuthGuard)
   async goolgeAuth(@Req() req) {
     return req.user;
   }
 
   @Throttle({ 'auth-sensitive': { ttl: 600000, limit: 5 } })
   @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleOAuthGuard)
   async goolgeAuthRedirect(@Req() req, @Res() res) {
     const { refresh_token } = await this.authService.loginWithGoogle(req.user);
 

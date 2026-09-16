@@ -9,16 +9,15 @@ export function HeroSection() {
             <span className="material-symbols-outlined text-[18px]">
               auto_awesome
             </span>
-            AI-Powered Skill Mastering
+            AI-Powered Email Practice
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-primary tracking-tight leading-tight">
-            Master the Art of{" "}
-            <span className="text-tertiary">Professional Communication</span>
+            Practice Professional{" "}
+            <span className="text-tertiary">Email Communication</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl">
-            Bridge the gap between technical expertise and professional
-            influence. Practice with hyper-realistic AI scenarios and get
-            real-time coaching on tone, empathy, and clarity.
+            Work through interactive scenarios, exchange email replies with an
+            AI persona, and receive structured feedback when you finish.
           </p>
           <div className="flex flex-wrap gap-4">
             <button className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-semibold hover:opacity-90 transition-all active:scale-95 shadow-lg">
@@ -62,11 +61,11 @@ export function HeroSection() {
                     <span className="material-symbols-outlined text-[16px]">
                       psychology
                     </span>
-                    <span className="text-xs font-bold">AI INSIGHT</span>
+                    <span className="text-xs font-bold">FEEDBACK PREVIEW</span>
                   </div>
                   <p className="text-sm">
-                    Your tone is slightly passive. Try: "I am addressing the
-                    current delays by..." to show more leadership.
+                    A feedback report can highlight tone, clarity, structure,
+                    and other areas to improve.
                   </p>
                 </div>
               </div>

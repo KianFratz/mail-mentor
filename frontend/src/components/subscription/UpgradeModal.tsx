@@ -14,7 +14,7 @@ export function UpgradeModal({
   isOpen,
   onClose,
   title = "Unlock Pro Features",
-  description = "Take your email communication skills to the next level with unlimited AI coaching and feedback.",
+  description = "Get a fixed Pro access period with unlimited AI replies and feedback.",
   feature,
 }: UpgradeModalProps) {
   const navigate = useNavigate();
@@ -30,9 +30,8 @@ export function UpgradeModal({
     "Unlimited AI Conversation Replies",
     "Unlimited Daily Feedback & Grading",
     "Unlock All Scenario Levels (Intermediate & Advanced)",
-    "Unlimited Conversation History Access",
+    "Saved Conversation History",
     "Data Export (JSON, CSV, PDF)",
-    "Priority AI Response Generation",
   ];
 
   return (
@@ -54,13 +53,13 @@ export function UpgradeModal({
           </button>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold tracking-wide uppercase mb-3">
-            Pro Plan Upgrade
+            Pro Access
           </div>
 
           <h2 className="text-2xl font-bold tracking-tight mb-2">{title}</h2>
           <p className="text-sm text-violet-100/90 leading-relaxed">
             {feature
-              ? `The "${feature}" feature requires a Pro subscription.`
+              ? `The "${feature}" feature requires Pro access.`
               : description}
           </p>
         </div>
@@ -73,7 +72,10 @@ export function UpgradeModal({
             </h4>
             <ul className="space-y-2.5">
               {proFeatures.map((feat, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-sm text-slate-700">
+                <li
+                  key={idx}
+                  className="flex items-center gap-3 text-sm text-slate-700"
+                >
                   <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                   </div>
@@ -88,7 +90,7 @@ export function UpgradeModal({
               onClick={handleUpgradeClick}
               className="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-base font-semibold shadow-lg shadow-violet-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              Upgrade to Pro — ₱449/mo
+              Get One Month of Pro — ₱449
             </Button>
             <button
               onClick={onClose}

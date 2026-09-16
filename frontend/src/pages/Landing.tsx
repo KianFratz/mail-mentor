@@ -4,7 +4,6 @@ import { HeroSection } from "../components/landing/HeroSection";
 import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
 import { AnalyticsPreview } from "../components/landing/AnalyticsPreview";
-import { Testimonials } from "../components/landing/Testimonials";
 import { FinalCTA } from "../components/landing/FinalCTA";
 import { Footer } from "../components/landing/Footer";
 
@@ -30,7 +29,7 @@ export function Landing() {
         "transition-all",
         "duration-700",
         "opacity-0",
-        "translate-y-10"
+        "translate-y-10",
       );
       observer.observe(section);
     });
@@ -48,7 +47,6 @@ export function Landing() {
         <FeaturesSection />
         <HowItWorks />
         <AnalyticsPreview />
-        <Testimonials />
         <FinalCTA />
       </main>
       <Footer />

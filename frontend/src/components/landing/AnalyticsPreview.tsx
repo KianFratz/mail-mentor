@@ -8,22 +8,46 @@ export function AnalyticsPreview() {
               <div className="inline-block px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-bold uppercase tracking-widest">
                 Analytics
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-primary">Visualize Your Cognitive Proficiency</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary">
+                Track Your Skill Proficiency
+              </h2>
               <p className="text-muted-foreground">
-                Go beyond guessing. Our dashboard tracks your evolution across key communication axes: Professionalism, Persuasion, and Conciseness.
+                The dashboard aggregates feedback across Grammar, Clarity,
+                Etiquette, Structure, Professional Tone, and Conciseness.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-success" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  <span className="text-sm font-semibold">Tone-shift historical tracking</span>
+                  <span
+                    className="material-symbols-outlined text-success"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    check_circle
+                  </span>
+                  <span className="text-sm font-semibold">
+                    Recent score history
+                  </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-success" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  <span className="text-sm font-semibold">Vocabulary expansion mapping</span>
+                  <span
+                    className="material-symbols-outlined text-success"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    check_circle
+                  </span>
+                  <span className="text-sm font-semibold">
+                    Practice streaks and badges
+                  </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-success" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  <span className="text-sm font-semibold">Contextual empathy scoring</span>
+                  <span
+                    className="material-symbols-outlined text-success"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    check_circle
+                  </span>
+                  <span className="text-sm font-semibold">
+                    Feedback strengths and improvements
+                  </span>
                 </li>
               </ul>
             </div>
@@ -32,8 +56,12 @@ export function AnalyticsPreview() {
               <div className="space-y-6 bg-muted p-6 rounded-xl border border-border">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-semibold text-primary">Grammar & Structure</span>
-                    <span className="text-sm font-semibold text-success">94%</span>
+                    <span className="text-sm font-semibold text-primary">
+                      Grammar
+                    </span>
+                    <span className="text-sm font-semibold text-success">
+                      94%
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-border rounded-full overflow-hidden">
                     <div className="h-full bg-success w-[94%]"></div>
@@ -41,8 +69,12 @@ export function AnalyticsPreview() {
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-semibold text-primary">Tone Appropriateness</span>
-                    <span className="text-sm font-semibold text-success">82%</span>
+                    <span className="text-sm font-semibold text-primary">
+                      Professional Tone
+                    </span>
+                    <span className="text-sm font-semibold text-success">
+                      82%
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-border rounded-full overflow-hidden">
                     <div className="h-full bg-success w-[82%]"></div>
@@ -50,8 +82,12 @@ export function AnalyticsPreview() {
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-semibold text-primary">Clarity & Impact</span>
-                    <span className="text-sm font-semibold text-tertiary">68%</span>
+                    <span className="text-sm font-semibold text-primary">
+                      Clarity
+                    </span>
+                    <span className="text-sm font-semibold text-tertiary">
+                      68%
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-border rounded-full overflow-hidden">
                     <div className="h-full bg-tertiary w-[68%]"></div>

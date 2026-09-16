@@ -8,6 +8,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRequiredJwtSecret } from './jwt-secret';
+import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { getRequiredJwtSecret } from './jwt-secret';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, GoogleOAuthGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}

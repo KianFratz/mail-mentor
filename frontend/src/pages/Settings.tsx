@@ -19,7 +19,7 @@ export default function Settings() {
       toastManager.add({
         title: "Payment Successful! 🎉",
         description:
-          "Your subscription has been upgraded to Pro. It may take a moment to activate.",
+          "Your Pro access period has been activated. It may take a moment to appear.",
         type: "success",
       });
       // Re-fetch subscription to pick up the new Pro status
@@ -39,4 +39,3 @@ export default function Settings() {
     </div>
   );
 }
-

@@ -7,17 +7,14 @@ export function validateEnvironment(env: Record<string, unknown>) {
   if (!['development', 'test', 'production'].includes(mode)) {
     errors.push('NODE_ENV must be development, test, or production');
   }
-  const required = [
-    'DATABASE_URL',
-    'JWT_SECRET',
-    'JWT_REFRESH_SECRET',
-    'GOOGLE_CLIENT_ID',
-    'GOOGLE_CLIENT_SECRET',
-  ];
+  const required = ['DATABASE_URL', 'JWT_SECRET', 'JWT_REFRESH_SECRET'];
   if (production)
     required.push(
       'FRONTEND_URL',
       'BACKEND_URL',
+      'GOOGLE_CLIENT_ID',
+      'GOOGLE_CLIENT_SECRET',
+      'OLLAMA_API_KEY',
       'XENDIT_SECRET_KEY',
       'XENDIT_WEBHOOK_TOKEN',
       'MAIL_HOST',
@@ -26,6 +23,13 @@ export function validateEnvironment(env: Record<string, unknown>) {
       'MAIL_PASS',
       'MAIL_FROM',
     );
+  const hasGoogleClientId = Boolean(value('GOOGLE_CLIENT_ID'));
+  const hasGoogleClientSecret = Boolean(value('GOOGLE_CLIENT_SECRET'));
+  if (hasGoogleClientId !== hasGoogleClientSecret) {
+    errors.push(
+      'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be configured together',
+    );
+  }
   for (const key of required) {
     if (!value(key)) errors.push(`${key} is required in ${mode}`);
   }

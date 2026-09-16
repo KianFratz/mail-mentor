@@ -1,16 +1,29 @@
-FROM node:lts-alpine AS build
+FROM node:24-alpine AS dependencies
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm ci
 
+FROM dependencies AS source
+
 COPY . .
 RUN npx prisma generate
+
+FROM source AS migrations
+
+CMD ["npx", "prisma", "migrate", "deploy"]
+
+FROM source AS database
+
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed"]
+
+FROM source AS build
+
 RUN npm run build
 RUN npm prune --omit=dev
 
-FROM node:lts-alpine AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /usr/src/app
 

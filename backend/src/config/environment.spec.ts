@@ -4,8 +4,6 @@ const dev = {
   DATABASE_URL: 'postgresql://localhost/mail',
   JWT_SECRET: 'dev-access',
   JWT_REFRESH_SECRET: 'dev-refresh',
-  GOOGLE_CLIENT_ID: 'client',
-  GOOGLE_CLIENT_SECRET: 'secret',
 };
 const prod = {
   ...dev,
@@ -14,6 +12,9 @@ const prod = {
   JWT_REFRESH_SECRET: 'b'.repeat(32),
   FRONTEND_URL: 'https://app.example.com',
   BACKEND_URL: 'https://api.example.com',
+  GOOGLE_CLIENT_ID: 'client',
+  GOOGLE_CLIENT_SECRET: 'secret',
+  OLLAMA_API_KEY: 'ollama-key',
   XENDIT_SECRET_KEY: 'secret',
   XENDIT_WEBHOOK_TOKEN: 'token',
   MAIL_HOST: 'smtp.example.com',
@@ -24,8 +25,13 @@ const prod = {
 };
 
 describe('environment validation', () => {
-  it('allows local development without payment or SMTP credentials', () => {
+  it('allows local development without Google, payment, or SMTP credentials', () => {
     expect(validateEnvironment(dev).NODE_ENV).toBe('development');
+  });
+  it('requires Google OAuth credentials to be configured together', () => {
+    expect(() =>
+      validateEnvironment({ ...dev, GOOGLE_CLIENT_ID: 'client' }),
+    ).toThrow('GOOGLE_CLIENT_SECRET');
   });
   it('accepts complete production configuration', () => {
     expect(validateEnvironment(prod).NODE_ENV).toBe('production');

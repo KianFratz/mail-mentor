@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Check,
-  Shield,
-  HelpCircle,
-  ArrowLeft,
-} from "lucide-react";
+import { Check, Shield, HelpCircle, ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
@@ -14,7 +9,7 @@ export default function Pricing() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">(
-    "monthly"
+    "monthly",
   );
   const { plan, fetchSubscription, createSubscriptionCheckout } =
     useSubscriptionStore();
@@ -42,7 +37,7 @@ export default function Pricing() {
     if (plan === targetPlan) {
       toastManager.add({
         title: "Current Plan",
-        description: `You are already subscribed to the ${targetPlan.toUpperCase()} plan.`,
+        description: `You already have an active ${targetPlan.toUpperCase()} access period.`,
         type: "info",
       });
       return;
@@ -52,7 +47,7 @@ export default function Pricing() {
       setUpgradingPlan(targetPlan);
       const res = await createSubscriptionCheckout(
         targetPlan,
-        billingCycle === "annual" ? "year" : "month"
+        billingCycle === "annual" ? "year" : "month",
       );
       const checkoutUrl =
         res?.invoiceUrl || res?.checkoutUrl || res?.url || res?.actions?.url;
@@ -89,7 +84,7 @@ export default function Pricing() {
         "5 AI Replies per day",
         "1 AI Feedback report per day",
         "Access to Beginner scenarios",
-        "7 days of history retention",
+        "Saved conversation history",
         "Standard response times",
       ],
       buttonText: plan === "free" ? "Current Plan" : "Free Plan",
@@ -102,18 +97,17 @@ export default function Pricing() {
       description:
         "Supercharge your email writing skills with unlimited AI access.",
       priceMonthly: "₱449",
-      priceAnnual: "₱359",
-      period: "per month",
+      priceAnnual: "₱4,308",
+      period: billingCycle === "annual" ? "per year" : "for one month",
       popular: true,
       features: [
         "Unlimited AI Conversation Replies",
         "Unlimited Daily Feedback & Grading",
         "Unlock All Scenarios (Intermediate & Advanced)",
-        "Full Conversation History Retention",
+        "Saved Conversation History",
         "Export Data (JSON, CSV, PDF)",
-        "Priority AI Response Generation",
       ],
-      buttonText: plan === "pro" ? "Current Plan" : "Upgrade to Pro",
+      buttonText: plan === "pro" ? "Current Access" : "Get Pro Access",
       buttonVariant: "default" as const,
       disabled: plan === "pro",
     },
@@ -121,20 +115,20 @@ export default function Pricing() {
 
   const faqs = [
     {
-      q: "Can I change my plan or cancel anytime?",
-      a: "Yes! You can upgrade, downgrade, or cancel your subscription at any time without hidden fees or cancellation penalties.",
+      q: "How does Pro access work?",
+      a: "Checkout creates a one-month or one-year Pro access period. It does not create an automatically recurring Xendit charge.",
     },
     {
       q: "What payment methods are supported?",
-      a: "We support Credit/Debit Cards, GCash, Maya, Bank Transfers, and QR PH via Xendit payment gateway.",
+      a: "Available payment methods are shown by Xendit during checkout.",
     },
     {
       q: "How do daily usage resets work?",
-      a: "Daily limits for Free users reset automatically every 24 hours (at midnight local server time).",
+      a: "Daily limits for Free users reset when the UTC calendar date changes.",
     },
     {
-      q: "What happens to my history if I downgrade?",
-      a: "Your data remains safe. When on the Free tier, history older than 7 days is temporarily hidden until you upgrade back to Pro.",
+      q: "Can I access saved conversations on the Free plan?",
+      a: "Yes. Saved conversation history is currently available on both plans.",
     },
   ];
 
@@ -188,7 +182,7 @@ export default function Pricing() {
               billingCycle === "monthly" ? "text-white" : "text-slate-400"
             }`}
           >
-            Monthly Billing
+            One-Month Access
           </span>
           <button
             onClick={() =>
@@ -207,7 +201,7 @@ export default function Pricing() {
               billingCycle === "annual" ? "text-white" : "text-slate-400"
             }`}
           >
-            Annual Billing
+            One-Year Access
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
               Save 20%
             </span>

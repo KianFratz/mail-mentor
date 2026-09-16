@@ -109,10 +109,21 @@ const scenarios: Prisma.ScenarioCreateManyInput[] = [
 ];
 
 export async function seedScenarios(prisma: PrismaService) {
-  await prisma.scenario.createMany({
-    data: scenarios,
-    skipDuplicates: true,
-  });
+  for (const scenario of scenarios) {
+    const existing = await prisma.scenario.findFirst({
+      where: { title: scenario.title },
+      select: { id: true },
+    });
+
+    if (existing) {
+      await prisma.scenario.update({
+        where: { id: existing.id },
+        data: scenario,
+      });
+    } else {
+      await prisma.scenario.create({ data: scenario });
+    }
+  }
 
   console.log('Scenario seed completed');
 }
