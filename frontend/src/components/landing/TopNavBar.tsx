@@ -47,14 +47,12 @@ export function TopNavBar({
             Profile
           </Button>
         )}
-        <Button className="p-4 rounded-md hover:bg-primary hover:text-white bg-muted text-primary">
+        <Button
+          asChild
+          className="p-4 rounded-md hover:bg-primary hover:text-white bg-muted text-primary"
+        >
           <Link to="/login">
             <span>Login</span>
-          </Link>
-        </Button>
-        <Button className="p-4 rounded-md hover:bg-primary hover:text-white bg-muted text-primary">
-          <Link to="/login">
-            <span>Register</span>
           </Link>
         </Button>
       </div>

@@ -4,12 +4,17 @@ import { HeroSection } from "../components/landing/HeroSection";
 import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
 import { AnalyticsPreview } from "../components/landing/AnalyticsPreview";
-import { FinalCTA } from "../components/landing/FinalCTA";
 import { Footer } from "../components/landing/Footer";
 
 export function Landing() {
   useEffect(() => {
-    // Intersection Observer for fade-in animations
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !("IntersectionObserver" in window)
+    ) {
+      return;
+    }
+
     const observerOptions = {
       threshold: 0.1,
     };
@@ -47,7 +52,6 @@ export function Landing() {
         <FeaturesSection />
         <HowItWorks />
         <AnalyticsPreview />
-        <FinalCTA />
       </main>
       <Footer />
     </div>
