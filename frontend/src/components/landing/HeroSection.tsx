@@ -33,14 +33,14 @@ const coachingOptions = [
   },
 ];
 
-function getFallbackPhrase(draft: string) {
+function getLineToReview(draft: string) {
   const lines = draft
     .split(/\n+/)
     .map((line) => line.trim())
     .filter(Boolean)
     .filter((line) => !/^hi\b/i.test(line) && !/^thanks\b/i.test(line));
 
-  const phrase = lines[0] ?? "the Friday deadline is achievable";
+  const phrase = lines[0] ?? draft.trim();
 
   return phrase.length > 96 ? `${phrase.slice(0, 93)}...` : phrase;
 }
@@ -51,26 +51,44 @@ function getCoachingForDraft(draft: string) {
   );
 
   if (matchingOption) {
-    return matchingOption;
+    return {
+      ...matchingOption,
+      headline: "Clearer ownership would make this reply easier to trust.",
+      phraseLabel: "Concerning phrase",
+      skillResult: "Ownership: vague wording detected.",
+    };
   }
 
   return {
-    phrase: getFallbackPhrase(draft),
+    phrase: getLineToReview(draft),
+    headline: "No sample hedge detected. Check the commitment itself.",
     observation:
-      "This is the commitment line your manager will judge first. Take ownership by making the yes or no explicit, then adding the next update and any condition that could change the answer.",
+      "This draft avoids the three vague phrases in the sample. Keep taking ownership by making the yes or no explicit, then adding the next update and any condition that could change the answer.",
+    phraseLabel: "Line to review",
+    skillResult: "Ownership: no sample hedge detected.",
   };
 }
 
 export function HeroSection() {
   const draftId = useId();
+  const draftErrorId = useId();
   const feedbackId = useId();
   const [draft, setDraft] = useState(heroChallenge.draft);
   const [submittedDraft, setSubmittedDraft] = useState(heroChallenge.draft);
+  const [draftError, setDraftError] = useState<string | null>(null);
   const [hasFeedback, setHasFeedback] = useState(false);
   const coaching = getCoachingForDraft(submittedDraft);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!draft.trim()) {
+      setDraftError("Enter a draft reply before requesting coaching.");
+      setHasFeedback(false);
+      return;
+    }
+
+    setDraftError(null);
     setSubmittedDraft(draft);
     setHasFeedback(true);
   }
@@ -111,6 +129,7 @@ export function HeroSection() {
           <form
             className="grid gap-5 p-4 md:p-6"
             onSubmit={handleSubmit}
+            noValidate
             aria-describedby={hasFeedback ? feedbackId : undefined}
           >
             <div className="rounded-lg border border-border bg-muted/45 p-4">
@@ -132,9 +151,24 @@ export function HeroSection() {
               <Textarea
                 id={draftId}
                 value={draft}
-                onChange={(event) => setDraft(event.target.value)}
+                onChange={(event) => {
+                  setDraft(event.target.value);
+                  setDraftError(null);
+                }}
+                required
+                aria-invalid={Boolean(draftError)}
+                aria-describedby={draftError ? draftErrorId : undefined}
                 className="min-h-[152px] resize-y bg-background leading-7"
               />
+              {draftError && (
+                <p
+                  id={draftErrorId}
+                  role="alert"
+                  className="text-sm text-destructive"
+                >
+                  {draftError}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -165,10 +199,12 @@ export function HeroSection() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">
-                      Clearer ownership would make this reply easier to trust.
+                      {coaching.headline}
                     </p>
                     <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      The phrase "{coaching.phrase}" needs more ownership.{" "}
+                      <span className="font-medium text-foreground">
+                        {coaching.phraseLabel}: "{coaching.phrase}"
+                      </span>{" "}
                       {coaching.observation}
                     </p>
                   </div>
@@ -192,7 +228,7 @@ export function HeroSection() {
                       Partial skill result
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Ownership: +18% from this sentence-level coaching sample.
+                      {coaching.skillResult}
                     </p>
                   </div>
                   <Button asChild size="lg" className="h-11 rounded-lg px-4">
@@ -210,7 +246,7 @@ export function HeroSection() {
                 </p>
                 <p>
                   You'll get one concrete observation, the exact phrase to
-                  improve, and a revised response you can compare against your
+                  review, and a revised response you can compare against your
                   own.
                 </p>
               </div>

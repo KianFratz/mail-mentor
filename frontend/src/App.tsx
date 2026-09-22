@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import { AuthProvider } from "@/context/AuthProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { ToastProvider } from "@/components/ui/toast";
@@ -18,13 +18,22 @@ import VerifyEmailChange from "./components/settings/VerifyEmailChange";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
+function AuthProviderRoute() {
+  return (
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
+  );
+}
+
 function App() {
   return (
     <ToastProvider position="top-right">
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+
+          <Route element={<AuthProviderRoute />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
@@ -48,10 +57,11 @@ function App() {
                 <Route path="/badges/me" element={<AllBadgesPage />} />
               </Route>
             </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </ToastProvider>
   );
 }
