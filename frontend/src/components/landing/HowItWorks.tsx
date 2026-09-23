@@ -59,8 +59,8 @@ export function HowItWorks() {
                 Review actionable coaching
               </h4>
               <p className="text-muted-foreground text-sm">
-                See what worked, what to improve, and how to make your next
-                reply clearer and more effective.
+                AI reviews the exchange to show what worked, what to improve,
+                and how to make your next reply clearer and more effective.
               </p>
             </div>
           </div>
