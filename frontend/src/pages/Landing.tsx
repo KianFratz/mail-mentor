@@ -3,6 +3,7 @@ import { TopNavBar } from "../components/landing/TopNavBar";
 import { HeroSection } from "../components/landing/HeroSection";
 import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
+import { PlanComparison } from "../components/landing/PlanComparison";
 import { ProgressReportPreview } from "../components/landing/ProgressReportPreview";
 import { Footer } from "../components/landing/Footer";
 
@@ -51,6 +52,7 @@ export function Landing() {
         <HeroSection />
         <FeaturesSection />
         <HowItWorks />
+        <PlanComparison />
         <ProgressReportPreview />
       </main>
       <Footer />

@@ -6,6 +6,7 @@ import { useSubscriptionStore } from "@/store/subscription.store";
 import { toastManager } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthProvider";
 import type { SubscriptionPlan } from "@/types/subscription.type";
+import { subscriptionPlanDetails } from "@/constants/subscription-plans.constant";
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -105,16 +106,13 @@ export default function Pricing() {
     {
       id: "free" as const,
       name: "Free Tier",
-      description: "Essential tools to start practicing email communication.",
-      priceMonthly: "₱0",
-      priceAnnual: "₱0",
+      description: subscriptionPlanDetails.free.description,
+      priceMonthly: subscriptionPlanDetails.free.priceMonthly,
+      priceAnnual: subscriptionPlanDetails.free.priceAnnual,
       period: "forever",
       popular: false,
       features: [
-        "5 AI Replies per day",
-        "1 AI Feedback report per day",
-        "Access to Beginner scenarios",
-        "Saved conversation history",
+        ...subscriptionPlanDetails.free.features,
         "Standard response times",
       ],
       buttonText:
@@ -127,18 +125,13 @@ export default function Pricing() {
     {
       id: "pro" as const,
       name: "Pro Plan",
-      description:
-        "Supercharge your email writing skills with unlimited AI access.",
-      priceMonthly: "₱449",
-      priceAnnual: "₱4,308",
+      description: subscriptionPlanDetails.pro.description,
+      priceMonthly: subscriptionPlanDetails.pro.priceMonthly,
+      priceAnnual: subscriptionPlanDetails.pro.priceAnnual,
       period: billingCycle === "annual" ? "per year" : "for one month",
       popular: true,
       features: [
-        "Unlimited AI Conversation Replies",
-        "Unlimited Daily Feedback & Grading",
-        "Unlock All Scenarios (Intermediate & Advanced)",
-        "Saved Conversation History",
-        "Export Data (JSON, CSV, PDF)",
+        ...subscriptionPlanDetails.pro.features,
       ],
       buttonText:
         hasSubscriptionStatus && plan === "pro"
@@ -164,7 +157,7 @@ export default function Pricing() {
     },
     {
       q: "Can I access saved conversations on the Free plan?",
-      a: "Yes. Saved conversation history is currently available on both plans.",
+      a: "Yes. Free includes 7 days of saved conversation history, while Pro keeps your full history.",
     },
   ];
 
