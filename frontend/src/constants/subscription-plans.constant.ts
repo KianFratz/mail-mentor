@@ -8,7 +8,7 @@ export const subscriptionPlanDetails = {
       "5 AI replies per day",
       "1 feedback report per day",
       "Beginner scenarios",
-      "7 days of saved history",
+      "Saved conversation history",
     ],
   },
   pro: {
@@ -21,7 +21,7 @@ export const subscriptionPlanDetails = {
       "Unlimited AI replies",
       "Unlimited feedback reports",
       "Beginner, intermediate, and advanced scenarios",
-      "Unlimited saved history",
+      "Saved conversation history",
       "Data export (JSON, CSV, PDF)",
     ],
   },

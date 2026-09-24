@@ -157,7 +157,7 @@ export default function Pricing() {
     },
     {
       q: "Can I access saved conversations on the Free plan?",
-      a: "Yes. Free includes 7 days of saved conversation history, while Pro keeps your full history.",
+      a: "Yes. Saved conversation history is available on both plans.",
     },
   ];
 

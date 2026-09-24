@@ -96,7 +96,7 @@ sequenceDiagram
 
 AI calls use Ollama Cloud and time out after 55 seconds. Detailed feedback is post-session, not real-time coaching while typing.
 
-The public landing page also includes an anonymous two-minute challenge preview. That preview is local browser state with deterministic sample coaching; it does not authenticate the visitor, create a writing session, call the backend, call Ollama Cloud, or persist feedback. Registering from the preview starts the normal authenticated product flow above.
+The public landing page also includes an anonymous two-minute challenge preview and a Free-versus-Pro plan comparison. The comparison and pricing page share frontend plan copy so their prices and advertised, enforced features stay aligned. The challenge preview is local browser state with deterministic sample coaching; it does not authenticate the visitor, create a writing session, call the backend, call Ollama Cloud, or persist feedback. Registering from the preview starts the normal authenticated product flow above.
 
 The pricing page is also public. It shows the same plan details to signed-in and anonymous visitors, but only signed-in visitors request subscription status or start checkout. Selecting either plan while signed out sends the visitor to registration.
 

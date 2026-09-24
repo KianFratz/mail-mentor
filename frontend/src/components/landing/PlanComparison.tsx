@@ -2,13 +2,12 @@ import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router";
 import { subscriptionPlanDetails } from "../../constants/subscription-plans.constant";
 
-function PlanCard({
-  plan,
-  isPro = false,
-}: {
-  plan: (typeof subscriptionPlanDetails)["free"] | (typeof subscriptionPlanDetails)["pro"];
-  isPro?: boolean;
-}) {
+type PlanKey = keyof typeof subscriptionPlanDetails;
+
+function PlanCard({ planKey }: { planKey: PlanKey }) {
+  const plan = subscriptionPlanDetails[planKey];
+  const isPro = planKey === "pro";
+
   return (
     <article
       className={`relative flex h-full flex-col rounded-2xl border p-6 shadow-sm md:p-8 ${
@@ -45,10 +44,10 @@ function PlanCard({
           >
             {isPro ? "for one month" : "forever"}
           </span>
-          {isPro && (
+          {planKey === "pro" && (
             <p className="basis-full text-sm text-primary-foreground/70">
               Or {plan.priceAnnual} for one year (
-              {subscriptionPlanDetails.pro.annualMonthlyEquivalent}/month
+              {subscriptionPlanDetails[planKey].annualMonthlyEquivalent}/month
               equivalent)
             </p>
           )}
@@ -108,8 +107,8 @@ export function PlanComparison() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
-          <PlanCard plan={subscriptionPlanDetails.free} />
-          <PlanCard isPro plan={subscriptionPlanDetails.pro} />
+          <PlanCard planKey="free" />
+          <PlanCard planKey="pro" />
         </div>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
