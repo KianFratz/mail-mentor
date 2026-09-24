@@ -20,7 +20,7 @@ interface SubscriptionStore {
   isCanceling: boolean;
   error: string | null;
 
-  fetchSubscription: () => Promise<void>;
+  fetchSubscription: () => Promise<boolean>;
   createSubscriptionCheckout: (
     plan?: string,
     interval?: string,
@@ -71,10 +71,12 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
         cancelAtPeriodEnd: Boolean(data.cancelAtPeriodEnd),
         isLoading: false,
       });
+      return true;
     } catch (err: any) {
       const message =
         err?.response?.data?.message || "Failed to fetch subscription details.";
       set({ isLoading: false, error: message });
+      return false;
     }
   },
 

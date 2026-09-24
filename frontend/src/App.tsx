@@ -37,13 +37,13 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route
               path="/settings/verify-email"
               element={<VerifyEmailChange />}
             />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/pricing" element={<Pricing />} />
               <Route element={<AppShell />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/scenarios" element={<Scenarios />} />

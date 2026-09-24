@@ -98,6 +98,8 @@ AI calls use Ollama Cloud and time out after 55 seconds. Detailed feedback is po
 
 The public landing page also includes an anonymous two-minute challenge preview. That preview is local browser state with deterministic sample coaching; it does not authenticate the visitor, create a writing session, call the backend, call Ollama Cloud, or persist feedback. Registering from the preview starts the normal authenticated product flow above.
 
+The pricing page is also public. It shows the same plan details to signed-in and anonymous visitors, but only signed-in visitors request subscription status or start checkout. Selecting either plan while signed out sends the visitor to registration.
+
 ### Pro access purchase
 
 ```mermaid
@@ -107,13 +109,17 @@ sequenceDiagram
   participant X as Xendit
   participant D as PostgreSQL
 
-  B->>A: Request month or year checkout
-  A->>X: Create one-off invoice
-  X-->>B: Hosted invoice URL
-  X->>A: POST /payment/webhook
-  A->>A: Verify callback token
-  A->>D: Record payment and activate Pro period
-  A-->>X: Acknowledge webhook
+  alt Visitor is anonymous
+    B->>B: Select a plan and open registration
+  else Visitor is authenticated
+    B->>A: Request month or year checkout
+    A->>X: Create one-off invoice
+    X-->>B: Hosted invoice URL
+    X->>A: POST /payment/webhook
+    A->>A: Verify callback token
+    A->>D: Record payment and activate Pro period
+    A-->>X: Acknowledge webhook
+  end
 ```
 
 The integration does not create a provider-side recurring agreement. Local cancellation state does not cancel anything at Xendit.

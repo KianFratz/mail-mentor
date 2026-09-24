@@ -4,20 +4,37 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
 import { toastManager } from "@/components/ui/toast";
+import { useAuth } from "@/context/AuthProvider";
+import type { SubscriptionPlan } from "@/types/subscription.type";
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const { isAuthenticated, isInitializing } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">(
     "monthly",
   );
   const { plan, fetchSubscription, createSubscriptionCheckout } =
     useSubscriptionStore();
+  const [hasSubscriptionStatus, setHasSubscriptionStatus] = useState(false);
   const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchSubscription();
-  }, [fetchSubscription]);
+    if (!isInitializing && isAuthenticated) {
+      let isCurrentRequest = true;
+      setHasSubscriptionStatus(false);
+      void fetchSubscription().then((wasSuccessful) => {
+        if (isCurrentRequest) {
+          setHasSubscriptionStatus(wasSuccessful);
+        }
+      });
+      return () => {
+        isCurrentRequest = false;
+      };
+    }
+
+    setHasSubscriptionStatus(false);
+  }, [fetchSubscription, isAuthenticated, isInitializing]);
 
   // Handle payment failure redirect from Xendit
   useEffect(() => {
@@ -33,13 +50,26 @@ export default function Pricing() {
     }
   }, [searchParams, setSearchParams]);
 
-  const handleSelectPlan = async (targetPlan: "pro") => {
+  const handleSelectPlan = async (targetPlan: SubscriptionPlan) => {
+    if (!isAuthenticated) {
+      navigate("/register");
+      return;
+    }
+
+    if (!hasSubscriptionStatus) {
+      return;
+    }
+
     if (plan === targetPlan) {
       toastManager.add({
         title: "Current Plan",
         description: `You already have an active ${targetPlan.toUpperCase()} access period.`,
         type: "info",
       });
+      return;
+    }
+
+    if (targetPlan === "free") {
       return;
     }
 
@@ -73,7 +103,7 @@ export default function Pricing() {
 
   const plans = [
     {
-      id: "free",
+      id: "free" as const,
       name: "Free Tier",
       description: "Essential tools to start practicing email communication.",
       priceMonthly: "₱0",
@@ -87,12 +117,15 @@ export default function Pricing() {
         "Saved conversation history",
         "Standard response times",
       ],
-      buttonText: plan === "free" ? "Current Plan" : "Free Plan",
+      buttonText:
+        hasSubscriptionStatus && plan === "free"
+          ? "Current Plan"
+          : "Free Plan",
       buttonVariant: "outline" as const,
-      disabled: plan === "free",
+      disabled: hasSubscriptionStatus && plan === "free",
     },
     {
-      id: "pro",
+      id: "pro" as const,
       name: "Pro Plan",
       description:
         "Supercharge your email writing skills with unlimited AI access.",
@@ -107,9 +140,12 @@ export default function Pricing() {
         "Saved Conversation History",
         "Export Data (JSON, CSV, PDF)",
       ],
-      buttonText: plan === "pro" ? "Current Access" : "Get Pro Access",
+      buttonText:
+        hasSubscriptionStatus && plan === "pro"
+          ? "Current Access"
+          : "Get Pro Access",
       buttonVariant: "default" as const,
-      disabled: plan === "pro",
+      disabled: hasSubscriptionStatus && plan === "pro",
     },
   ];
 
@@ -229,7 +265,7 @@ export default function Pricing() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xl font-bold text-white">{p.name}</h3>
-                {plan === p.id && (
+                {hasSubscriptionStatus && plan === p.id && (
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/40">
                     Active
                   </span>
@@ -262,11 +298,14 @@ export default function Pricing() {
 
             <Button
               onClick={() => {
-                if (p.id === "pro") {
-                  handleSelectPlan("pro");
-                }
+                void handleSelectPlan(p.id);
               }}
-              disabled={p.disabled || upgradingPlan === p.id}
+              disabled={
+                isInitializing ||
+                (isAuthenticated && !hasSubscriptionStatus) ||
+                p.disabled ||
+                upgradingPlan === p.id
+              }
               className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all ${
                 p.popular
                   ? "bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/30"
