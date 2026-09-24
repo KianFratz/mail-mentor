@@ -94,7 +94,7 @@ export const Register: React.FC = () => {
             </div>
 
             <h2 className="font-semibold text-[32px] leading-[40px] tracking-[-0.01em] mb-6">
-              Master the art of high-impact communication.
+              Write with more confidence, one reply at a time.
             </h2>
 
             <div className="space-y-6">
@@ -106,11 +106,11 @@ export const Register: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-[14px] leading-[16px] tracking-[0.01em] mb-1">
-                    AI Mentorship
+                    Practice realistic replies
                   </p>
                   <p className="font-normal text-[14px] leading-[20px] opacity-80">
-                    Receive surgical precision feedback on your tone and
-                    structure.
+                    Work through workplace scenarios before the real
+                    conversation.
                   </p>
                 </div>
               </div>
@@ -122,39 +122,40 @@ export const Register: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-[14px] leading-[16px] tracking-[0.01em] mb-1">
-                    Evidence-Based Growth
+                    Get coaching you can use
                   </p>
                   <p className="font-normal text-[14px] leading-[20px] opacity-80">
-                    Track your progress across cognitive benchmarks and
-                    linguistic clarity modules.
+                    See what worked, what to improve, and how to revise your
+                    message.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="relative z-10 bg-white/80 backdrop-blur-[12px] border border-white/30 p-6 rounded-2xl text-[#1a1b21]">
-            <p className="font-normal text-[14px] leading-[20px] italic mb-4">
-              "The AI suggestions helped me transform a confrontational email
-              into a collaborative breakthrough."
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-[#c5c5d3]">
-                <img
-                  alt="User testimonial"
-                  className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVYuEhwnhQmS3JW8ZLBld99HZ9Hof_wr3olDspYoHgksRTCeBUDnL9gro66AJE2j9jsd4ZYaP5LH-uc1ERCfr2ggYnrkC43q8AZ_9oJEnhU_WjTZWjOi7Zn9oucltnPR0JifttYWtG7_kjBkoAAdFV1FvENuEYHjUIONd3HjWwTCuiqdvPjlTCi2gGl_r0ufdx_Ga-ya4QFztrc63HTY8CxovGTXm-IbBAsEJmrX2HPr90uLbYobuZ1tN6O0plKXbnAJTp9qutGUJK"
-                />
-              </div>
-              <div>
-                <p className="font-medium text-[12px] leading-[16px] tracking-[0.02em]">
-                  Sarah Jenkins
-                </p>
-                <p className="text-[10px] uppercase tracking-wider opacity-60">
-                  Senior Project Lead
-                </p>
-              </div>
+          <div className="relative z-10 rounded-2xl border border-white/30 bg-white/10 p-6 text-white backdrop-blur-[12px]">
+            <div className="flex items-center gap-2 text-[#c9d5ff]">
+              <span
+                className="material-symbols-outlined text-[20px]"
+                aria-hidden="true"
+              >
+                rate_review
+              </span>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+                Sample coaching note
+              </p>
             </div>
+            <p className="mt-5 text-[15px] font-semibold leading-[22px]">
+              “I might need some help”
+            </p>
+            <p className="mt-2 text-[14px] leading-[21px] text-white/80">
+              Flags risk without naming the help needed. Name the blocker, who
+              can unblock it, and when you’ll ask.
+            </p>
+            <p className="mt-5 border-t border-white/20 pt-4 text-[12px] leading-[18px] text-white/60">
+              Mail Mentor helps you practice realistic email conversations and
+              turn feedback into a clearer next reply.
+            </p>
           </div>
         </section>
 
@@ -168,7 +169,7 @@ export const Register: React.FC = () => {
                 psychology
               </span>
               <span className="font-semibold text-[24px] leading-[32px]">
-                Cognitive
+                Mail Mentor
               </span>
             </div>
 
@@ -177,7 +178,8 @@ export const Register: React.FC = () => {
                 Create Account
               </h2>
               <p className="font-normal text-[16px] leading-[24px] text-[#444651]">
-                Begin your journey to professional mastery.
+                Practice realistic workplace replies and get coaching you can
+                use in your next message.
               </p>
             </header>
 
