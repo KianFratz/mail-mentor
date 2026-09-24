@@ -3,7 +3,7 @@ import { TopNavBar } from "../components/landing/TopNavBar";
 import { HeroSection } from "../components/landing/HeroSection";
 import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
-import { AnalyticsPreview } from "../components/landing/AnalyticsPreview";
+import { ProgressReportPreview } from "../components/landing/ProgressReportPreview";
 import { Footer } from "../components/landing/Footer";
 
 export function Landing() {
@@ -51,7 +51,7 @@ export function Landing() {
         <HeroSection />
         <FeaturesSection />
         <HowItWorks />
-        <AnalyticsPreview />
+        <ProgressReportPreview />
       </main>
       <Footer />
     </div>
