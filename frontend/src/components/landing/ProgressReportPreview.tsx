@@ -45,9 +45,6 @@ export function ProgressReportPreview() {
                 <p className="text-xs font-bold uppercase tracking-widest text-primary">
                   Illustrative practice report
                 </p>
-                <p className="mt-2 text-sm font-semibold text-primary">
-                  Sample data · not a customer result
-                </p>
                 <p className="mt-4 text-sm text-muted-foreground">
                   Scenario: Request a Deadline Extension
                 </p>
