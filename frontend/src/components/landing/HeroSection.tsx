@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { ArrowRight, CheckCircle2, Send, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { primaryChallengeLabel } from "./landing.constants";
 
 const heroChallenge = {
   draft: `Hi Maya,
@@ -94,12 +95,15 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden px-4 py-8 md:px-8 lg:py-12">
+    <section
+      id="challenge"
+      className="relative flex min-h-[calc(100svh-4rem)] scroll-mt-20 items-center overflow-hidden px-4 py-8 md:px-8 lg:py-12"
+    >
       <div className="container relative z-10 mx-auto grid grid-cols-1 items-center gap-8 lg:grid-cols-[0.86fr_1.14fr]">
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-lg bg-tertiary/12 px-3 py-2 text-sm font-medium text-tertiary">
             <Sparkles aria-hidden="true" className="size-4" />
-            Try the 2-minute challenge
+            {primaryChallengeLabel}
           </div>
           <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-primary md:text-5xl">
             Stop second-guessing your work emails.
@@ -109,6 +113,12 @@ export function HeroSection() {
             make your message clearer, warmer, and easier for a manager to act
             on.
           </p>
+          <a
+            href="#challenge"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            {primaryChallengeLabel}
+          </a>
           <div className="grid max-w-xl grid-cols-1 gap-3 text-sm text-foreground sm:grid-cols-3">
             {heroChallenge.badges.map((item) => (
               <div

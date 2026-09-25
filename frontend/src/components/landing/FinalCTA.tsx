@@ -1,21 +1,31 @@
 import { Link } from "react-router";
+import { primaryChallengeLabel } from "./landing.constants";
 
 export function FinalCTA() {
   return (
-    <section className="py-24 px-4 md:px-8 bg-primary text-primary-foreground overflow-hidden relative">
+    <section className="relative overflow-hidden bg-primary px-4 py-24 text-primary-foreground md:px-8">
       <div className="absolute inset-0 opacity-10 pointer-events-none"></div>
       <div className="container mx-auto max-w-4xl text-center relative z-10 space-y-8">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-          Ready to Elevate Your Writing?
+          Practise the difficult email before it matters.
         </h2>
         <p className="text-lg text-primary-foreground/90 max-w-xl mx-auto">
-          Practice realistic email conversations and review structured feedback
-          at the end of each session.
+          Try a realistic workplace reply, see where your wording creates
+          uncertainty, and build a clearer response before the real moment.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-          <button className="px-10 py-5 bg-background text-primary rounded-2xl font-semibold hover:shadow-2xl transition-all active:scale-95">
-            <Link to="/login">Start Writing for Free</Link>
-          </button>
+        <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
+          <a
+            href="#challenge"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-background px-10 py-4 font-semibold text-primary transition-all hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+          >
+            {primaryChallengeLabel}
+          </a>
+          <Link
+            to="/register"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-primary-foreground/40 px-10 py-4 font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+          >
+            Create a free account
+          </Link>
         </div>
         <p className="text-xs text-primary-foreground/60">
           Start on the Free plan. No credit card is required.

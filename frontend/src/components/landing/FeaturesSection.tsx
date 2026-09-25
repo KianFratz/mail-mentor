@@ -62,8 +62,9 @@ const workplaceMoments: WorkplaceMoment[] = [
 export function FeaturesSection() {
   return (
     <section
+      id="scenarios"
       aria-labelledby="workplace-moments-heading"
-      className="bg-secondary/45 px-4 py-24 md:px-8"
+      className="scroll-mt-20 bg-secondary/45 px-4 py-24 md:px-8"
     >
       <div className="container mx-auto">
         <div className="mx-auto mb-14 max-w-3xl space-y-4 text-center">

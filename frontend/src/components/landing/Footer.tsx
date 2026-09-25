@@ -1,104 +1,98 @@
 import { Link } from "react-router";
+import { primaryChallengeLabel, supportDestination } from "./landing.constants";
+
+const footerLinkClassName =
+  "rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
 export function Footer() {
   return (
     <footer className="bg-card py-16 px-4 md:px-8 border-t border-border">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          <div className="col-span-1 md:col-span-1 space-y-6">
-            <span className="text-2xl font-bold text-primary">Mail Mentor</span>
-            <p className="text-muted-foreground text-sm">
+        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-4">
+          <div className="col-span-1 space-y-6 md:col-span-1">
+            <Link
+              to="/"
+              className="inline-block rounded-sm text-2xl font-bold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Mail Mentor
+            </Link>
+            <p className="text-sm text-muted-foreground">
               AI-powered email-writing practice with interactive scenarios and
               post-session feedback.
             </p>
           </div>
           <div>
-            <h5 className="text-sm font-semibold text-foreground mb-6 uppercase tracking-wider">
+            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
               Product
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <Link
-                  to="/login"
-                  className="hover:text-primary transition-colors"
-                >
+                <a href="#how-it-works" className={footerLinkClassName}>
+                  How it works
+                </a>
+              </li>
+              <li>
+                <a href="#scenarios" className={footerLinkClassName}>
                   Scenarios
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  to="/login"
-                  className="hover:text-primary transition-colors"
-                >
-                  Sign in
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/pricing"
-                  className="hover:text-primary transition-colors"
-                >
+                <Link to="/pricing" className={footerLinkClassName}>
                   Pricing
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h5 className="text-sm font-semibold text-foreground mb-6 uppercase tracking-wider">
+            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
               Practice
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <Link
-                  to="/login"
-                  className="hover:text-primary transition-colors"
-                >
-                  Beginner scenarios
-                </Link>
+                <a href="#challenge" className={footerLinkClassName}>
+                  {primaryChallengeLabel}
+                </a>
               </li>
               <li>
-                <Link
-                  to="/login"
-                  className="hover:text-primary transition-colors"
-                >
-                  Writing sessions
-                </Link>
+                <a href="#scenarios" className={footerLinkClassName}>
+                  Workplace scenarios
+                </a>
               </li>
               <li>
-                <Link
-                  to="/login"
-                  className="hover:text-primary transition-colors"
-                >
-                  Feedback reports
+                <Link to="/register" className={footerLinkClassName}>
+                  Create an account
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h5 className="text-sm font-semibold text-foreground mb-6 uppercase tracking-wider">
-              Status
+            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
+              Account & support
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>Under active development</li>
-              <li>English only</li>
+              <li>
+                <Link to="/login" className={footerLinkClassName}>
+                  Sign in
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={supportDestination}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={footerLinkClassName}
+                >
+                  Support
+                </a>
+              </li>
             </ul>
           </div>
         </div>
-        <div className="pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-border pt-12 md:flex-row">
           <p className="text-xs text-muted-foreground">
             © 2026 Mail Mentor. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <span className="material-symbols-outlined text-muted-foreground cursor-pointer hover:text-primary transition-colors">
-              language
-            </span>
-            <span className="material-symbols-outlined text-muted-foreground cursor-pointer hover:text-primary transition-colors">
-              share
-            </span>
-            <span className="material-symbols-outlined text-muted-foreground cursor-pointer hover:text-primary transition-colors">
-              contact_support
-            </span>
-          </div>
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 export function HowItWorks() {
   return (
-    <section className="py-24 bg-secondary">
+    <section id="how-it-works" className="scroll-mt-20 bg-secondary py-24">
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col gap-12 md:flex-row">
           <div className="md:w-1/3">

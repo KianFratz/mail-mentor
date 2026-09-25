@@ -86,8 +86,9 @@ function PlanCard({ planKey }: { planKey: PlanKey }) {
 export function PlanComparison() {
   return (
     <section
+      id="pricing"
       aria-labelledby="plan-comparison-heading"
-      className="bg-secondary/45 px-4 py-24 md:px-8"
+      className="scroll-mt-20 bg-secondary/45 px-4 py-24 md:px-8"
     >
       <div className="container mx-auto max-w-5xl">
         <div className="mx-auto max-w-3xl space-y-4 text-center">

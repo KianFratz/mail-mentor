@@ -5,6 +5,7 @@ import { FeaturesSection } from "../components/landing/FeaturesSection";
 import { HowItWorks } from "../components/landing/HowItWorks";
 import { PlanComparison } from "../components/landing/PlanComparison";
 import { ProgressReportPreview } from "../components/landing/ProgressReportPreview";
+import { FinalCTA } from "../components/landing/FinalCTA";
 import { Footer } from "../components/landing/Footer";
 
 export function Landing() {
@@ -54,6 +55,7 @@ export function Landing() {
         <HowItWorks />
         <PlanComparison />
         <ProgressReportPreview />
+        <FinalCTA />
       </main>
       <Footer />
     </div>
