@@ -95,10 +95,7 @@ export function HeroSection() {
   }
 
   return (
-    <section
-      id="challenge"
-      className="relative flex min-h-[calc(100svh-4rem)] scroll-mt-20 items-center overflow-hidden px-4 py-8 md:px-8 lg:py-12"
-    >
+    <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden px-4 py-8 md:px-8 lg:py-12">
       <div className="container relative z-10 mx-auto grid grid-cols-1 items-center gap-8 lg:grid-cols-[0.86fr_1.14fr]">
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-lg bg-tertiary/12 px-3 py-2 text-sm font-medium text-tertiary">
@@ -137,7 +134,8 @@ export function HeroSection() {
 
         <div className="rounded-lg border border-border bg-card shadow-xl">
           <form
-            className="grid gap-5 p-4 md:p-6"
+            id="challenge"
+            className="grid scroll-mt-20 gap-5 p-4 md:p-6"
             onSubmit={handleSubmit}
             noValidate
             aria-describedby={hasFeedback ? feedbackId : undefined}
