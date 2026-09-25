@@ -33,7 +33,8 @@ function PlanCard({ planKey }: { planKey: PlanKey }) {
         >
           {plan.name}
         </p>
-        <h3 className="mt-3 text-2xl font-bold">{plan.description}</h3>
+        <h3 className="mt-3 text-2xl font-bold">{plan.name}</h3>
+        <p className="mt-2 text-sm opacity-80">{plan.description}</p>
 
         <div className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="text-3xl font-bold">{plan.priceMonthly}</span>

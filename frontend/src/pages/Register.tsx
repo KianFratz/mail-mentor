@@ -71,7 +71,7 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#faf8ff] text-[#1a1b21] min-h-screen flex items-center justify-center p-4 font-['Inter',sans-serif]">
+    <div className="flex min-h-screen items-center justify-center bg-[#faf8ff] p-4 font-['Inter',sans-serif] text-[#1a1b21]">
       {/* Background Atmospheric Effect */}
       <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-[#00236f]/5 blur-[120px]"></div>
@@ -87,24 +87,25 @@ export const Register: React.FC = () => {
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-8">
               <span
+                aria-hidden="true"
                 className="material-symbols-outlined text-4xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 psychology
               </span>
-              <h1 className="font-semibold text-[24px] leading-[32px] tracking-tight">
+              <p className="font-semibold text-[24px] leading-[32px] tracking-tight">
                 Mail Mentor
-              </h1>
+              </p>
             </div>
 
-            <h2 className="font-semibold text-[32px] leading-[40px] tracking-[-0.01em] mb-6">
+            <p className="mb-6 text-[32px] font-semibold leading-[40px] tracking-[-0.01em]">
               Write with more confidence, one reply at a time.
-            </h2>
+            </p>
 
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#90a8ff]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-[#90a8ff]">
+                  <span aria-hidden="true" className="material-symbols-outlined text-[#90a8ff]">
                     auto_awesome
                   </span>
                 </div>
@@ -112,7 +113,7 @@ export const Register: React.FC = () => {
                   <p className="font-semibold text-[14px] leading-[16px] tracking-[0.01em] mb-1">
                     Practice realistic replies
                   </p>
-                  <p className="font-normal text-[14px] leading-[20px] opacity-80">
+                  <p className="font-normal text-[14px] leading-[20px] text-[#d8e0ff]">
                     Work through workplace scenarios before the real
                     conversation.
                   </p>
@@ -120,7 +121,7 @@ export const Register: React.FC = () => {
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#90a8ff]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-[#90a8ff]">
+                  <span aria-hidden="true" className="material-symbols-outlined text-[#90a8ff]">
                     trending_up
                   </span>
                 </div>
@@ -128,7 +129,7 @@ export const Register: React.FC = () => {
                   <p className="font-semibold text-[14px] leading-[16px] tracking-[0.01em] mb-1">
                     Get coaching you can use
                   </p>
-                  <p className="font-normal text-[14px] leading-[20px] opacity-80">
+                  <p className="font-normal text-[14px] leading-[20px] text-[#d8e0ff]">
                     See what worked, what to improve, and how to revise your
                     message.
                   </p>
@@ -152,11 +153,11 @@ export const Register: React.FC = () => {
             <p className="mt-5 text-[15px] font-semibold leading-[22px]">
               “I might need some help”
             </p>
-            <p className="mt-2 text-[14px] leading-[21px] text-white/80">
+            <p className="mt-2 text-[14px] leading-[21px] text-[#edf1ff]">
               Flags risk without naming the help needed. Name the blocker, who
               can unblock it, and when you’ll ask.
             </p>
-            <p className="mt-5 border-t border-white/20 pt-4 text-[12px] leading-[18px] text-white/60">
+            <p className="mt-5 border-t border-white/20 pt-4 text-[12px] leading-[18px] text-[#d8e0ff]">
               Mail Mentor helps you practice realistic email conversations and
               turn feedback into a clearer next reply.
             </p>
@@ -165,8 +166,9 @@ export const Register: React.FC = () => {
 
         <section className="flex flex-col justify-center p-8 lg:p-16 bg-[#ffffff]">
           <div className="w-full max-w-sm mx-auto">
-            <div className="lg:hidden flex items-center gap-2 mb-8 text-[#00236f]">
+            <div className="mb-8 flex items-center gap-2 text-[#00236f] lg:hidden">
               <span
+                aria-hidden="true"
                 className="material-symbols-outlined text-3xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
@@ -178,9 +180,9 @@ export const Register: React.FC = () => {
             </div>
 
             <header className="mb-10">
-              <h2 className="font-semibold text-[24px] lg:text-[32px] leading-[32px] lg:leading-[40px] text-[#1a1b21] mb-2">
+              <h1 className="mb-2 font-semibold text-[24px] leading-[32px] text-[#1a1b21] lg:text-[32px] lg:leading-[40px]">
                 Create Account
-              </h2>
+              </h1>
               <p className="font-normal text-[16px] leading-[24px] text-[#444651]">
                 Practice realistic workplace replies and get coaching you can
                 use in your next message.
@@ -197,7 +199,7 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#c5c5d3] focus:ring-0 focus:border-[#00236f] transition-all duration-300 font-normal text-[16px] leading-[24px] placeholder:text-[#757682]/50 outline-none"
+                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
                     id="fullName"
                     name="fullName"
                     placeholder="Jane Doe"
@@ -221,7 +223,7 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#c5c5d3] focus:ring-0 focus:border-[#00236f] transition-all duration-300 font-normal text-[16px] leading-[24px] placeholder:text-[#757682]/50 outline-none"
+                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
                     id="email"
                     name="email"
                     placeholder="jane@example.com"
@@ -245,7 +247,7 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#c5c5d3] focus:ring-0 focus:border-[#00236f] transition-all duration-300 font-normal text-[16px] leading-[24px] placeholder:text-[#757682]/50 outline-none"
+                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
                     id="password"
                     minLength={6}
                     name="password"
@@ -260,7 +262,7 @@ export const Register: React.FC = () => {
                   ></div>
                 </div>
                 <p className="mt-2 font-medium text-[12px] leading-[16px] text-[#444651] flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">
+                  <span aria-hidden="true" className="material-symbols-outlined text-[14px]">
                     info
                   </span>
                   Must be at least 6 characters
@@ -271,32 +273,37 @@ export const Register: React.FC = () => {
                 className="w-full py-4 bg-[#00236f] text-[#ffffff] rounded-xl font-semibold text-[14px] leading-[16px] shadow-lg hover:shadow-[#00236f]/20 active:scale-[0.98] transition-all duration-200 mt-8 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] flex items-center justify-center gap-2 disabled:opacity-70"
                 type="submit"
                 disabled={isLoading}
+                aria-busy={isLoading}
               >
                 {isLoading ? (
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
+                  <>
+                    <svg
+                      aria-hidden="true"
+                      className="h-5 w-5 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Creating account…</span>
+                  </>
                 ) : (
                   <>
                     <span>Create Account</span>
-                    <span className="material-symbols-outlined text-sm">
+                    <span aria-hidden="true" className="material-symbols-outlined text-sm">
                       arrow_forward
                     </span>
                   </>
@@ -317,7 +324,7 @@ export const Register: React.FC = () => {
             </div>
           </div>
 
-          <footer className="mt-auto pt-8 flex justify-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+          <footer className="mt-auto flex justify-center gap-6 pt-8 text-[#444651] transition-all duration-500">
             <span className="font-medium text-[12px] leading-[16px] uppercase tracking-widest">
               Enterprise Ready
             </span>

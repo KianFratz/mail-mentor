@@ -19,9 +19,9 @@ export function HowItWorks() {
               <div className="text-4xl font-bold text-muted-foreground/50">
                 01
               </div>
-              <h4 className="text-2xl font-semibold text-primary">
+              <h3 className="text-2xl font-semibold text-primary">
                 Choose a situation
-              </h4>
+              </h3>
               <p className="text-muted-foreground text-sm">
                 Start with a realistic workplace situation you want to feel
                 more prepared for.
@@ -31,9 +31,9 @@ export function HowItWorks() {
               <div className="text-4xl font-bold text-muted-foreground/50">
                 02
               </div>
-              <h4 className="text-2xl font-semibold text-primary">
+              <h3 className="text-2xl font-semibold text-primary">
                 Write your reply
-              </h4>
+              </h3>
               <p className="text-muted-foreground text-sm">
                 Compose the message yourself and put your judgment into
                 practice.
@@ -43,9 +43,9 @@ export function HowItWorks() {
               <div className="text-4xl font-bold text-muted-foreground/50">
                 03
               </div>
-              <h4 className="text-2xl font-semibold text-primary">
+              <h3 className="text-2xl font-semibold text-primary">
                 Receive a realistic response
-              </h4>
+              </h3>
               <p className="text-muted-foreground text-sm">
                 Continue the conversation with a responsive persona that
                 reacts to what you actually said.
@@ -55,9 +55,9 @@ export function HowItWorks() {
               <div className="text-4xl font-bold text-muted-foreground/50">
                 04
               </div>
-              <h4 className="text-2xl font-semibold text-primary">
+              <h3 className="text-2xl font-semibold text-primary">
                 Review actionable coaching
-              </h4>
+              </h3>
               <p className="text-muted-foreground text-sm">
                 AI reviews the exchange to show what worked, what to improve,
                 and how to make your next reply clearer and more effective.

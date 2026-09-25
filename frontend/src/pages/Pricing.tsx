@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Check, Shield, HelpCircle, ArrowLeft } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscription.store";
 import { toastManager } from "@/components/ui/toast";
@@ -179,7 +179,7 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
+    <div className="flex min-h-screen flex-col bg-slate-900 font-sans text-slate-100">
       {/* Background ambient lighting */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-600/20 blur-3xl" />
@@ -189,27 +189,38 @@ export default function Pricing() {
       {/* Top Navbar */}
       <header className="relative z-10 max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between">
         <button
+          type="button"
+          aria-label="Go back to the previous page"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 rounded-sm text-sm text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft aria-hidden="true" className="w-4 h-4" />
           Back
         </button>
 
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-lg text-white tracking-tight">
-            Mail Mentor
-          </span>
-        </div>
+        <Link
+          to="/"
+          aria-label="Mail Mentor home"
+          className="rounded-sm text-lg font-bold tracking-tight text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+        >
+          <span>Mail Mentor</span>
+        </Link>
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 pt-6 pb-12 text-center space-y-4">
+      <main>
+      <section
+        aria-labelledby="pricing-heading"
+        className="relative z-10 mx-auto max-w-4xl space-y-4 px-6 pb-12 pt-6 text-center"
+      >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-300 text-xs font-semibold uppercase tracking-wider">
           Simple, Transparent Pricing
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        <h1
+          id="pricing-heading"
+          className="text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl"
+        >
           Unlock Your Full Potential in <br />
           <span className="bg-gradient-to-r from-violet-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
             Professional Communication
@@ -222,7 +233,8 @@ export default function Pricing() {
         </p>
 
         {/* Billing cycle toggle */}
-        <div className="pt-6 flex items-center justify-center gap-3">
+        <fieldset className="flex flex-wrap items-center justify-center gap-3 pt-6">
+          <legend className="sr-only">Billing period</legend>
           <span
             className={`text-sm font-medium ${
               billingCycle === "monthly" ? "text-white" : "text-slate-400"
@@ -231,10 +243,14 @@ export default function Pricing() {
             One-Month Access
           </span>
           <button
+            type="button"
+            role="switch"
+            aria-checked={billingCycle === "annual"}
+            aria-label={`Billing period: ${billingCycle === "annual" ? "one year" : "one month"}. Switch billing period`}
             onClick={() =>
               setBillingCycle(billingCycle === "monthly" ? "annual" : "monthly")
             }
-            className="relative w-14 h-8 rounded-full bg-slate-800 border border-slate-700 p-1 transition-colors focus:outline-none"
+            className="relative h-8 w-14 rounded-full border border-slate-700 bg-slate-800 p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <div
               className={`w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-transform ${
@@ -252,11 +268,17 @@ export default function Pricing() {
               Save 20%
             </span>
           </span>
-        </div>
+        </fieldset>
       </section>
 
       {/* Plan Cards Grid */}
-      <section className="relative z-10 max-w-4xl w-full mx-auto px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+      <section
+        aria-labelledby="pricing-plans-heading"
+        className="relative z-10 mx-auto grid w-full max-w-4xl grid-cols-1 items-stretch gap-8 px-6 pb-20 md:grid-cols-2"
+      >
+        <h2 id="pricing-plans-heading" className="sr-only">
+          Pricing plans
+        </h2>
         {plans.map((p) => (
           <div
             key={p.id}
@@ -299,7 +321,7 @@ export default function Pricing() {
                     key={idx}
                     className="flex items-start gap-3 text-sm text-slate-300"
                   >
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{feat}</span>
                   </li>
                 ))}
@@ -331,13 +353,16 @@ export default function Pricing() {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative z-10 max-w-4xl w-full mx-auto px-6 pb-20 border-t border-slate-800 pt-12">
+      <section
+        aria-labelledby="pricing-faq-heading"
+        className="relative z-10 mx-auto w-full max-w-4xl border-t border-slate-800 px-6 pb-20 pt-12"
+      >
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-400 uppercase tracking-wider mb-2">
-            <HelpCircle className="w-4 h-4" />
+            <HelpCircle aria-hidden="true" className="w-4 h-4" />
             Frequently Asked Questions
           </div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 id="pricing-faq-heading" className="text-2xl font-bold text-white">
             Got Questions? We’ve got answers.
           </h2>
         </div>
@@ -348,15 +373,16 @@ export default function Pricing() {
               key={idx}
               className="bg-slate-800/40 border border-slate-800 rounded-2xl p-5 space-y-2"
             >
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <Shield className="w-4 h-4 text-violet-400 shrink-0" />
+              <h3 className="flex items-center gap-2 text-sm font-bold text-white">
+                <Shield aria-hidden="true" className="w-4 h-4 shrink-0 text-violet-400" />
                 {faq.q}
-              </h4>
+              </h3>
               <p className="text-xs text-slate-400 leading-relaxed">{faq.a}</p>
             </div>
           ))}
         </div>
       </section>
+      </main>
     </div>
   );
 }

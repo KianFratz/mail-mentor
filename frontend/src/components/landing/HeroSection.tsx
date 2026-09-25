@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, CheckCircle2, Send, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
@@ -75,11 +75,18 @@ export function HeroSection() {
   const draftId = useId();
   const draftErrorId = useId();
   const feedbackId = useId();
+  const feedbackHeadingRef = useRef<HTMLHeadingElement>(null);
   const [draft, setDraft] = useState(heroChallenge.draft);
   const [submittedDraft, setSubmittedDraft] = useState(heroChallenge.draft);
   const [draftError, setDraftError] = useState<string | null>(null);
   const [hasFeedback, setHasFeedback] = useState(false);
   const coaching = getCoachingForDraft(submittedDraft);
+
+  useEffect(() => {
+    if (hasFeedback) {
+      feedbackHeadingRef.current?.focus();
+    }
+  }, [hasFeedback, submittedDraft]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -210,8 +217,19 @@ export function HeroSection() {
           <div
             id={feedbackId}
             aria-live="polite"
+            aria-atomic="true"
+            aria-labelledby={`${feedbackId}-heading`}
+            role="region"
             className="border-t border-border bg-secondary/45 px-4 py-5 md:px-6"
           >
+            <h2
+              id={`${feedbackId}-heading`}
+              ref={feedbackHeadingRef}
+              tabIndex={-1}
+              className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+            >
+              Challenge coaching
+            </h2>
             {hasFeedback ? (
               <div className="grid gap-4 motion-safe:animate-fade-in">
                 <div className="flex items-start gap-3">

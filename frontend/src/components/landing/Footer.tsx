@@ -23,9 +23,9 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
               Product
-            </h5>
+            </h2>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
                 <a href="#how-it-works" className={footerLinkClassName}>
@@ -45,9 +45,9 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
               Practice
-            </h5>
+            </h2>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
                   <a
@@ -83,9 +83,9 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h5 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">
               Account & support
-            </h5>
+            </h2>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>Under active development</li>
               <li>

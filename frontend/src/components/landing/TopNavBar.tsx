@@ -27,7 +27,7 @@ export function TopNavBar() {
           Mail Mentor
         </Link>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Primary navigation" className="hidden items-center gap-7 lg:flex">
           {navItems.map((item) => (
             <a
               key={item.href}
@@ -39,7 +39,7 @@ export function TopNavBar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <a
             href="#challenge"
             onClick={() =>
@@ -74,7 +74,7 @@ export function TopNavBar() {
           type="button"
           variant="outline"
           size="icon"
-          className="md:hidden"
+          className="lg:hidden"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -88,7 +88,7 @@ export function TopNavBar() {
         <nav
           id="mobile-navigation"
           aria-label="Mobile navigation"
-          className="grid gap-1 border-t border-border bg-background px-4 py-3 md:hidden"
+          className="grid gap-1 border-t border-border bg-background px-4 py-3 lg:hidden"
         >
           {navItems.map((item) => (
             <a
