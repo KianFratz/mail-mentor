@@ -1,6 +1,7 @@
 import { toastManager } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthProvider";
 import api from "@/lib/axios";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
@@ -45,6 +46,9 @@ export const Register: React.FC = () => {
       });
 
       saveToken(response.data.access_token);
+      trackAnalyticsEvent("registration_completed", {
+        source_surface: "registration",
+      });
       navigate("/dashboard");
     } catch (error) {
       let message = "Something went wrong. Please try again.";

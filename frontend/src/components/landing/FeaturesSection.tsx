@@ -5,6 +5,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 interface WorkplaceMoment {
   number: string;
@@ -130,6 +131,11 @@ export function FeaturesSection() {
 
                 <Link
                   to="/register"
+                  onClick={() =>
+                    trackAnalyticsEvent("landing_registration_clicked", {
+                      source_surface: "features",
+                    })
+                  }
                   aria-label={actionLabel}
                   className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >

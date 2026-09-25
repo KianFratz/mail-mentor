@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, Shield, HelpCircle, ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { toastManager } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthProvider";
 import type { SubscriptionPlan } from "@/types/subscription.type";
 import { subscriptionPlanDetails } from "@/constants/subscription-plans.constant";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -19,6 +20,18 @@ export default function Pricing() {
     useSubscriptionStore();
   const [hasSubscriptionStatus, setHasSubscriptionStatus] = useState(false);
   const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
+  const hasTrackedPricingView = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedPricingView.current) {
+      return;
+    }
+
+    hasTrackedPricingView.current = true;
+    trackAnalyticsEvent("landing_pricing_viewed", {
+      source_surface: "pricing_page",
+    });
+  }, []);
 
   useEffect(() => {
     if (!isInitializing && isAuthenticated) {
@@ -83,6 +96,10 @@ export default function Pricing() {
       const checkoutUrl =
         res?.invoiceUrl || res?.checkoutUrl || res?.url || res?.actions?.url;
       if (checkoutUrl) {
+        trackAnalyticsEvent("pro_checkout_started", {
+          source_surface: "pricing_page",
+          billing_interval: billingCycle === "annual" ? "year" : "month",
+        });
         window.location.href = checkoutUrl;
       } else {
         toastManager.add({

@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { primaryChallengeLabel } from "./landing.constants";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 export function FinalCTA() {
   return (
@@ -16,12 +17,22 @@ export function FinalCTA() {
         <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
           <a
             href="#challenge"
+            onClick={() =>
+              trackAnalyticsEvent("landing_challenge_started", {
+                source_surface: "final_cta",
+              })
+            }
             className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-background px-10 py-4 font-semibold text-primary transition-all hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
           >
             {primaryChallengeLabel}
           </a>
           <Link
             to="/register"
+            onClick={() =>
+              trackAnalyticsEvent("landing_registration_clicked", {
+                source_surface: "final_cta",
+              })
+            }
             className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-primary-foreground/40 px-10 py-4 font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
           >
             Create a free account

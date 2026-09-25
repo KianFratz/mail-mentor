@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { primaryChallengeLabel } from "./landing.constants";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 const navItems = [
   { label: "How it works", href: "#how-it-works" },
@@ -41,6 +42,11 @@ export function TopNavBar() {
         <div className="hidden items-center gap-2 md:flex">
           <a
             href="#challenge"
+            onClick={() =>
+              trackAnalyticsEvent("landing_challenge_started", {
+                source_surface: "top_navigation",
+              })
+            }
             className="rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {primaryChallengeLabel}
@@ -53,6 +59,11 @@ export function TopNavBar() {
           </Link>
           <Link
             to="/register"
+            onClick={() =>
+              trackAnalyticsEvent("landing_registration_clicked", {
+                source_surface: "top_navigation",
+              })
+            }
             className="rounded-lg border border-primary px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Create account
@@ -92,7 +103,12 @@ export function TopNavBar() {
           <a
             href="#challenge"
             className="rounded-lg bg-primary px-3 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={closeMenu}
+            onClick={() => {
+              trackAnalyticsEvent("landing_challenge_started", {
+                source_surface: "top_navigation",
+              });
+              closeMenu();
+            }}
           >
             {primaryChallengeLabel}
           </a>
@@ -106,7 +122,12 @@ export function TopNavBar() {
           <Link
             to="/register"
             className="rounded-lg border border-primary px-3 py-3 text-center text-sm font-semibold text-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={closeMenu}
+            onClick={() => {
+              trackAnalyticsEvent("landing_registration_clicked", {
+                source_surface: "top_navigation",
+              });
+              closeMenu();
+            }}
           >
             Create account
           </Link>

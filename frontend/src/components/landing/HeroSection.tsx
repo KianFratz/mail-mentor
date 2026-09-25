@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, Send, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { primaryChallengeLabel } from "./landing.constants";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 const heroChallenge = {
   draft: `Hi Maya,
@@ -91,7 +92,18 @@ export function HeroSection() {
 
     setDraftError(null);
     setSubmittedDraft(draft);
+    if (!hasFeedback) {
+      trackAnalyticsEvent("landing_feedback_revealed", {
+        source_surface: "hero_challenge",
+      });
+    }
     setHasFeedback(true);
+  }
+
+  function handleChallengeStarted() {
+    trackAnalyticsEvent("landing_challenge_started", {
+      source_surface: "hero",
+    });
   }
 
   return (
@@ -112,6 +124,7 @@ export function HeroSection() {
           </p>
           <a
             href="#challenge"
+            onClick={handleChallengeStarted}
             className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {primaryChallengeLabel}
@@ -240,7 +253,14 @@ export function HeroSection() {
                     </p>
                   </div>
                   <Button asChild size="lg" className="h-11 rounded-lg px-4">
-                    <Link to="/register">
+                    <Link
+                      to="/register"
+                      onClick={() =>
+                        trackAnalyticsEvent("landing_registration_clicked", {
+                          source_surface: "hero_feedback",
+                        })
+                      }
+                    >
                       Create a free account
                       <ArrowRight aria-hidden="true" className="size-4" />
                     </Link>

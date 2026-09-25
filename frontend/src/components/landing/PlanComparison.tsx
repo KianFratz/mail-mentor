@@ -1,6 +1,8 @@
 import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { subscriptionPlanDetails } from "../../constants/subscription-plans.constant";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 type PlanKey = keyof typeof subscriptionPlanDetails;
 
@@ -70,6 +72,14 @@ function PlanCard({ planKey }: { planKey: PlanKey }) {
 
       <Link
         to={isPro ? "/pricing" : "/register"}
+        onClick={
+          isPro
+            ? undefined
+            : () =>
+                trackAnalyticsEvent("landing_registration_clicked", {
+                  source_surface: "plan_comparison",
+                })
+        }
         className={`mt-8 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
           isPro
             ? "bg-background text-primary hover:bg-background/90"
@@ -84,9 +94,49 @@ function PlanCard({ planKey }: { planKey: PlanKey }) {
 }
 
 export function PlanComparison() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const hasTrackedPricingView = useRef(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || hasTrackedPricingView.current) {
+      return;
+    }
+
+    const trackPricingView = () => {
+      if (hasTrackedPricingView.current) {
+        return;
+      }
+
+      hasTrackedPricingView.current = true;
+      trackAnalyticsEvent("landing_pricing_viewed", {
+        source_surface: "landing_pricing_section",
+      });
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      trackPricingView();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          trackPricingView();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(section);
+
+    return () => observer?.disconnect();
+  }, []);
+
   return (
     <section
       id="pricing"
+      ref={sectionRef}
       aria-labelledby="plan-comparison-heading"
       className="scroll-mt-20 bg-secondary/45 px-4 py-24 md:px-8"
     >

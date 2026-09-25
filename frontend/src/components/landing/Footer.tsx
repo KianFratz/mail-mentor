@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { primaryChallengeLabel, supportDestination } from "./landing.constants";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 const footerLinkClassName =
   "rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
@@ -49,7 +50,15 @@ export function Footer() {
             </h5>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <a href="#challenge" className={footerLinkClassName}>
+                  <a
+                    href="#challenge"
+                    className={footerLinkClassName}
+                    onClick={() =>
+                      trackAnalyticsEvent("landing_challenge_started", {
+                        source_surface: "footer",
+                      })
+                    }
+                  >
                   {primaryChallengeLabel}
                 </a>
               </li>
@@ -59,7 +68,15 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link to="/register" className={footerLinkClassName}>
+                <Link
+                  to="/register"
+                  className={footerLinkClassName}
+                  onClick={() =>
+                    trackAnalyticsEvent("landing_registration_clicked", {
+                      source_surface: "footer",
+                    })
+                  }
+                >
                   Create an account
                 </Link>
               </li>
