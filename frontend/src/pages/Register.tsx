@@ -6,6 +6,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+const registrationInputClassName =
+  "w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#6b6d78] focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2";
+
 export const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -199,7 +202,7 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
+                    className={registrationInputClassName}
                     id="fullName"
                     name="fullName"
                     placeholder="Jane Doe"
@@ -223,7 +226,7 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
+                    className={registrationInputClassName}
                     id="email"
                     name="email"
                     placeholder="jane@example.com"
@@ -247,8 +250,9 @@ export const Register: React.FC = () => {
                 </label>
                 <div className="relative group">
                   <input
-                    className="w-full rounded-sm border-0 border-b border-[#c5c5d3] bg-transparent px-0 py-3 text-[16px] font-normal leading-[24px] outline-none transition-all duration-300 placeholder:text-[#757682]/50 focus:border-[#00236f] focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2"
+                    className={registrationInputClassName}
                     id="password"
+                    aria-describedby="password-requirements"
                     minLength={6}
                     name="password"
                     placeholder="••••••••"
@@ -261,7 +265,10 @@ export const Register: React.FC = () => {
                     className={`absolute bottom-0 left-0 h-[2px] bg-[#00236f] transition-all duration-300 ${formData.password ? "w-full" : "w-0 group-focus-within:w-full"}`}
                   ></div>
                 </div>
-                <p className="mt-2 font-medium text-[12px] leading-[16px] text-[#444651] flex items-center gap-1">
+                <p
+                  id="password-requirements"
+                  className="mt-2 flex items-center gap-1 text-[12px] font-medium leading-[16px] text-[#444651]"
+                >
                   <span aria-hidden="true" className="material-symbols-outlined text-[14px]">
                     info
                   </span>

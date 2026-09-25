@@ -51,6 +51,28 @@ npm run build
 
 The frontend has no automated unit, component, or browser test command. Lint and TypeScript/Vite build checks are the current automated baseline.
 
+### Public funnel accessibility
+
+The landing page, public pricing page, and registration page use visible keyboard focus indicators and meaningful heading and landmark structure. Landing-page challenge feedback moves focus to its heading after submission and is exposed as a polite live region. Content does not depend on intersection-observer reveal behavior, and reduced-motion mode shortens nonessential animation and transition effects without hiding content.
+
+For changes to this acquisition journey, exercise the landing page, challenge feedback, pricing page, registration page, and their navigation at approximately 360 px, 768 px, 1024 px, and 1440 px viewport widths. At each width:
+
+1. Confirm the page has no unintended horizontal overflow and primary actions remain visible.
+2. Traverse the complete journey using Tab, Shift+Tab, Enter, and Space.
+3. Confirm focus remains visible and follows the visual reading order.
+4. Submit the landing-page challenge and confirm its feedback is announced or receives focus.
+5. Reload with reduced motion enabled and confirm all content remains available.
+6. Inspect text, focus indicators, coaching annotations, and plan states for sufficient contrast.
+
+The public funnel was verified locally on September 25, 2026, with headless Chrome 152 at 360 px, 768 px, 1024 px, and 1440 px viewport widths. The check covered the landing, public pricing, and registration routes and confirmed:
+
+- no unintended horizontal overflow, missing main landmarks, duplicate top-level headings, or hidden primary actions;
+- accessible names and visible focus for keyboard-reachable controls;
+- keyboard activation of the mobile navigation, billing-period switch, and challenge submission;
+- focus movement and live-region semantics for challenge feedback;
+- clearance between anchored landing sections and the fixed navigation; and
+- content availability with reduced motion enabled and `IntersectionObserver` unavailable.
+
 ## Documentation
 
 The backend package uses its existing Prettier dependency to check all Markdown documents:
